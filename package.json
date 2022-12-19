@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "html-entities": "^2.3.3",
+    "pdf-lib": "^1.17.1",
+    "yargs": "^17.6.2"
+  }
+}
