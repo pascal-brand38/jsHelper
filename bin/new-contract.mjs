@@ -48,47 +48,47 @@ function get_args() {
       },
 
       "from": {
-        description: "",
+        description: "Starting date, format dd/mm/yyyy",
         requiresArg: true,
         required: true
       },
       "to": {
-        description: "",
+        description: "End date, format dd/mm/yyyy",
         requiresArg: true,
         required: true
       },
       "priceday": {
-        description: "",
+        description: "Price per day, without the € sign",
         requiresArg: true,
         required: true
       },
       "nbdays": {
-        description: "",
+        description: "Nb of days",
         requiresArg: true,
         required: true
       },
       "services": {
-        description: "",
+        description: "Services to be included",
         requiresArg: true,
         required: true
       },
       "total": {
-        description: "",
+        description: "Total price",
         requiresArg: true,
         required: true
       },
       "accompte": {
-        description: "",
+        description: "Accompte asked for",
         requiresArg: true,
         required: true
       },
       "date_accompte": {
-        description: "",
+        description: "Date of the accompte if already paid",
         requiresArg: true,
         required: true
       },
       "solde": {
-        description: "",
+        description: "Amount on arrival date",
         requiresArg: true,
         required: true
       },
@@ -108,27 +108,75 @@ function getImmediateSubdirs(dir) {
     .map((item) => item.name);
 }
 
-function getCurrentContractDir(rootDir, who) {
-  const reWhoCompta = /[\s]+\/.*/;    // look for 1st slash, and remove the remaining
-  const catCompta = who.replace(reWhoCompta, '');
+function getCurrentContractDir(rootDir, who, returnList=false) {
+  const reDoubleSpace = /[\s]{2,}/g;
+  const reSlash = /\//g;
+  const reTrailing = /[\s]+$/g;
+  const reStarting = /^[\s]+/g;
+  who = who
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
+    .replace(reDoubleSpace, ' ')
+    .replace(reTrailing, '')
+    .replace(reStarting, '')
+    .replace(reSlash, '-')
+    .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
+  var candidates;
 
+  // 1st method: look if who and subdir are exactly the sames after / and accents and double-space removal
+  candidates = [];
   const subdirs = getImmediateSubdirs(rootDir);
-  var candidates = [];
-  const reWhoDir = /[\s]+-.*/;    // look for 1st dash, and remove the remaining
   subdirs.forEach((subdir) => {
-    const catDir = subdir.replace(reWhoDir, '')
-    if (catDir === catCompta) {
+    var subdirProcessed = subdir
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
+      .replace(reDoubleSpace, ' ')
+      .replace(reTrailing, '')
+      .replace(reStarting, '')
+      .replace(reSlash, '-')
+      .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
+
+    if (subdirProcessed === who) {
+      candidates.push(subdir);
+    }
+  })
+  if (candidates.length == 1) {
+    if (returnList) {
+      // for testing only
+      return candidates;
+    } else {
+      return candidates[0];
+    }
+  }
+
+  // 3rd method: look for catname only
+  const reCatNameExtract = /[\s]+-.*/;    // look for 1st dash, and remove the remaining
+  const catCompta = who.replace(reCatNameExtract, '');
+
+  candidates = [];
+  subdirs.forEach((subdir) => {
+    var subdirProcessed = subdir
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
+      .replace(reDoubleSpace, ' ')
+      .replace(reTrailing, '')
+      .replace(reStarting, '')
+      .replace(reSlash, '-')
+      .toLowerCase()
+      .replace(reCatNameExtract, '');  // so now who does contain neither accents nor double-space nor slash (replace with dash)
+    if (subdirProcessed === catCompta) {
       candidates.push(subdir);
     }
   })
 
-  if (candidates.length === 0) {
-    error('Impossible de trouver le répertoire de contrat de ' + catCompta);
-  } else if (candidates.length > 1) {
-    error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
-  }
+  if (returnList) {
+    return candidates;
+  } else {
+    if (candidates.length === 0) {
+      error('Impossible de trouver le répertoire de contrat de ' + catCompta);
+    } else if (candidates.length > 1) {
+      error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
+    }
 
-  return candidates[0];
+    return candidates[0];
+  }
 }
 
 
@@ -223,6 +271,21 @@ async function updatePDF(options, currentContractDir, lastContract) {
 }
 
 
+function testContractDir() {
+  // copy/paste from the compta excel sheet  -  to be updated
+  const comptaWho = [
+    'Isis / Dupond ',
+    'Luna / Durand',
+  ];
+  const rootDir = 'C:\\Users\\pasca\\Desktop\\root\\Contrat Clients';
+  comptaWho.forEach(who => {
+    const candidates = getCurrentContractDir(rootDir, who, true);
+    if (candidates.length != 1) {
+      console.log(who);
+    }
+  })
+}
+
 function main() {
   const options = get_args();
   const currentContractDir = options.rootDir + '\\' + getCurrentContractDir(options.rootDir, options.who);
@@ -233,3 +296,5 @@ function main() {
 
 
 main();
+// testContractDir()    // uncomment to test
+                        // update this function with up-to-date who list from compta excel file
