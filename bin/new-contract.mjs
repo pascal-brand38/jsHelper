@@ -122,7 +122,7 @@ function getCurrentContractDir(rootDir, who, returnList=false) {
     .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
   var candidates;
 
-  // 1st method: look if who and subdir are exactly the sames after / and accents and double-space removal
+  // 1st method: look if who and subdir are a prefix of the other after / and accents and double-space removal
   candidates = [];
   const subdirs = getImmediateSubdirs(rootDir);
   subdirs.forEach((subdir) => {
@@ -134,7 +134,7 @@ function getCurrentContractDir(rootDir, who, returnList=false) {
       .replace(reSlash, '-')
       .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
 
-    if (subdirProcessed === who) {
+    if (subdirProcessed.startsWith(who) || who.startsWith(subdirProcessed)) {
       candidates.push(subdir);
     }
   })
@@ -277,7 +277,8 @@ function testContractDir() {
     'Isis / Dupond ',
     'Luna / Durand',
   ];
-  const rootDir = 'C:\\Users\\pasca\\Desktop\\root\\Contrat Clients';
+  const base = 'XXX'
+  const rootDir = 'C:\\Users\\pasca\\Desktop\\' + base + '\\Contrat Clients ' + base;
   comptaWho.forEach(who => {
     const candidates = getCurrentContractDir(rootDir, who, true);
     if (candidates.length != 1) {
