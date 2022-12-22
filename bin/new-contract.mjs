@@ -209,34 +209,49 @@ async function updatePDF(options, currentContractDir, lastContract) {
   const formNewContract = pdfNewContract.getForm();
 
   const textFieldsToCopy = [
-    'Nom Prénom',
-    'Adresse 1',
-    'Adresse 2',
-    'Téléphone',
-    'Adresse email',
-    'Personne autre que moi à prévenir en cas durgence',
-    'Téléphone_2',
-    '1',
-    '2',
-    'undefined',
-    'Leucose FELV',
-    'Typhus coryza RCP',
-    'Oui Non Si oui lesquelles',
+    [ 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
+    [ 'Adresse 1' ],
+    [ 'Adresse 2' ],
+    [ 'Téléphone' ],
+    [ 'Adresse email' ],
+    [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ],
+    [ 'Téléphone_2' ],
+    [ '1' ],
+    [ '2' ],
+    [ 'undefined' ],
+    [ 'Leucose FELV' ],
+    [ 'Typhus coryza RCP' ],
+    [ 'Oui Non Si oui lesquelles' ],
   ];
-  textFieldsToCopy.forEach(text => {
-    formNewContract.getTextField(text).setText(formLastContract.getTextField(text).getText());
+  textFieldsToCopy.forEach(field => {
+    let value = '';
+    field.forEach(text => {
+      try {
+        value = formLastContract.getTextField(text).getText();
+        console.log(value);
+      } catch {
+        // cannot have it
+      }
+    });
+
+    formNewContract.getTextField(field[0]).setText(value);
   })
 
   const checkBoxFieldsToCopy = [
-    'Mâle',
-    'Femelle',
-    'undefined_2',
-    'undefined_3',
+    [ 'Mâle' ],
+    [ 'Femelle' ],
+    [ 'undefined_2' ],
+    [ 'undefined_3' ],
   ];
-  checkBoxFieldsToCopy.forEach(text => {
-    if (formLastContract.getCheckBox(text).isChecked()) {
-      formNewContract.getCheckBox(text).check();
-    }
+  checkBoxFieldsToCopy.forEach(field => {
+    field.forEach(text => {
+      try {
+        if (formLastContract.getCheckBox(text).isChecked()) {
+          formNewContract.getCheckBox(field[0]).check();
+        }
+      } catch {
+        // cannot have it
+      }
   });
 
   formNewContract.getTextField('Date darrivée').setText(options.from);
