@@ -252,6 +252,7 @@ async function updatePDF(options, currentContractDir, lastContract) {
       } catch {
         // cannot have it
       }
+    })
   });
 
   formNewContract.getTextField('Date darrivée').setText(options.from);
