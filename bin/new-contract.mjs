@@ -275,9 +275,14 @@ async function updatePDF(options, currentContractDir, lastContract) {
   newContrat = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ' + newContrat;
   newContrat = currentContractDir + '\\' + newContrat
 
+  // https://github.com/Hopding/pdf-lib/issues/569#issuecomment-1087328416
+  // update needappearance field
+  newContrat.getForm().acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
+
+
   child_process.exec('explorer ' + currentContractDir);
   try {
-    fs.writeFileSync(newContrat, await pdfNewContract.save(), { flag: 'wx' });
+    fs.writeFileSync(newContrat, await pdfNewContract.save({ updateFieldAppearances: true }), { flag: 'wx' });
   } catch(e) {
     console.log(e);
     error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContrat);
