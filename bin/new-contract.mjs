@@ -1,13 +1,22 @@
+/// Copyright (c) Pascal Brand
+/// MIT License
+///
 // Based on pdf-lib
 //   npm install pdf-lib
-
+//
 // from https://pdf-lib.js.org/#fill-form
+//
+// Check pdf results using ghostscript:
+//        /c/Program\ Files/gs/gs10.00.0/bin/gswin64.exe -r36x36 file.pdf
 
 
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument, PDFName, PDFBool, StandardFonts } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 import fs from 'fs'
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { exit } from 'process';
 import child_process from 'child_process'
 import {decode} from 'html-entities';
@@ -191,6 +200,13 @@ function getLastContract(dir) {
 }
 
 
+// Set a form field, and update appearance fontToUse on this field
+function updateTextField(form, fieldText, value, fontToUse) {
+  let f = form.getTextField(fieldText);
+  f.setText(value);
+  f.updateAppearances(fontToUse)
+}
+
 async function updatePDF(options, currentContractDir, lastContract) {
   const pdfLastContract = await PDFDocument.load(fs.readFileSync(currentContractDir + '\\' + lastContract));
   const formLastContract = pdfLastContract.getForm();
@@ -207,6 +223,14 @@ async function updatePDF(options, currentContractDir, lastContract) {
 
   const pdfNewContract = await PDFDocument.load(fs.readFileSync(options.rootDir + '\\' + options.blankContract));
   const formNewContract = pdfNewContract.getForm();
+
+  // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
+  // const helvetica = await pdfNewContract.embedFont(StandardFonts.Helvetica)
+  pdfNewContract.registerFontkit(fontkit)
+  //const fontToUse = await pdfNewContract.embedFont(fs.readFileSync('C:\\Windows\\Fonts\\ARLRDBD.TTF'))
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const fontToUse = await pdfNewContract.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
   const textFieldsToCopy = [
     [ 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
@@ -233,8 +257,8 @@ async function updatePDF(options, currentContractDir, lastContract) {
         // cannot have it
       }
     });
-
-    formNewContract.getTextField(field[0]).setText(value);
+    
+    updateTextField(formNewContract, field[0], value, fontToUse)
   })
 
   const checkBoxFieldsToCopy = [
@@ -255,16 +279,19 @@ async function updatePDF(options, currentContractDir, lastContract) {
     })
   });
 
-  formNewContract.getTextField('Date darrivée').setText(options.from);
-  formNewContract.getTextField('Date de départ').setText(options.to);
-  formNewContract.getTextField('Nombre de jours').setText(options.nbdays.toString());
-  formNewContract.getTextField('Tarif Journalier').setText(options.priceday + '€');
-  formNewContract.getTextField('Total du séjour avec services').setText(options.total + '€');
-  formNewContract.getTextField('Acompte de 30  à la réservation').setText((options.accompte==='') ? ('0€') : (options.accompte + '€'));
-  formNewContract.getTextField('versé le').setText(options.date_accompte);
-  formNewContract.getTextField('Le solde de la pension sera versé le jour de larrivée soit').setText(options.solde + '€');
-  formNewContract.getTextField('Services soins santé arrivéedépart dimanche').setText((options.services==='') ? ('0€') : (options.services));
-  
+  const reservations = [
+    [ 'Date darrivée', options.from ],
+    [ 'Date de départ', options.to ],
+    [ 'Nombre de jours', options.nbdays.toString() ],
+    [ 'Tarif Journalier', options.priceday + '€' ],
+    [ 'Total du séjour avec services', options.total + '€' ],
+    [ 'Acompte de 30  à la réservation', (options.accompte==='') ? ('0€') : (options.accompte + '€') ],
+    [ 'versé le', options.date_accompte ],
+    [ 'Le solde de la pension sera versé le jour de larrivée soit', options.solde + '€' ],
+    [ 'Services soins santé arrivéedépart dimanche', (options.services==='') ? ('0€') : (options.services) ],
+  ]
+  reservations.forEach(resa => updateTextField(formNewContract, resa[0], resa[1], fontToUse))
+
   // get new contract name
   const reContractName = /^[0-9]*[a-z]?[\s]*-[\s]*/;    // remove numbers (dates) 4 times
   var newContrat = lastContract;
@@ -275,14 +302,15 @@ async function updatePDF(options, currentContractDir, lastContract) {
   newContrat = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ' + newContrat;
   newContrat = currentContractDir + '\\' + newContrat
 
+  // following is causing some isses when opening it with Adobe DC - shows some squares
   // https://github.com/Hopding/pdf-lib/issues/569#issuecomment-1087328416
   // update needappearance field
-  newContrat.getForm().acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
+  //pdfNewContract.getForm().acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
 
 
   child_process.exec('explorer ' + currentContractDir);
   try {
-    fs.writeFileSync(newContrat, await pdfNewContract.save({ updateFieldAppearances: true }), { flag: 'wx' });
+    fs.writeFileSync(newContrat, await pdfNewContract.save(/*{ updateFieldAppearances: true }*/), { flag: 'wx' });
   } catch(e) {
     console.log(e);
     error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContrat);
