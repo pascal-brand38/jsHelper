@@ -48,45 +48,40 @@ function readXls(name, sheetName, colName, colArrival, colDeparture) {
 }
 
 // populates unique arrival and departure dates, from readXls return data
-function populateDates(arrivals, departures, data) {
+function populateDates(dates, data) {
   data.forEach(e => { 
-    if (!arrivals.includes(e.arrival)) {
-      arrivals.push(e.arrival)
+    if (!dates.some(d => d.what === 'arrival' && d.date === e.arrival)) {
+      dates.push( { what: 'arrival', date: e.arrival })
     }
-    if (!departures.includes(e.departure)) {
-      departures.push(e.departure)
+    if (!dates.some(d => d.what === 'departure' && d.date === e.departure)) {
+      dates.push( { what: 'departure', date: e.departure })
     }
   })
-  arrivals.sort();
-  departures.sort();
+
+  // sort in reverse order to have the one to check in display directly
+  dates.sort((e1, e2) => (e2.date - e1.date));
 }
 
-// check whether compta and agenda are coherent with respects to the number of arrivals and departures
-// what is 'arrival' or 'departure'
-function checkOneDate(dataCompta, dataAgenda, dates, what) {
+
+// check coherency of arrival and departure number of dates in comta and agenda
+function checkDates(dataCompta, dataAgenda) {
+  let dates = []
+  populateDates(dates, dataCompta)
+  populateDates(dates, dataAgenda)
+
   dates.forEach(d => {
-    const compta = dataCompta.filter(e => e[what] === d)
-    const agenda = dataAgenda.filter(e => e[what] === d)
+    const what = d.what
+    const compta = dataCompta.filter(e => e[what] === d.date)
+    const agenda = dataAgenda.filter(e => e[what] === d.date)
     if (compta.length !== agenda.length) {
       console.log('---------------------------------')
-      console.log(`${what} on ${serialToStr(d)}`)
+      console.log(`${what} on ${serialToStr(d.date)}`)
       console.log('Compta: ')
       compta.forEach(c => console.log(`   ${c.name}`))
       console.log('Agenda: ')
       agenda.forEach(c => console.log(`   ${c.name}`))
     }
   })
-
-}
-
-// check coherency of arrival and departure number of dates in comta and agenda
-function checkDates(dataCompta, dataAgenda) {
-  let arrivals = []
-  let departures = []
-  populateDates(arrivals, departures, dataCompta)
-  populateDates(arrivals, departures, dataAgenda)
-  checkOneDate(dataCompta, dataAgenda, arrivals, 'arrival')
-  checkOneDate(dataCompta, dataAgenda, departures, 'departure')
 }
 
 function main() {
