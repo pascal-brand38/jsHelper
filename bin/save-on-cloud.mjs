@@ -95,7 +95,11 @@ function main() {
   })
 }
 
-main();
-console.log('-------------------------------')
-console.log(statistics)
-console.log('Done')
+if (process.argv.length !== 4) {
+  console.log(`"${process.argv[0]}" "${process.argv[1]}" /c/Users/pasca/Desktop/save-on-cloud "/c/Users/pasca/Mon Drive/tmp/save-on-cloud"`)
+} else {
+  main();
+  console.log('-------------------------------')
+  console.log(statistics)
+  console.log('Done')
+}
