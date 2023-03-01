@@ -94,8 +94,8 @@ function checkStatusPay(dataCompta) {
   dataCompta.forEach(data => {
     const departureStr = serialToStr(data.departure)
     const epochDeparture = Date.parse(departureStr)
-    const epochDeparture10 = epochDeparture - 1000*60*60*24
-    const epochDeparture20 = epochDeparture10 - 1000*60*60*24
+    const epochDeparture10 = epochDeparture + 1000*60*60*24 * 10
+    const epochDeparture20 = epochDeparture + 1000*60*60*24 * 20
     if (epochDeparture < epochToday) {
       //console.log(data.name)
       data.statusPay.forEach(status => {
