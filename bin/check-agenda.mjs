@@ -119,6 +119,26 @@ function checkStatusPay(dataCompta) {
   })
 }
 
+// filter consecutive periods in the agenda, which may be
+// there when the room is changed during vacation
+function filterConsecutive(data) {
+  data.forEach( d => d.remove = false)
+  data.forEach( d => {
+    if (d.remove === false) {
+      let consecutive = data.filter(e => (
+             (!e.remove) 
+          && ((e.arrival === d.departure) || (e.arrival-1 === d.departure))
+          && (e.name === d.name)
+        ))
+        if (consecutive.length === 1) {
+          consecutive[0].remove = true
+          d.departure = consecutive[0].departure
+        }
+    }
+  })
+
+  return data.filter(e => !e.remove)
+}
 
 function main() {
   const argv = process.argv
@@ -127,6 +147,7 @@ function main() {
   // Reading compta and agenda data
   let dataCompta = readXls(argv[2], 'Compta', 'B', 'W', 'X', 'K', 'O', 'S')
   let dataAgenda = readXls(argv[3], 'Résa', 'A', 'I', 'K')
+  dataAgenda = filterConsecutive(dataAgenda)
 
   // filter the dates from the compta that are prior the 1st arrival in the agenda
   const firstDate = dataAgenda[0].arrival
