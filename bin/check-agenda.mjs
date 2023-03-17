@@ -126,7 +126,8 @@ function filterConsecutive(data) {
   data.forEach( d => {
     if (d.remove === false) {
       let consecutive = data.filter(e => (
-             (!e.remove) 
+             (e !== d)      // do not remove the one we are checking, in case (e.departure===e.arrival)
+          && (!e.remove) 
           && ((e.arrival === d.departure) || (e.arrival-1 === d.departure))
           && (e.name === d.name)
         ))
