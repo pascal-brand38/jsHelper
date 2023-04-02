@@ -92,25 +92,25 @@ function checkStatusPay(dataCompta) {
   console.log('------------------------------------------ COMPTA')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
-    const departureStr = serialToStr(data.departure)
-    const epochDeparture = Date.parse(departureStr)
-    const epochDeparture10 = epochDeparture + 1000*60*60*24 * 10
-    const epochDeparture20 = epochDeparture + 1000*60*60*24 * 20
-    if (epochDeparture < epochToday) {
+    const arrivalStr = serialToStr(data.arrival)
+    const epochArrival = Date.parse(arrivalStr)
+    const epochArrival10 = epochArrival + 1000*60*60*24 * 10
+    const epochArrival20 = epochArrival + 1000*60*60*24 * 20
+    if (epochArrival < epochToday) {
       //console.log(data.name)
       data.statusPay.forEach(status => {
         switch (status) {
           case 'Attente':
-            console.log(`*** ATTENTE  ${departureStr} ${data.name}`)
+            console.log(`*** ATTENTE  ${arrivalStr} ${data.name}`)
             break
           case 'Reçu':
-            if (epochDeparture10 < epochToday) {
-              console.log(`    Reçu     ${departureStr} ${data.name}`)
+            if (epochArrival10 < epochToday) {
+              console.log(`    Reçu     ${arrivalStr} ${data.name}`)
             }
             break
           case 'Envoyé':
-            if (epochDeparture20 < epochToday) {
-              console.log(`    Envoyé   ${departureStr} ${data.name}`)
+            if (epochArrival20 < epochToday) {
+              console.log(`    Envoyé   ${arrivalStr} ${data.name}`)
             }
             break
           }
