@@ -188,7 +188,7 @@ async function sendMail(options, currentContractDir, lastContract) {
     error('Impossible de connaitre l\'email de ' + options.who)
   }
 
-  email = 'toto@gmail.com'
+  // email = 'toto@gmail.com'
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
