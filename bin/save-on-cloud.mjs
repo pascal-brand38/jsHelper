@@ -48,6 +48,11 @@ function main() {
     const srcFile = path.join(srcDir, file);
     const dstFile = path.join(dstDir, file);
 
+    if (path.basename(srcFile) === 'desktop.ini') {
+      return
+    }
+
+
     if (fs.existsSync(dstFile)) {
       // the file already exists in the cloud
       const statDstFile = fs.statSync(dstFile)
@@ -65,14 +70,14 @@ function main() {
         } else {
           // file version has been modified ==>
           // - rename the one on the cloud, using a version number
-          // - mv the one locally on the cloud
+          // - cp the one locally on the cloud
           // console.log(`Update file: ${dstFile}`)
           for (let step = 0; step < 1000; step++) {
             let zerofilled = ('000' + step).slice(-3);
             let dstFileRenamed = dstFile + '-v' + zerofilled
             if (!fs.existsSync(dstFileRenamed)) {
               fs.renameSync(dstFile, dstFileRenamed)
-              fs.renameSync(srcFile, dstFile)
+              fs.copyFileSync(srcFile, dstFile)
               statistics.updated++
               console.log(`Update ${path.basename(srcFile)}`)
               break
@@ -83,12 +88,12 @@ function main() {
     } else {
       // the file does not exist
       // an error, so the file does not exist on the cloud
-      // mv it now
+      // cp it now
       const dirname = path.dirname(dstFile)
       if (!fs.existsSync(dirname)) {
         fs.mkdirSync(dirname, { recursive: true });
       }
-      fs.renameSync(srcFile, dstFile)
+      fs.copyFileSync(srcFile, dstFile)
       statistics.new ++
       console.log(`New ${path.basename(srcFile)}`)
     }
