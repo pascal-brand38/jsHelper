@@ -165,18 +165,35 @@ function getLastContract(dir) {
   return all_files[all_files.length - 1];
 }
 
-function composeThunderbird(email, subject, body) {
+function getContractFrom(from, dir) {
+  const fromParts = from.split("/");
+  const start = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ';
+
+  const all_files = fs.readdirSync(dir, { withFileTypes: true })
+    .filter((item) => item.isFile() && item.name.startsWith(start))
+    .map((item) => item.name);
+  if (all_files.length == 0) {
+    helperEmailContrat.error('Aucun contrat existant dans ' + dir)
+  }
+  return all_files[all_files.length - 1];
+}
+
+function composeThunderbird(email, subject, body, attachment=null) {
+  // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird
   let exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"'
-  email='pascal.brand38@gmail.com'
   let to = `to='${email}'`
   subject = `subject=${encodeURIComponent(subject)}`
   body = `body=${encodeURIComponent(body)}`
 
-  let cmd = `${exe} -compose "${to},${subject},${body}"` 
+  let cmd
+  if (attachment != null) {
+    attachment = `attachment=${encodeURIComponent(attachment.replace(/\\/g, '/'))}`
+    cmd = `${exe} -compose "${to},${subject},${body},${attachment}"` 
+  } else {
+    cmd = `${exe} -compose "${to},${subject},${body}"` 
+  }
   console.log(cmd)
   child_process.exec(cmd)
-  // child_process.exec('C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe -compose "to=\'toto@gmail.com\'"')
-
 }
 
 export default {
@@ -184,5 +201,6 @@ export default {
   get_args,
   getCurrentContractDir,
   getLastContract,
+  getContractFrom,
   composeThunderbird
 }
