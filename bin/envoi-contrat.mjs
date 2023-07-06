@@ -50,6 +50,28 @@ function getSa(gender) {
   }
 }
 
+function getSes(gender) {
+  switch (gender) {
+    case '1':
+    case '2':
+      return 'ses'
+    case '3':
+    case '4':
+      return 'leurs'
+  }
+}
+
+function getAura(gender) {
+  switch (gender) {
+    case '1':
+    case '2':
+      return 'aura'
+    case '3':
+    case '4':
+      return 'auront'
+  }
+}
+
 function getDevraEtreVermifuge(gender) {
   switch (gender) {
     case '1':
@@ -99,6 +121,16 @@ async function getGender(formContract) {
   return gender
 }
 
+async function getYesNo(text) {
+  let answer = ''
+  while ((answer!='y') && (answer!='n')) {
+    answer = await new Promise(resolve => {
+      rl.question(`${text} (y/n)? `, resolve)
+    })
+  }
+  return answer
+}
+
 async function sendMail(options, currentContractDir) {
   const contractName = helperEmailContrat.getContractFrom(options.from, currentContractDir);
   const pdfFullName = `${currentContractDir}\\${contractName}`
@@ -114,11 +146,12 @@ async function sendMail(options, currentContractDir) {
     error('Impossible de connaitre l\'email de ' + options.who)
   }
 
-  email = 'toto@gmail.com'
+  // email = 'toto@gmail.com'
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
   let gender = await getGender(formContract)
+  let vaccin = await getYesNo('Vaccins à refaire')
 
   let subject = `Réservation pour les vacances de ${catName} à ${options.entreprise}`
 
@@ -134,6 +167,13 @@ async function sendMail(options, currentContractDir) {
   body += `à l'arrivée de ${getVotrePtitLoulou(gender)} pour le début des vacances le ${options.from}.`
   body += `<br>`
   body += `<br>`
+
+  if (vaccin == 'y') {
+    body += `Les vaccins de ${catName} seront à refaire avant ${getSes(gender)} vacances. `
+    body += `Aurez vous la possibilité de me faire une photo quand ${catName} ${getAura(gender)} refait ${getSes(gender)} vaccins? Merci.`
+    body += `<br>`
+    body += `<br>`  
+  }
 
   if ((options.accompte != '') && (options.accompte != '0')) {
     body += `Afin de valider la réservation de ${getVotrePtitLoulou(gender)}, un acompte de 30% du montant total `
