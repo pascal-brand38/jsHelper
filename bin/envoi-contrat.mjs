@@ -63,6 +63,42 @@ function getDevraEtreVermifuge(gender) {
   }
 }
 
+async function getGender(formContract) {
+  let male = false
+  try {
+    male = formContract.getCheckBox('Mâle').isChecked();
+  } catch {
+  }
+  let female = false
+  try {
+    female = formContract.getCheckBox('Femelle').isChecked();
+  } catch {
+  }
+
+  let genderError = true
+  let gender
+  while (genderError) {
+    gender = '0'
+    while ((gender!='1') && (gender!='2') && (gender!='3') && (gender!='4')) {
+      gender = await new Promise(resolve => {
+        rl.question('0- Quit  or  1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ', resolve)
+      })
+      if (gender == 0) {
+        throw("Quitting")
+      }
+    }
+    genderError = 
+      (male && female && gender!=3) ||
+      (male && !female && gender!=1 && gender!=3) ||
+      (!male && female && gender!=2 && gender!=4);
+    if (genderError) {
+      console.log(`Le contrat indique male=${male} et femelle=${female}`)
+    }
+  }
+
+  return gender
+}
+
 async function sendMail(options, currentContractDir) {
   const contractName = helperEmailContrat.getContractFrom(options.from, currentContractDir);
   const pdfFullName = `${currentContractDir}\\${contractName}`
@@ -78,16 +114,11 @@ async function sendMail(options, currentContractDir) {
     error('Impossible de connaitre l\'email de ' + options.who)
   }
 
-  // email = 'toto@gmail.com'
+  email = 'toto@gmail.com'
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
-  let gender = '0'
-  while ((gender!='1') && (gender!='2') && (gender!='3') && (gender!='4')) {
-    gender = await new Promise(resolve => {
-      rl.question('1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ', resolve)
-    })
-  }
+  let gender = await getGender(formContract)
 
   let subject = `Réservation pour les vacances de ${catName} à ${options.entreprise}`
 
