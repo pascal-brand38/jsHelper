@@ -18,6 +18,9 @@ let statistics = {
   new: 0,
 }
 
+let _dryrun = false
+let _dirDated = 'save-with-dates'
+
 /// get the list of all files in rootDir, from subDir recursiveley
 function walkDir(srcFiles, rootDir, subDir) {
   const thisDir = path.join(rootDir, subDir);
@@ -37,6 +40,9 @@ function main() {
   const argv = process.argv
   // console.log(argv)
 
+  let today = new Date()
+  let dateExt = '' + today.getFullYear() + ("0" + (today.getMonth() + 1)).slice(-2) + ("0" + today.getDate()).slice(-2)
+
   // Reading compta and agenda data
   let srcDir = argv[2]
   let dstDir = argv[3]
@@ -52,7 +58,7 @@ function main() {
       return
     }
 
-
+    let mustCopy = false
     if (fs.existsSync(dstFile)) {
       // the file already exists in the cloud
       const statDstFile = fs.statSync(dstFile)
@@ -68,34 +74,37 @@ function main() {
           // console.log(`Same files: ${srcFile} and ${dstFile}`)
           statistics.identical++
         } else {
-          // file version has been modified ==>
-          // - rename the one on the cloud, using a version number
-          // - cp the one locally on the cloud
-          // console.log(`Update file: ${dstFile}`)
-          for (let step = 0; step < 1000; step++) {
-            let zerofilled = ('000' + step).slice(-3);
-            let dstFileRenamed = dstFile + '-v' + zerofilled
-            if (!fs.existsSync(dstFileRenamed)) {
-              fs.renameSync(dstFile, dstFileRenamed)
-              fs.copyFileSync(srcFile, dstFile)
-              statistics.updated++
-              console.log(`Update ${path.basename(srcFile)}`)
-              break
-            }
-          }
+          mustCopy = true
+          statistics.updated++
         }
       }
     } else {
-      // the file does not exist
       // an error, so the file does not exist on the cloud
-      // cp it now
+      statistics.new ++
+      mustCopy = true
       const dirname = path.dirname(dstFile)
       if (!fs.existsSync(dirname)) {
         fs.mkdirSync(dirname, { recursive: true });
       }
-      fs.copyFileSync(srcFile, dstFile)
-      statistics.new ++
-      console.log(`New ${path.basename(srcFile)}`)
+    }
+
+    if (mustCopy) {
+      let fileExt = dstFile.split('.').pop();
+      const dstDatedFile = path.join(dstDir, _dirDated, file) + '.' + dateExt + '.' + fileExt
+
+      const dirname = path.dirname(dstDatedFile)
+      if (!fs.existsSync(dirname)) {
+        fs.mkdirSync(dirname, { recursive: true });
+      }
+
+      if (_dryrun) {
+        console.log(`fs.copyFileSync(${srcFile}, ${dstFile})`)
+        console.log(`fs.copyFileSync(${srcFile}, ${dstDatedFile})`)
+      } else {
+        fs.copyFileSync(srcFile, dstFile)
+        fs.copyFileSync(srcFile, dstDatedFile)
+      }
+      console.log(`Copy ${path.basename(srcFile)}`)
     }
   })
 }
