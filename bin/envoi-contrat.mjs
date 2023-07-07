@@ -7,6 +7,7 @@
 
 import { PDFDocument } from 'pdf-lib'
 import fs from 'fs'
+import path from 'path'
 
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 
@@ -137,8 +138,6 @@ async function sendMail(options, currentContractDir) {
   const pdfContract = await PDFDocument.load(fs.readFileSync(pdfFullName));
   const formContract = pdfContract.getForm();
 
-  let attachment = `file:///${pdfFullName}`
-
   let email
   try {
     email = formContract.getTextField('Adresse email').getText();
@@ -224,6 +223,20 @@ async function sendMail(options, currentContractDir) {
   body += `A très bientôt, des bisous à ${catName} de la part de ${getSa(gender)} nounou.`
   body += `<br>`
   body += `<br>`
+
+  // add the flatten attachement.
+  // if not flat, the printed form from a smartphone may be empty :(
+  let flatFormFullName = path.join('C:', 'tmp', path.basename(pdfFullName))
+  formContract.flatten()
+  try {
+    const pdfBuf = await pdfContract.save(/*{ updateFieldAppearances: true }*/)
+    fs.writeFileSync(flatFormFullName, pdfBuf, { flag: 'w' });
+  } catch(e) {
+    console.log(e);
+    error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContrat);
+  }
+
+  let attachment = `file:///${flatFormFullName}`
 
   helperEmailContrat.composeThunderbird(email, subject, body, attachment)
 }
