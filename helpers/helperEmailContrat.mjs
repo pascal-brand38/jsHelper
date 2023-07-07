@@ -187,7 +187,7 @@ function composeThunderbird(email, subject, body, attachment=null) {
 
   let cmd
   if (attachment != null) {
-    attachment = `attachment=${encodeURIComponent(attachment.replace(/\\/g, '/'))}`
+    attachment = `attachment=${attachment.replace(/\\/g, '/')}`
     cmd = `${exe} -compose "${to},${subject},${body},${attachment}"` 
   } else {
     cmd = `${exe} -compose "${to},${subject},${body}"` 
