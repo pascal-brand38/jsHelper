@@ -8,23 +8,7 @@
 
 import reader from 'xlsx'
 
-// from a serial day in excel (nb of days since 01/01/1900),
-// return a string of the date  dd/mm/yyyy
-// https://stackoverflow.com/questions/26792144/converting-days-since-jan-1-1900-to-todays-date
-function serialToStr(serial) {
-  let l = serial + 68569 + 2415019;
-  let n = Math.floor((4 * l) / 146097);
-  l = l - Math.floor((146097 * n + 3) / 4);
-  let i = Math.floor((4000 * (l + 1)) / 1461001);
-  l = l - Math.floor((1461 * i) / 4) + 31;
-  let j = Math.floor((80 * l) / 2447);
-  let nDay = l - Math.floor((2447 * j) / 80);
-  l = Math.floor(j / 11);
-  let nMonth = j + 2 - (12 * l);
-  let nYear = 100 * (n - 49) + i + l;
-  // return nDay + '/' + nMonth + '/' + nYear;
-  return nYear + '/' + nMonth + '/' + nDay;
-}
+import helperExcel from '../helpers/helperExcel.mjs'
 
 // read an xls or ods file
 // name is the excel filename, sheetName is the name of the sheet containing
@@ -76,7 +60,7 @@ function checkDates(dataCompta, dataAgenda) {
     const compta = dataCompta.filter(e => e[what] === d.date)
     const agenda = dataAgenda.filter(e => e[what] === d.date)
     if (compta.length !== agenda.length) {
-      console.log(`--- ${what} on ${serialToStr(d.date)} ----------------`)
+      console.log(`--- ${what} on ${helperExcel.serialToStr(d.date)} ----------------`)
       console.log('Compta: ')
       compta.forEach(c => console.log(`   ${c.name}`))
       console.log('Agenda: ')
@@ -92,7 +76,7 @@ function checkStatusPay(dataCompta) {
   console.log('------------------------------------------ COMPTA')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
-    const arrivalStr = serialToStr(data.arrival)
+    const arrivalStr = helperExcel.serialToStr(data.arrival)
     const epochArrival = Date.parse(arrivalStr)
     const epochArrival10 = epochArrival + 1000*60*60*24 * 10
     const epochArrival20 = epochArrival + 1000*60*60*24 * 20

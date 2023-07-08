@@ -26,6 +26,11 @@ function get_args(usage) {
     .help('help').alias('help', 'h')
     .version('version', '1.0').alias('version', 'V')
     .options({
+      "compta-xls": {
+        description: "fullname of the compta.xls file",
+        requiresArg: true,
+        required: false
+      },
       "root-dir": {
         description: "directory that contains all contract directories, as well as the blank contract",
         requiresArg: true,

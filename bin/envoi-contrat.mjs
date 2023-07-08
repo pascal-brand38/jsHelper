@@ -8,12 +8,15 @@
 import { PDFDocument } from 'pdf-lib'
 import fs from 'fs'
 import path from 'path'
+import reader from 'xlsx'
 
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
+import helperExcel from '../helpers/helperExcel.mjs'
 
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
 import { stdin as input, stdout as output } from 'process';
+import { error } from 'console'
 const rl = readline.createInterface({ input, output });
 
 function getVotrePtitLoulou(gender) {
@@ -107,7 +110,7 @@ async function getGender(formContract) {
         rl.question('0- Quit  or  1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ', resolve)
       })
       if (gender == 0) {
-        throw("Quitting")
+        helperEmailContrat.error("Quitting")
       }
     }
     genderError = 
@@ -241,9 +244,69 @@ async function sendMail(options, currentContractDir) {
   helperEmailContrat.composeThunderbird(email, subject, body, attachment)
 }
 
+// Check the contract is coherent with respect to the previous one
+// - deposit asking, or not
+// - same daily price, not to forget medecine
+async function checkXls(options) {
+  const sheetName = 'Compta'
+  const colName = 'B'
+  const colFrom = 'C'
+  const file = reader.readFile(options.comptaXls)
+
+  // { header: "A" } indicates the json keys are A, B, C,... (cf. https://docs.sheetjs.com/docs/api/utilities/)
+  // console.log(`from = ${options.from}`)
+  let dFromSplit = options.from.split('/')
+  let dFrom = { nDay:+dFromSplit[0], nMonth:+dFromSplit[1], nYear:+dFromSplit[2] }
+  // console.log(`dFrom = ${dFrom.nYear} ${dFrom.nMonth} ${dFrom.nDay}`)
+  let rowPrev = null
+  let rowCurrent = null
+  reader.utils.sheet_to_json(file.Sheets[sheetName], { header: "A" }).every((row) => {
+    if (row[colName] === options.who) {
+      let d = helperExcel.serialToDate(row[colFrom])
+      // console.log(`${d.nYear} ${d.nMonth} ${d.nDay}`)
+      if (helperExcel.dateCompare(dFrom, d) == 0) {
+        rowCurrent = row
+        return false
+      }
+      rowPrev = row
+      return true
+    }
+    return true
+  })
+
+  if (rowPrev && rowCurrent) {
+    // check a deposit asking is the same (always ask, or never ask)
+    const colDepositAmount = 'H'
+    if ((rowPrev[colDepositAmount] == undefined && rowCurrent[colDepositAmount] != undefined) ||
+        (rowPrev[colDepositAmount] != undefined && rowCurrent[colDepositAmount] == undefined)) {
+      let cont = await getYesNo(`La demande d'acompte n'est pas identique à la réservation précédente.\nOn continue`)
+      if (cont == 'n') {
+        helperEmailContrat.error('Quit')
+      }
+    }
+
+    // check daily price is the same - can be different in case of medecine
+    const colDailyPrice = 'E'
+    // console.log(`${rowPrev[colDailyPrice]}    ${rowCurrent[colDailyPrice]}`)
+    if (rowPrev[colDailyPrice] != rowCurrent[colDailyPrice])  {
+      let cont = await getYesNo(`Le prix journalier n'est pas identique à la réservation précédente.\nOn continue`)
+      if (cont == 'n') {
+        helperEmailContrat.error('Quit')
+      }
+    }
+
+  } else {
+    let cont = await getYesNo(`1ere réservation.\nPrix journalier correct?\nDemande d'acompte ou pas?On continue`)
+    if (cont == 'n') {
+      helperEmailContrat.error('Quit')
+    }
+  }
+}
+
 
 function main() {
-  const options = helperEmailContrat.get_args('Open thinderbird to send a THANKS email, from an excel compta macro directly\n\nUsage: $0 [options]');
+  const options = helperEmailContrat.get_args('Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]');
+  checkXls(options)
   const currentContractDir = options.rootDir + '\\' + helperEmailContrat.getCurrentContractDir(options.rootDir, options.who);
 
   sendMail(options, currentContractDir)
