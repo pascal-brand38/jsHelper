@@ -304,9 +304,9 @@ async function checkXls(options) {
 }
 
 
-function main() {
+async function main() {
   const options = helperEmailContrat.get_args('Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]');
-  checkXls(options)
+  await checkXls(options)
   const currentContractDir = options.rootDir + '\\' + helperEmailContrat.getCurrentContractDir(options.rootDir, options.who);
 
   sendMail(options, currentContractDir)
