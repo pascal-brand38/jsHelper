@@ -21,15 +21,29 @@ import { error } from 'console'
 const rl = readline.createInterface({ input, output });
 
 function getVotrePtitLoulou(gender) {
+  const nChoices = 2
+  const r = Math.floor(Math.random() * nChoices);
   switch (gender) {
     case '1':
-      return 'votre ptit loulou'
+      switch (r) {
+        case 0: return 'votre ptit bonhomme'
+        default: return 'votre ptit loulou'
+      }
     case '2':
-      return 'votre ptite louloutte'
+      switch (r) {
+        case 0: return 'votre ptite miss'
+        default: return 'votre ptite louloutte'
+      }
     case '3':
-      return 'vos ptits loulous'
+      switch (r) {
+        case 0: return 'vos ptits bonhommes'
+        default: return 'vos ptits loulous'
+      }
     case '4':
-      return 'vos ptites loulouttes'
+      switch (r) {
+        case 0: return 'vos ptites miss'
+        default: return 'vos ptites loulouttes'
+      }
   }
 }
 
