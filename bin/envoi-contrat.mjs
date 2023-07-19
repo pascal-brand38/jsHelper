@@ -229,7 +229,7 @@ async function sendMail(options, currentContractDir) {
   body += `<br>`
   body += `<br>`
 
-  body += `A très bientôt, des bisous à ${catName} de la part de ${getSa(gender)} nounou.`
+  body += `Des bisous à ${catName} de la part de ${getSa(gender)} nounou.`
   body += `<br>`
   body += `<br>`
 
