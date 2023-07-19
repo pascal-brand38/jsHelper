@@ -58,7 +58,7 @@ function get_args(usage) {
         requiresArg: true,
         required: true
       },
-      "date_accompte": {
+      "date_accompte":   {
         description: "Date of the accompte if already paid",
         requiresArg: true,
         required: true
@@ -151,9 +151,9 @@ function getCurrentContractDir(rootDir, who, returnList=false) {
     return candidates;
   } else {
     if (candidates.length === 0) {
-      helperEmailContrat.error('Impossible de trouver le répertoire de contrat de ' + catCompta);
+      error('Impossible de trouver le répertoire de contrat de ' + catCompta);
     } else if (candidates.length > 1) {
-      helperEmailContrat.error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
+      error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
     }
 
     return candidates[0];
@@ -165,7 +165,7 @@ function getLastContract(dir) {
     .filter((item) => item.isFile() && item.name.startsWith('20'))
     .map((item) => item.name);
   if (all_files.length == 0) {
-    helperEmailContrat.error('Aucun contrat existant dans ' + dir)
+    error('Aucun contrat existant dans ' + dir)
   }
   return all_files[all_files.length - 1];
 }
@@ -178,7 +178,7 @@ function getContractFrom(from, dir) {
     .filter((item) => item.isFile() && item.name.startsWith(start))
     .map((item) => item.name);
   if (all_files.length == 0) {
-    helperEmailContrat.error('Aucun contrat existant dans ' + dir)
+    error('Aucun contrat existant dans ' + dir)
   }
   return all_files[all_files.length - 1];
 }
