@@ -9,6 +9,7 @@ import { PDFDocument } from 'pdf-lib'
 import fs from 'fs'
 import path from 'path'
 import reader from 'xlsx'
+import os from 'os'
 
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 import helperExcel from '../helpers/helperExcel.mjs'
@@ -148,7 +149,12 @@ async function sendMail(options, currentContractDir) {
     error('Impossible de connaitre l\'email de ' + options.who)
   }
 
-  // email = 'toto@gmail.com'
+  if (os.userInfo().username == 'pasca') {
+    console.log(`WARNING`)
+    console.log(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
+    console.log(`WARNING`)
+    email = 'toto@titi.com'
+  }
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
