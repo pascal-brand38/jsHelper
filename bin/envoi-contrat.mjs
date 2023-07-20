@@ -295,21 +295,30 @@ async function checkXls(options) {
   })
 
   if (rowPrev && rowCurrent) {
+    console.log('A')
     // check a deposit asking is the same (always ask, or never ask)
     const colDepositAmount = 'H'
-    if ((rowPrev[colDepositAmount] == undefined && rowCurrent[colDepositAmount] != undefined) ||
-        (rowPrev[colDepositAmount] != undefined && rowCurrent[colDepositAmount] == undefined)) {
-      let cont = await getYesNo(`La demande d'acompte n'est pas identique à la réservation précédente.\nOn continue`)
+    const askedDepositPrev = (rowPrev[colDepositAmount] != undefined)
+    const askedDepositCurrent = (rowCurrent[colDepositAmount] != undefined)
+    if (askedDepositPrev != askedDepositCurrent) {
+      if (!askedDepositCurrent) {
+        console.log(`Pas de demande d'accompte, alors que demande la fois précédente`)
+      } else {
+        console.log(`Demande d'accompte, alors que pas de demande la fois précédente`)
+      }
+      let cont = await getYesNo(`On continue`)
       if (cont == 'n') {
         helperEmailContrat.error('Quit')
       }
     }
+    console.log('B')
 
     // check daily price is the same - can be different in case of medecine
     const colDailyPrice = 'E'
     // console.log(`${rowPrev[colDailyPrice]}    ${rowCurrent[colDailyPrice]}`)
     if (rowPrev[colDailyPrice] != rowCurrent[colDailyPrice])  {
-      let cont = await getYesNo(`Le prix journalier n'est pas identique à la réservation précédente.\nOn continue`)
+      console.log(`Le prix journalier a été modifié: ${rowCurrent[colDailyPrice]}€ contre ${rowPrev[colDailyPrice]}€ précédemment`)
+      let cont = await getYesNo(`On continue`)
       if (cont == 'n') {
         helperEmailContrat.error('Quit')
       }
