@@ -294,12 +294,12 @@ async function checkXls(options) {
     return true
   })
 
+  const colDailyPrice = 'E'
+  const colDepositAmount = 'H'
+  const askedDepositCurrent = (rowCurrent[colDepositAmount] != undefined)
   if (rowPrev && rowCurrent) {
-    console.log('A')
     // check a deposit asking is the same (always ask, or never ask)
-    const colDepositAmount = 'H'
     const askedDepositPrev = (rowPrev[colDepositAmount] != undefined)
-    const askedDepositCurrent = (rowCurrent[colDepositAmount] != undefined)
     if (askedDepositPrev != askedDepositCurrent) {
       if (!askedDepositCurrent) {
         console.log(`Pas de demande d'accompte, alors que demande la fois précédente`)
@@ -307,25 +307,33 @@ async function checkXls(options) {
         console.log(`Demande d'accompte, alors que pas de demande la fois précédente`)
       }
       let cont = await getYesNo(`On continue`)
+      console.log()
       if (cont == 'n') {
         helperEmailContrat.error('Quit')
       }
     }
-    console.log('B')
 
     // check daily price is the same - can be different in case of medecine
-    const colDailyPrice = 'E'
     // console.log(`${rowPrev[colDailyPrice]}    ${rowCurrent[colDailyPrice]}`)
     if (rowPrev[colDailyPrice] != rowCurrent[colDailyPrice])  {
       console.log(`Le prix journalier a été modifié: ${rowCurrent[colDailyPrice]}€ contre ${rowPrev[colDailyPrice]}€ précédemment`)
       let cont = await getYesNo(`On continue`)
+      console.log()
       if (cont == 'n') {
         helperEmailContrat.error('Quit')
       }
     }
 
   } else {
-    let cont = await getYesNo(`1ere réservation.\nPrix journalier correct?\nDemande d'acompte ou pas?On continue`)
+    console.log(`1ere réservation`)
+    console.log(`    Prix journalier de (${rowCurrent[colDailyPrice]}€)?`)
+    if (askedDepositCurrent) {
+      console.log(`    AVEC demande d'acompte?`)
+    } else {
+      console.log(`    SANS demande d'acompte?`)
+    }
+    let cont = await getYesNo(`On continue`)
+    console.log()
     if (cont == 'n') {
       helperEmailContrat.error('Quit')
     }
