@@ -197,7 +197,7 @@ async function sendMail(options, currentContractDir) {
     body += `<br>`  
   }
 
-  if (((options.accompte != '') && (options.accompte != '0')) && (options.dateAccompte == '')) {
+  if (((options.accompte !== '') && (options.accompte !== '0')) && ((options.date_accompte === '') || (options.date_accompte === undefined))) {
     body += `Afin de valider la réservation de ${getVotrePtitLoulou(gender)}, un acompte de 30% du montant total `
     body += `vous est demandé, soit ${options.accompte}€. `
     body += `<br>`
