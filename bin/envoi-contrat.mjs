@@ -13,6 +13,7 @@ import os from 'os'
 
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 import helperExcel from '../helpers/helperExcel.mjs'
+import helperPdf from '../helpers/helperPdf.mjs'
 
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
@@ -104,15 +105,15 @@ function getDevraEtreVermifuge(gender) {
   }
 }
 
-async function getGender(formContract) {
+async function getGender(fields) {
   let male = false
   try {
-    male = formContract.getCheckBox('Mâle').isChecked();
+    male = fields['male'];
   } catch {
   }
   let female = false
   try {
-    female = formContract.getCheckBox('Femelle').isChecked();
+    female = fields['femelle'];
   } catch {
   }
 
@@ -151,16 +152,27 @@ async function getYesNo(text) {
 }
 
 async function sendMail(options, currentContractDir) {
-  const contractName = helperEmailContrat.getContractFrom(options.from, currentContractDir);
+  const contractName = helperEmailContrat.getContractName(options.from, currentContractDir);
   const pdfFullName = `${currentContractDir}\\${contractName}`
-  const pdfContract = await PDFDocument.load(fs.readFileSync(pdfFullName));
-  const formContract = pdfContract.getForm();
+  const pdfContract = await helperPdf.load(pdfFullName)
 
+  let fields = helperPdf.getFields(pdfContract, helperEmailContrat.fieldsMatch)
+  let decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
+
+  // check rcp date
+  decompose['rcp'].forEach(element => {
+    console.log(element)
+  });
+  error('QUIT')
+  
   let email
   try {
-    email = formContract.getTextField('Adresse email').getText();
+    email = fields['email']
+    if ((email === '') || (email === undefined)) {
+      throw(`Impossible de connaitre l'email de ${options.who}`)
+    }
   } catch {
-    error('Impossible de connaitre l\'email de ' + options.who)
+    helperEmailContrat.error(`Impossible de connaitre l'email de ${options.who}`)
   }
 
   if (os.userInfo().username == 'pasca') {
@@ -172,7 +184,7 @@ async function sendMail(options, currentContractDir) {
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
-  let gender = await getGender(formContract)
+  let gender = await getGender(fields)
   let vaccin = await getYesNo('Vaccins à refaire')
 
   let subject = `Réservation pour les vacances de ${catName} à ${options.entreprise}`
@@ -250,13 +262,8 @@ async function sendMail(options, currentContractDir) {
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
   let flatFormFullName = path.join('C:', 'tmp', path.basename(pdfFullName))
-  formContract.flatten()
-  try {
-    const pdfBuf = await pdfContract.save(/*{ updateFieldAppearances: true }*/)
-    fs.writeFileSync(flatFormFullName, pdfBuf, { flag: 'w' });
-  } catch(e) {
-    console.log(e);
-    error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContrat);
+  if (!(await helperPdf.flatten(pdfContract, flatFormFullName))) {
+    helperEmailContrat.error(`Impossible d'écrire le fichier  ${flatFormFullName}`);
   }
 
   let attachment = `file:///${flatFormFullName}`
