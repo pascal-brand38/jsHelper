@@ -151,7 +151,7 @@ async function getYesNo(text) {
 }
 
 async function sendMail(options, currentContractDir) {
-  const contractName = helperEmailContrat.getContractFrom(options.from, currentContractDir);
+  const contractName = helperEmailContrat.getContractName(options.from, currentContractDir);
   const pdfFullName = `${currentContractDir}\\${contractName}`
   const pdfContract = await PDFDocument.load(fs.readFileSync(pdfFullName));
   const formContract = pdfContract.getForm();

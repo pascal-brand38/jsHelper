@@ -9,23 +9,30 @@
 import reader from 'xlsx'
 
 import helperExcel from '../helpers/helperExcel.mjs'
+import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 
 // read an xls or ods file
 // name is the excel filename, sheetName is the name of the sheet containing
 // data, colName is the col that contains the name of the cat (typically 'A'), 
 // colArrival and colDeparture are the cat's booking
 // it returns a json with object { name, arrival, departure }
-function readXls(name, sheetName, colName, colArrival, colDeparture, colStatusPay1=null, colStatusPay2=null, colStatusPay3=null) {
+function readXls(name, xlsFormat) {
+  // sheetName, colName, colArrival, colDeparture, colStatusPay1=null, colStatusPay2=null, colStatusPay3=null) {
   const file = reader.readFile(name)
   let data = []
   // { header: "A" } indicates the json keys are A, B, C,... (cf. https://docs.sheetjs.com/docs/api/utilities/)
-  reader.utils.sheet_to_json(file.Sheets[sheetName], { header: "A" }).forEach((res) => {
-    data.push( {
-      name: res[colName],
-      arrival: Math.floor(res[colArrival]),
-      departure: Math.floor(res[colDeparture]),
-      statusPay: (colStatusPay1 ? [ res[colStatusPay1], res[colStatusPay2], res[colStatusPay3] ] : null),
+  reader.utils.sheet_to_json(file.Sheets[xlsFormat.sheetName], { header: "A" }).forEach((res) => {
+    let row = {}
+    xlsFormat.cols.forEach(col => {
+      row[col.prop] = res[col.col]
+      if (col.postComputation !== undefined) {
+        row[col.prop] = col.postComputation(row[col.prop])
+      }
     })
+    if (xlsFormat.postComputation) {
+      xlsFormat.postComputation(row)
+    }
+    data.push(row)
   })
   data = data.filter(e => (e.name !== undefined) && !isNaN(e.arrival) && !isNaN(e.departure))
   data.sort(function(a, b) { return a.arrival - b.arrival } );
@@ -126,13 +133,39 @@ function filterConsecutive(data) {
   return data.filter(e => !e.remove)
 }
 
+
+// check if vaccination rcp is up-to-date
+// function checkVaccination(dataCompta) {
+//   const epochToday = Date.now();
+
+//   console.log()
+//   console.log('-------------------------------------------------')
+//   console.log('------------------------------------- VACCINATION')
+//   console.log('-------------------------------------------------')
+//   dataCompta.forEach(data => {
+//     const arrivalStr = helperExcel.serialToStr(data.arrival)
+//     const epochArrival = Date.parse(arrivalStr)
+//     if (epochArrival > epochToday) {
+//       // this one should come in the future
+//       // check in the contract if vaccination rcp is up-to-date
+//       console.log(data.name)
+
+//       // get the pdf contract
+
+//       // check rcp date
+
+//     }
+//   })
+// }
+
+
 function main() {
   const argv = process.argv
   // console.log(argv)
 
   // Reading compta and agenda data
-  let dataCompta = readXls(argv[2], 'Compta', 'B', 'W', 'X', 'K', 'O', 'S')
-  let dataAgenda = readXls(argv[3], 'Résa', 'A', 'I', 'K')
+  let dataCompta = readXls(argv[2], helperEmailContrat.xlsFormatCompta)
+  let dataAgenda = readXls(argv[3], helperEmailContrat.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
   // filter the dates from the compta that are prior the 1st arrival in the agenda
@@ -142,6 +175,7 @@ function main() {
   // check coherency
   checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
+  // checkVaccination(dataCompta)
 }
 
 main();
