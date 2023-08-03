@@ -6,39 +6,8 @@
 ///
 /// arg1 is the compta, and arg2 is the agenda
 
-import reader from 'xlsx'
-
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
-
-// read an xls or ods file
-// name is the excel filename, sheetName is the name of the sheet containing
-// data, colName is the col that contains the name of the cat (typically 'A'), 
-// colArrival and colDeparture are the cat's booking
-// it returns a json with object { name, arrival, departure }
-function readXls(name, xlsFormat) {
-  // sheetName, colName, colArrival, colDeparture, colStatusPay1=null, colStatusPay2=null, colStatusPay3=null) {
-  const file = reader.readFile(name)
-  let data = []
-  // { header: "A" } indicates the json keys are A, B, C,... (cf. https://docs.sheetjs.com/docs/api/utilities/)
-  reader.utils.sheet_to_json(file.Sheets[xlsFormat.sheetName], { header: "A" }).forEach((res) => {
-    let row = {}
-    xlsFormat.cols.forEach(col => {
-      row[col.prop] = res[col.col]
-      if (col.postComputation !== undefined) {
-        row[col.prop] = col.postComputation(row[col.prop])
-      }
-    })
-    if (xlsFormat.postComputation) {
-      xlsFormat.postComputation(row)
-    }
-    data.push(row)
-  })
-  data = data.filter(e => (e.name !== undefined) && !isNaN(e.arrival) && !isNaN(e.departure))
-  data.sort(function(a, b) { return a.arrival - b.arrival } );
-
-  return data
-}
 
 // populates unique arrival and departure dates, from readXls return data
 function populateDates(dates, data) {
@@ -164,8 +133,8 @@ function main() {
   // console.log(argv)
 
   // Reading compta and agenda data
-  let dataCompta = readXls(argv[2], helperEmailContrat.xlsFormatCompta)
-  let dataAgenda = readXls(argv[3], helperEmailContrat.xlsFormatAgenda)
+  let dataCompta = helperExcel.readXls(argv[2], helperEmailContrat.xlsFormatCompta)
+  let dataAgenda = helperExcel.readXls(argv[3], helperEmailContrat.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
   // filter the dates from the compta that are prior the 1st arrival in the agenda

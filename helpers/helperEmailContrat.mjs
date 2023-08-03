@@ -334,6 +334,12 @@ const fieldsMatch = [
   // now is the booking dates and others
 ];
 
+function postComputationSheet(rows) {
+  rows = rows.filter(e => (e.name !== undefined) && !isNaN(e.arrival) && !isNaN(e.departure))
+  rows.sort(function(a, b) { return a.arrival - b.arrival } );
+  return rows
+}
+
 const xlsFormatCompta = {
   sheetName: 'Compta',
   cols: [
@@ -344,9 +350,11 @@ const xlsFormatCompta = {
     { col: 'O', prop: 'statusPaySolde',                                     },
     { col: 'S', prop: 'statusPayExtra',                                     },
   ],
-  postComputation: (row => {
+  postComputationRow: (row => {
     row['statusPay'] = [ row['statusPayAcompte'], row['statusPaySolde'], row['statusPayExtra'] ]
-  })
+    return row
+  }),
+  postComputationSheet: postComputationSheet,
 }
 
 const xlsFormatAgenda = {
@@ -356,6 +364,7 @@ const xlsFormatAgenda = {
     { col: 'I', prop: 'arrival',            postComputation: Math.floor,    },
     { col: 'K', prop: 'departure',          postComputation: Math.floor,    },
   ],
+  postComputationSheet: postComputationSheet,
 }
 
 
