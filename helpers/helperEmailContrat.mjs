@@ -179,11 +179,16 @@ function getLastContract(dir) {
 
 function getContractName(from, dir) {
   const fromParts = from.split("/");
-  const start = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ';
+  const start =  [
+    fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ',
+    fromParts[0] + ' - ' + fromParts[1] + ' - ' + fromParts[2] + ' - ',
+    fromParts[2] + ' - ' + fromParts[1] + ' - ',
+    fromParts[0] + ' - ' + fromParts[1] + ' - ',
+  ]
 
   const all_files = fs.readdirSync(dir, { withFileTypes: true })
-    .filter((item) => item.isFile() && item.name.startsWith(start))
-    .map((item) => item.name);
+    .filter((item) => item.isFile() && (item.name.startsWith(start[0]) || item.name.startsWith(start[1]) || item.name.startsWith(start[2]) || item.name.startsWith(start[3])))
+    .map((item) => item.name)
   if (all_files.length == 0) {
     error('Aucun contrat existant dans ' + dir)
   }
@@ -215,7 +220,7 @@ function composeThunderbird(email, subject, body, attachment=null) {
 // - prope: property name in js structure
 // - fields: list of field names, the 1st one being in the more recent pdf version
 
-const catSeparator = [ ' // ', ' et ', ' / ']
+const catSeparator = [ ' et ', ' // ', ' / ']
 
 function separate(value) {
   let results = [ value ]
@@ -258,9 +263,9 @@ function getDate(array, prop) {
     })
     return !found
   })
-  if (!found) {
-    warning(`Propriété ${prop}: Impossible d'extraire une date dans ${array}`)
-  }
+  // if (!found) {
+  //   warning(`Propriété ${prop}: Impossible d'extraire une date dans ${array}`)
+  // }
   return lastDate
 }
 
@@ -270,23 +275,32 @@ function decomposeDatesCats(prop, value, results) {
 
   let catNames = results['chatNom']
   if ((catNames !== undefined) && (catNames.length !== values.length)) {
-    console.log('Cat names: ', catNames)
-    console.log('Dates data: ', values)
-    error(`Different number of cats and dates`)
+    // different number of cats and dates
+    results[prop] = [ `Error with cats and ${prop} number: ${catNames}  vs  ${values}` ]
+    results.error = true
+    return
   }
-console.log(values)
+
   results[prop] = []
   values.forEach((v, i) => {
     if (catNames !== undefined) {
-      catNames.forEach((cat, j) => {
+      catNames.every((cat, j) => {
         if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
-          console.log('Cat names: ', catNames)
-          console.log('Dates data: ', values)
-          error(`Cats order is different`)
+          // different cats order
+          results[prop].push(`Error with cat order in ${values}`)
+          results.error = true
+          return false
         }
+        return true
       })
     }
-    results[prop].push(getDate(v.split(' '), prop))
+     let d = getDate(v.split(' '), prop)
+     if (d === '') {
+      results[prop].push(`Error with ${v}`)
+      results['error'] = true
+     } else {
+      results[prop].push(d)
+     }
   })
 }
 
@@ -307,7 +321,14 @@ function decomposeCatName(prop, value, results) {
       results['chatNom'].push(name.shift())
       next = name
     }
-    results['chatNaissance'].push(getDate(next), prop)
+
+    let d = getDate(next, prop)
+    if (d === '') {
+     results['chatNaissance'].push(`Error with ${v}`)
+     results['error'] = true
+    } else {
+     results['chatNaissance'].push(d)
+    }
   })
 }
 
@@ -344,8 +365,10 @@ const xlsFormatCompta = {
   sheetName: 'Compta',
   cols: [
     { col: 'B', prop: 'name',                                               },
-    { col: 'W', prop: 'arrival',            postComputation: Math.floor,    },
+    { col: 'W', prop: 'arrival',            postComputation: Math.floor,    },    // real arrival
     { col: 'X', prop: 'departure',          postComputation: Math.floor,    },
+    { col: 'C', prop: 'comptaArrival',      postComputation: Math.floor,    },    // arrival on the contract
+    { col: 'D', prop: 'comptaDeparture',    postComputation: Math.floor,    },
     { col: 'K', prop: 'statusPayAcompte',                                   },
     { col: 'O', prop: 'statusPaySolde',                                     },
     { col: 'S', prop: 'statusPayExtra',                                     },

@@ -8,6 +8,10 @@
 
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
+import helperPdf from '../helpers/helperPdf.mjs'
+
+import path from 'path'
+import fs from 'fs'
 
 // populates unique arrival and departure dates, from readXls return data
 function populateDates(dates, data) {
@@ -104,31 +108,60 @@ function filterConsecutive(data) {
 
 
 // check if vaccination rcp is up-to-date
-// function checkVaccination(dataCompta) {
-//   const epochToday = Date.now();
+async function checkVaccination(dataCompta, comptaName, AgendaName) {
+  const epochToday = Date.now();
+  const rootDir = path.parse(comptaName).dir
+  const enterprise = path.parse(rootDir).base
+  const contractRootDir = rootDir + '\\Contrat Clients ' + enterprise
 
-//   console.log()
-//   console.log('-------------------------------------------------')
-//   console.log('------------------------------------- VACCINATION')
-//   console.log('-------------------------------------------------')
-//   dataCompta.forEach(data => {
-//     const arrivalStr = helperExcel.serialToStr(data.arrival)
-//     const epochArrival = Date.parse(arrivalStr)
-//     if (epochArrival > epochToday) {
-//       // this one should come in the future
-//       // check in the contract if vaccination rcp is up-to-date
-//       console.log(data.name)
+  console.log()
+  console.log('-------------------------------------------------')
+  console.log('------------------------------------- VACCINATION')
+  console.log('-------------------------------------------------')
 
-//       // get the pdf contract
+  // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
+  await Promise.all(dataCompta.map(async (data) => {
+    const arrivalStr = helperExcel.serialToStr(data.arrival)
+    const epochArrival = Date.parse(arrivalStr)
+    const epochToday10 = epochToday + 1000*60*60*24 * 10
 
-//       // check rcp date
+    if (epochToday < epochArrival) {
+      // this one should come in the future
+      // check in the contract if vaccination rcp is up-to-date
 
-//     }
-//   })
-// }
+      // get the pdf contract
+      const currentContractDir = contractRootDir + '\\' + helperEmailContrat.getCurrentContractDir(contractRootDir, data['name']);
+      const contractName = helperEmailContrat.getContractName(helperExcel.serialToStr(data['comptaArrival']), currentContractDir);
+
+      // check rcp date
+      const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
+      const fields = helperPdf.getFields(pdf, helperEmailContrat.fieldsMatch)
+      const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
+
+      // if an rcp date starts with Error, that means something's wrong withe the extraction
+      let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
+      if (!toBeChecked) {
+        const epochDeparture = Date.parse(helperExcel.serialToStr(data.departure))
+    
+        decompose['rcp'].every(date => {
+          toBeChecked = date.startsWith('Error')
+          if (!toBeChecked) {
+            const epochRcpNext = Date.parse(date) + 1000*60*60*24 * 365
+            toBeChecked = (epochRcpNext < epochDeparture)
+          }
+          return !toBeChecked
+        })
+      }
+      if (toBeChecked) {
+        console.log('RESULT: ', data['name'], helperExcel.serialToStr(data['comptaArrival'], 'dd/MM/yyyy'), ': ', decompose['rcp'])
+      }
+      //console.log(decompose.chatNom, ': ', decompose['rcp'])
+    }
+  }))
+}
 
 
-function main() {
+async function main() {
   const argv = process.argv
   // console.log(argv)
 
@@ -144,7 +177,7 @@ function main() {
   // check coherency
   checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
-  // checkVaccination(dataCompta)
+  await checkVaccination(dataCompta, argv[2], argv[3])
 }
 
 main();

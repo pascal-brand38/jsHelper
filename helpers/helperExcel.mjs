@@ -20,9 +20,17 @@ function serialToDate(serial) {
   return { nDay, nMonth, nYear}
 }
 
-function serialToStr(serial) {
+function numberWithFixDigits(n, d) {
+  return ("0" + n).slice(-d)
+}
+
+function serialToStr(serial, format='yyyy/MM/dd') {
   let d = serialToDate(serial)
-  return d.nYear + '/' + d.nMonth + '/' + d.nDay;
+  if (format === 'yyyy/MM/dd')
+    return numberWithFixDigits(d.nYear, 4) + '/' + numberWithFixDigits(d.nMonth, 2) + '/' + numberWithFixDigits(d.nDay, 2)
+  else if (format === 'dd/MM/yyyy')
+    return numberWithFixDigits(d.nYear, 4) + '/' + numberWithFixDigits(d.nMonth, 2) + '/' + numberWithFixDigits(d.nDay, 2)
+  error(`serialToStr(): format=${format} is not recognized`)
 }
 
 function dateCompare(date1, date2) {
