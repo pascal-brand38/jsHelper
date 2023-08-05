@@ -13,6 +13,7 @@ import os from 'os'
 
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 import helperExcel from '../helpers/helperExcel.mjs'
+import helperJs from '../helpers/helperJs.mjs'
 
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
@@ -274,17 +275,13 @@ async function checkXls(options) {
   const file = reader.readFile(options.comptaXls)
 
   // { header: "A" } indicates the json keys are A, B, C,... (cf. https://docs.sheetjs.com/docs/api/utilities/)
-  // console.log(`from = ${options.from}`)
-  let dFromSplit = options.from.split('/')
-  let dFrom = { nDay:+dFromSplit[0], nMonth:+dFromSplit[1], nYear:+dFromSplit[2] }
-  // console.log(`dFrom = ${dFrom.nYear} ${dFrom.nMonth} ${dFrom.nDay}`)
+  const dFrom = helperJs.date.fromFormat(options.from)
   let rowPrev = null
   let rowCurrent = null
   reader.utils.sheet_to_json(file.Sheets[sheetName], { header: "A" }).every((row) => {
     if (row[colName] === options.who) {
       let d = helperExcel.serialToDate(row[colFrom])
-      // console.log(`${d.nYear} ${d.nMonth} ${d.nDay}`)
-      if (helperExcel.dateCompare(dFrom, d) == 0) {
+      if (helperJs.date.epoch(dFrom) == helperJs.date.epoch(d)) {
         rowCurrent = row
         return false
       }

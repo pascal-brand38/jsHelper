@@ -2,22 +2,18 @@
 /// MIT License
 
 import reader from 'xlsx'
+import helperJs from './helperJs.mjs';
 
 // from a serial day in excel (nb of days since 01/01/1900),
-// return a string of the date  yyyy/mm/dd
 // https://stackoverflow.com/questions/26792144/converting-days-since-jan-1-1900-to-todays-date
 function serialToDate(serial) {
-  let l = serial + 68569 + 2415019;
-  let n = Math.floor((4 * l) / 146097);
-  l = l - Math.floor((146097 * n + 3) / 4);
-  let i = Math.floor((4000 * (l + 1)) / 1461001);
-  l = l - Math.floor((1461 * i) / 4) + 31;
-  let j = Math.floor((80 * l) / 2447);
-  let nDay = l - Math.floor((2447 * j) / 80);
-  l = Math.floor(j / 11);
-  let nMonth = j + 2 - (12 * l);
-  let nYear = 100 * (n - 49) + i + l;
-  return { nDay, nMonth, nYear}
+  // Convert serial to seconds, minus the offset of the number of seconds between Jan-1-1900(Serial Date)
+  // and Jan-1-1970(UNIX Time). Which is 2208988800, this leaves us with UNIX time.
+  // remove 2 days as:
+  // - 1/1/1900 is day 1
+  // - according to Excel Feb 29, 1900 exists(a bug in their code they refuse to fix.)
+  return helperJs.date.fromEpoch(serial * 60*60*24 - 2208988800 - 60*60*24 *2)
+
 }
 
 function numberWithFixDigits(n, d) {
@@ -25,12 +21,8 @@ function numberWithFixDigits(n, d) {
 }
 
 function serialToStr(serial, format='yyyy/MM/dd') {
-  let d = serialToDate(serial)
-  if (format === 'yyyy/MM/dd')
-    return numberWithFixDigits(d.nYear, 4) + '/' + numberWithFixDigits(d.nMonth, 2) + '/' + numberWithFixDigits(d.nDay, 2)
-  else if (format === 'dd/MM/yyyy')
-    return numberWithFixDigits(d.nYear, 4) + '/' + numberWithFixDigits(d.nMonth, 2) + '/' + numberWithFixDigits(d.nDay, 2)
-  error(`serialToStr(): format=${format} is not recognized`)
+  const d = serialToDate(serial)
+  return helperJs.date.toFormat(d, format)
 }
 
 function dateCompare(date1, date2) {
