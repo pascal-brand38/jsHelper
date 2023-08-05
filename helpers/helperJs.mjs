@@ -14,8 +14,9 @@ const date = {
   now: () => DateTime.now().startOf('day'),
   epoch: (date) => date.toSeconds(),
   fromEpoch: (epoch) => DateTime.fromSeconds(epoch).startOf('day'),
-  toFormat: (date, format='d/M/y') => date.toFormat(format),
+  toFormat: (date, format='dd/MM/yyyy') => date.toFormat(format),
   fromFormat: (str, format='d/M/y') => DateTime.fromFormat(str, format).startOf('day'),
+  epochNDays: nDays => 60*60*24 * nDays,
 }
 
 export default {

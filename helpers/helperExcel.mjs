@@ -16,34 +16,6 @@ function serialToDate(serial) {
 
 }
 
-function numberWithFixDigits(n, d) {
-  return ("0" + n).slice(-d)
-}
-
-function serialToStr(serial, format='yyyy/MM/dd') {
-  const d = serialToDate(serial)
-  return helperJs.date.toFormat(d, format)
-}
-
-function dateCompare(date1, date2) {
-  if (date1.nYear < date2.nYear) {
-    return -1
-  } else if (date1.nYear > date2.nYear) {
-    return +1
-  }
-  if (date1.nMonth < date2.nMonth) {
-    return -1
-  } else if (date1.nMonth > date2.nMonth) {
-    return +1
-  }
-  if (date1.nDay < date2.nDay) {
-    return -1
-  } else if (date1.nDay > date2.nDay) {
-    return +1
-  }
-  return 0
-}
-
 
 // read a sheet of an xls or ods file
 // name is the excel filename,
@@ -79,6 +51,4 @@ function readXls(name, xlsFormat) {
 export default {
   readXls,
   serialToDate,
-  serialToStr,
-  dateCompare
 }

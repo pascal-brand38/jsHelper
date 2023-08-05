@@ -9,6 +9,7 @@
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 import helperPdf from '../helpers/helperPdf.mjs'
+import helperJs from '../helpers/helperJs.mjs'
 
 import path from 'path'
 import fs from 'fs'
@@ -40,7 +41,7 @@ function checkDates(dataCompta, dataAgenda) {
     const compta = dataCompta.filter(e => e[what] === d.date)
     const agenda = dataAgenda.filter(e => e[what] === d.date)
     if (compta.length !== agenda.length) {
-      console.log(`--- ${what} on ${helperExcel.serialToStr(d.date)} ----------------`)
+      console.log(`--- ${what} on ${helperJs.date.toFormat(helperExcel.serialToDate(d.date))} ----------------`)
       console.log('Compta: ')
       compta.forEach(c => console.log(`   ${c.name}`))
       console.log('Agenda: ')
@@ -50,16 +51,17 @@ function checkDates(dataCompta, dataAgenda) {
 }
 
 function checkStatusPay(dataCompta) {
-  const epochToday = Date.now();
+  const epochToday = helperJs.date.epoch(helperJs.date.now());
 
   console.log('-------------------------------------------------')
   console.log('------------------------------------------ COMPTA')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
-    const arrivalStr = helperExcel.serialToStr(data.arrival)
-    const epochArrival = Date.parse(arrivalStr)
-    const epochArrival10 = epochArrival + 1000*60*60*24 * 10
-    const epochArrival20 = epochArrival + 1000*60*60*24 * 20
+    const dArrival = helperExcel.serialToDate(data.arrival)
+    const arrivalStr = helperJs.date.toFormat(dArrival)
+    const epochArrival = helperJs.date.epoch(dArrival)
+    const epochArrival10 = epochArrival + helperJs.date.epochNDays(10)
+    const epochArrival20 = epochArrival + helperJs.date.epochNDays(20)
     if (epochArrival < epochToday) {
       //console.log(data.name)
       data.statusPay.forEach(status => {
@@ -109,7 +111,7 @@ function filterConsecutive(data) {
 
 // check if vaccination rcp is up-to-date
 async function checkVaccination(dataCompta, comptaName, AgendaName) {
-  const epochToday = Date.now();
+  const epochToday = helperJs.date.epoch(helperJs.date.now());
   const rootDir = path.parse(comptaName).dir
   const enterprise = path.parse(rootDir).base
   const contractRootDir = rootDir + '\\Contrat Clients ' + enterprise
@@ -121,17 +123,16 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
-    const arrivalStr = helperExcel.serialToStr(data.arrival)
-    const epochArrival = Date.parse(arrivalStr)
-    const epochToday10 = epochToday + 1000*60*60*24 * 10
+    const epochArrival = helperJs.date.epoch(helperExcel.serialToDate(data.arrival))
 
     if (epochToday < epochArrival) {
       // this one should come in the future
       // check in the contract if vaccination rcp is up-to-date
 
       // get the pdf contract
+      const sComptaArrival = helperJs.date.toFormat(helperExcel.serialToDate(data['comptaArrival']))
       const currentContractDir = contractRootDir + '\\' + helperEmailContrat.getCurrentContractDir(contractRootDir, data['name']);
-      const contractName = helperEmailContrat.getContractName(helperExcel.serialToStr(data['comptaArrival']), currentContractDir);
+      const contractName = helperEmailContrat.getContractName(sComptaArrival, currentContractDir);
 
       // check rcp date
       const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
@@ -141,19 +142,21 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       // if an rcp date starts with Error, that means something's wrong withe the extraction
       let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
       if (!toBeChecked) {
-        const epochDeparture = Date.parse(helperExcel.serialToStr(data.departure))
+        const epochDeparture = helperJs.date.epoch(helperExcel.serialToDate(data.departure))
     
         decompose['rcp'].every(date => {
           toBeChecked = date.startsWith('Error')
           if (!toBeChecked) {
-            const epochRcpNext = Date.parse(date) + 1000*60*60*24 * 365
+            const rcpDate = helperJs.date.fromFormat(date)
+            const epochRcp = helperJs.date.epoch(rcpDate)
+            const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
             toBeChecked = (epochRcpNext < epochDeparture)
           }
           return !toBeChecked
         })
       }
       if (toBeChecked) {
-        console.log('RESULT: ', data['name'], helperExcel.serialToStr(data['comptaArrival'], 'dd/MM/yyyy'), ': ', decompose['rcp'])
+        console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'])
       }
       //console.log(decompose.chatNom, ': ', decompose['rcp'])
     }
@@ -162,6 +165,10 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
 
 async function main() {
+
+  // console.log(helperJs.date.now())
+  // helperEmailContrat.error('QUIT')
+
   const argv = process.argv
   // console.log(argv)
 

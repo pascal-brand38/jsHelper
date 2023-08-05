@@ -178,6 +178,7 @@ function getLastContract(dir) {
 }
 
 function getContractName(from, dir) {
+  // TODO: only consider "dd/MM/yyyy" and "MM/yyyy"
   const fromParts = from.split("/");
   const start =  [
     fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ',
