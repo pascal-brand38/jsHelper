@@ -133,6 +133,9 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       const sComptaArrival = helperJs.date.toFormat(helperExcel.serialToDate(data['comptaArrival']))
       const currentContractDir = contractRootDir + '\\' + helperEmailContrat.getCurrentContractDir(contractRootDir, data['name']);
       const contractName = helperEmailContrat.getContractName(sComptaArrival, currentContractDir);
+      if (contractName === undefined) {
+        return
+      }
 
       // check rcp date
       const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
@@ -156,7 +159,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
         })
       }
       if (toBeChecked) {
-        console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'])
+        console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'], contractName)
       }
       //console.log(decompose.chatNom, ': ', decompose['rcp'])
     }

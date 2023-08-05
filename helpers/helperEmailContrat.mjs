@@ -180,18 +180,14 @@ function getLastContract(dir) {
 function getContractName(from, dir) {
   // TODO: only consider "dd/MM/yyyy" and "MM/yyyy"
   const fromParts = from.split("/");
-  const start =  [
-    fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ',
-    fromParts[0] + ' - ' + fromParts[1] + ' - ' + fromParts[2] + ' - ',
-    fromParts[2] + ' - ' + fromParts[1] + ' - ',
-    fromParts[0] + ' - ' + fromParts[1] + ' - ',
-  ]
+  const start = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - '
 
-  const all_files = fs.readdirSync(dir, { withFileTypes: true })
-    .filter((item) => item.isFile() && (item.name.startsWith(start[0]) || item.name.startsWith(start[1]) || item.name.startsWith(start[2]) || item.name.startsWith(start[3])))
+  let all_files = fs.readdirSync(dir, { withFileTypes: true })
+    .filter((item) => item.isFile() && item.name.startsWith(start))
     .map((item) => item.name)
   if (all_files.length == 0) {
-    error('Aucun contrat existant dans ' + dir)
+    warning('Aucun contrat existant dans ' + dir)
+    return undefined
   }
   return all_files[all_files.length - 1];
 }
