@@ -4,19 +4,6 @@
 import reader from 'xlsx'
 import helperJs from './helperJs.mjs';
 
-// from a serial day in excel (nb of days since 01/01/1900),
-// https://stackoverflow.com/questions/26792144/converting-days-since-jan-1-1900-to-todays-date
-function serialToDate(serial) {
-  // Convert serial to seconds, minus the offset of the number of seconds between Jan-1-1900(Serial Date)
-  // and Jan-1-1970(UNIX Time). Which is 2208988800, this leaves us with UNIX time.
-  // remove 2 days as:
-  // - 1/1/1900 is day 1
-  // - according to Excel Feb 29, 1900 exists(a bug in their code they refuse to fix.)
-  return helperJs.date.fromEpoch(serial * 60*60*24 - 2208988800 - 60*60*24 *2)
-
-}
-
-
 // read a sheet of an xls or ods file
 // name is the excel filename,
 // xlsFormat is how the sheet is formatted. Cf. helperEmailContrat.mjs, variable xlsFormatCompta
@@ -50,5 +37,4 @@ function readXls(name, xlsFormat) {
 
 export default {
   readXls,
-  serialToDate,
 }

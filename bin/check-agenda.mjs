@@ -41,7 +41,7 @@ function checkDates(dataCompta, dataAgenda) {
     const compta = dataCompta.filter(e => e[what] === d.date)
     const agenda = dataAgenda.filter(e => e[what] === d.date)
     if (compta.length !== agenda.length) {
-      console.log(`--- ${what} on ${helperJs.date.toFormat(helperExcel.serialToDate(d.date))} ----------------`)
+      console.log(`--- ${what} on ${helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(d.date))} ----------------`)
       console.log('Compta: ')
       compta.forEach(c => console.log(`   ${c.name}`))
       console.log('Agenda: ')
@@ -51,15 +51,15 @@ function checkDates(dataCompta, dataAgenda) {
 }
 
 function checkStatusPay(dataCompta) {
-  const epochToday = helperJs.date.epoch(helperJs.date.now());
+  const epochToday = helperJs.date.toEpoch(helperJs.date.fromNowStartOfDay());
 
   console.log('-------------------------------------------------')
   console.log('------------------------------------------ COMPTA')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
-    const dArrival = helperExcel.serialToDate(data.arrival)
+    const dArrival = helperJs.date.fromExcelSerialStartOfDay(data.arrival)
     const arrivalStr = helperJs.date.toFormat(dArrival)
-    const epochArrival = helperJs.date.epoch(dArrival)
+    const epochArrival = helperJs.date.toEpoch(dArrival)
     const epochArrival10 = epochArrival + helperJs.date.epochNDays(10)
     const epochArrival20 = epochArrival + helperJs.date.epochNDays(20)
     if (epochArrival < epochToday) {
@@ -111,7 +111,7 @@ function filterConsecutive(data) {
 
 // check if vaccination rcp is up-to-date
 async function checkVaccination(dataCompta, comptaName, AgendaName) {
-  const epochToday = helperJs.date.epoch(helperJs.date.now());
+  const epochToday = helperJs.date.toEpoch(helperJs.date.fromNowStartOfDay());
   const rootDir = path.parse(comptaName).dir
   const enterprise = path.parse(rootDir).base
   const contractRootDir = rootDir + '\\Contrat Clients ' + enterprise
@@ -123,14 +123,14 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
-    const epochArrival = helperJs.date.epoch(helperExcel.serialToDate(data.arrival))
+    const epochArrival = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.arrival))
 
     if (epochToday < epochArrival) {
       // this one should come in the future
       // check in the contract if vaccination rcp is up-to-date
 
       // get the pdf contract
-      const sComptaArrival = helperJs.date.toFormat(helperExcel.serialToDate(data['comptaArrival']))
+      const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival']))
       const currentContractDir = contractRootDir + '\\' + helperEmailContrat.getCurrentContractDir(contractRootDir, data['name']);
       const contractName = helperEmailContrat.getContractName(sComptaArrival, currentContractDir);
       if (contractName === undefined) {
@@ -145,13 +145,13 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       // if an rcp date starts with Error, that means something's wrong withe the extraction
       let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
       if (!toBeChecked) {
-        const epochDeparture = helperJs.date.epoch(helperExcel.serialToDate(data.departure))
+        const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.departure))
     
         decompose['rcp'].every(date => {
           toBeChecked = date.startsWith('Error')
           if (!toBeChecked) {
-            const rcpDate = helperJs.date.fromFormat(date)
-            const epochRcp = helperJs.date.epoch(rcpDate)
+            const rcpDate = helperJs.date.fromFormatStartOfDay(date)
+            const epochRcp = helperJs.date.toEpoch(rcpDate)
             const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
             toBeChecked = (epochRcpNext < epochDeparture)
           }
@@ -169,7 +169,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
 async function main() {
 
-  // console.log(helperJs.date.now())
+  // console.log(helperJs.date.fromNowStartOfDay())
   // helperEmailContrat.error('QUIT')
 
   const argv = process.argv

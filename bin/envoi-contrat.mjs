@@ -275,13 +275,13 @@ async function checkXls(options) {
   const file = reader.readFile(options.comptaXls)
 
   // { header: "A" } indicates the json keys are A, B, C,... (cf. https://docs.sheetjs.com/docs/api/utilities/)
-  const dFrom = helperJs.date.fromFormat(options.from)
+  const dFrom = helperJs.date.fromFormatStartOfDay(options.from)
   let rowPrev = null
   let rowCurrent = null
   reader.utils.sheet_to_json(file.Sheets[sheetName], { header: "A" }).every((row) => {
     if (row[colName] === options.who) {
-      let d = helperExcel.serialToDate(row[colFrom])
-      if (helperJs.date.epoch(dFrom) == helperJs.date.epoch(d)) {
+      let d = helperJs.date.fromExcelSerialStartOfDay(row[colFrom])
+      if (helperJs.date.toEpoch(dFrom) == helperJs.date.toEpoch(d)) {
         rowCurrent = row
         return false
       }
