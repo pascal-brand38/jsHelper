@@ -121,6 +121,8 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
   console.log('------------------------------------- VACCINATION')
   console.log('-------------------------------------------------')
 
+  let toBeCheckeds = []
+
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
     const epochArrival = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.arrival))
@@ -158,12 +160,23 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
           return !toBeChecked
         })
       }
+
       if (toBeChecked) {
-        console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'], contractName)
+        // console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'], contractName)
+        toBeCheckeds.push( {
+          name: data['name'],
+          sComptaArrival,
+          rcp: decompose['rcp'],
+          contractName,
+          epochArrival,
+        })
       }
       //console.log(decompose.chatNom, ': ', decompose['rcp'])
     }
   }))
+
+  toBeCheckeds.sort(function(a, b) { return b.epochArrival - a.epochArrival } );    // reverse order
+  console.log(toBeCheckeds)
 }
 
 
