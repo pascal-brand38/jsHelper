@@ -8,21 +8,9 @@ import {decode} from 'html-entities';
 import child_process from 'child_process'
 import fs from 'fs'
 import { DateTime } from 'luxon'
-
-function warning(s) {
-  console.log('WARNING');
-  console.log(`WARNING  ${s}`);
-  console.log('WARNING');
-}
-
-function error(s) {
-  console.log('***');
-  console.log('***  ERREUR');
-  console.log('*** ', s);
-  console.log('***');
-
-  exit(-1)
-}
+import path from 'path'
+import helperJs from './helperJs.mjs';
+import helperPdf from './helperPdf.mjs';
 
 function get_args(usage) {
   console.log(process.argv)
@@ -158,9 +146,9 @@ function getCurrentContractDir(rootDir, who, returnList=false) {
     return candidates;
   } else {
     if (candidates.length === 0) {
-      error('Impossible de trouver le répertoire de contrat de ' + catCompta);
+      helperJs.error('Impossible de trouver le répertoire de contrat de ' + catCompta);
     } else if (candidates.length > 1) {
-      error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
+      helperJs.error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
     }
 
     return candidates[0];
@@ -172,7 +160,7 @@ function getLastContract(dir) {
     .filter((item) => item.isFile() && item.name.startsWith('20'))
     .map((item) => item.name);
   if (all_files.length == 0) {
-    error('Aucun contrat existant dans ' + dir)
+    helperJs.error('Aucun contrat existant dans ' + dir)
   }
   return all_files[all_files.length - 1];
 }
@@ -186,7 +174,7 @@ function getContractName(from, dir) {
     .filter((item) => item.isFile() && item.name.startsWith(start))
     .map((item) => item.name)
   if (all_files.length == 0) {
-    warning('Aucun contrat existant dans ' + dir)
+    helperJs.warning('Aucun contrat existant dans ' + dir)
     return undefined
   }
   return all_files[all_files.length - 1];
@@ -236,7 +224,7 @@ function normalize(value) {
       .trim()
       // .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
       .replace(/[,:()]/g, " ")
-      .replace(/[.-]/g, "/")
+      // .replace(/[.-]/g, "/")
       .replace(/\s+/g, " ")
 }
 
@@ -249,7 +237,7 @@ function getDate(array, prop) {
   let lastDate = ''
   let found = false
   array.every(s => {
-    s = s.replace(/.-/g, '/')
+    s = s.replace(/[.-]/g, '/')
     dateFormats.every(format => {
       let date = DateTime.fromFormat(s, format)
       if (date.isValid) {
@@ -261,8 +249,18 @@ function getDate(array, prop) {
     return !found
   })
   // if (!found) {
-  //   warning(`Propriété ${prop}: Impossible d'extraire une date dans ${array}`)
+  //   helperJs.warning(`Propriété ${prop}: Impossible d'extraire une date dans ${array}`)
   // }
+
+  if (!found && array.length >= 2) {
+    const s = `${array[array.length-2]} ${array[array.length-1]}`
+    let date = DateTime.fromFormat(s, 'MMMM yyyy', { locale: 'fr' })
+    if (date.isValid) {
+      lastDate = date.toFormat('dd/MM/yyyy')
+      found = true    // found
+    }
+  }
+
   return lastDate
 }
 
@@ -299,6 +297,12 @@ function decomposeDatesCats(prop, value, results) {
       results[prop].push(d)
      }
   })
+}
+
+function decomposeMultiple(prop, value, results) {
+  value = normalize(value)
+  const values = separate(value)    // get a list of values per cat in this pdf
+  results[prop] = values
 }
 
 function decomposeCatName(prop, value, results) {
@@ -338,8 +342,8 @@ const fieldsMatch = [
   { type: 'T', prop: 'urgenceNom',                                    fields: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
   { type: 'T', prop: 'urgenceTel',                                    fields: [ 'Téléphone_2' ] },
   { type: 'T', prop: 'chat',        decompose: decomposeCatName,      fields: [ '1' ] },
-  { type: 'T', prop: 'id',                                            fields: [ '2' ] },
-  { type: 'T', prop: 'race',                                          fields: [ 'undefined' ] },
+  { type: 'T', prop: 'id',          decompose: decomposeMultiple,     fields: [ '2' ] },
+  { type: 'T', prop: 'race',        decompose: decomposeMultiple,     fields: [ 'undefined' ] },
   { type: 'T', prop: 'felv',                                          fields: [ 'Leucose FELV' ] },
   { type: 'T', prop: 'rcp',         decompose: decomposeDatesCats,    fields: [ 'Typhus coryza RCP' ] },
   { type: 'T', prop: 'maladies',                                      fields: [ 'Oui Non Si oui lesquelles' ] },
@@ -387,11 +391,29 @@ const xlsFormatAgenda = {
   postComputationSheet: postComputationSheet,
 }
 
+async function getPdfDataFromDataCompta(dataCompta, comptaName, excludes) {
+  const rootDir = path.parse(comptaName).dir
+  const enterprise = path.parse(rootDir).base
+  const contractRootDir = rootDir + '\\Contrat Clients ' + enterprise
+
+  // get the pdf contract
+  const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(dataCompta['comptaArrival']))
+  const currentContractDir = contractRootDir + '\\' + getCurrentContractDir(contractRootDir, dataCompta['name']);
+  const contractName = getContractName(sComptaArrival, currentContractDir);
+  if (contractName === undefined) {
+    return { fields: undefined, decompose: undefined, contractName: dataCompta['name'] }
+  }
+
+  // check rcp date
+  const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
+  const fields = helperPdf.getFields(pdf, fieldsMatch, excludes)
+  const decompose = helperPdf.decomposeFields(fields, fieldsMatch)
+  
+  return { fields, decompose, contractName }
+}
 
 
 export default {
-  error,
-  warning,
   get_args,
   getCurrentContractDir,
   getLastContract,
@@ -400,4 +422,5 @@ export default {
   fieldsMatch,
   xlsFormatCompta,
   xlsFormatAgenda,
+  getPdfDataFromDataCompta
 }

@@ -67,13 +67,15 @@ function getFields(pdf, fieldsMatch) {
   return result
 }
 
-function decomposeFields(fields, fieldsMatch) {
+function decomposeFields(fields, fieldsMatch, excludes=[]) {
   let results = {}
   fieldsMatch.forEach(field => {
-    if (field['decompose'] === undefined) {
-      results[field['prop']] = fields[field['prop']]
-    } else {
-      field['decompose'](field['prop'], fields[field['prop']], results)
+    if (!(field['prop'] in excludes)) {
+      if (field['decompose'] === undefined) {
+        results[field['prop']] = fields[field['prop']]
+      } else {
+        field['decompose'](field['prop'], fields[field['prop']], results)
+      }
     }
   })
   return results

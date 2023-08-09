@@ -3,6 +3,20 @@
 
 import { DateTime } from 'luxon'
 
+function warning(s) {
+  console.log('WARNING');
+  console.log('WARNING  ', s);
+  console.log('WARNING');
+}
+
+function error(s) {
+  console.log('***');
+  console.log('***  ERREUR');
+  console.log('*** ', s);
+  console.log('***');
+
+  exit(-1)
+}
 
 const date = {
   fromNowStartOfDay: () => DateTime.now().startOf('day'),
@@ -21,10 +35,14 @@ const date = {
 
   toEpoch: (date) => date.toSeconds(),
   toFormat: (date, format = 'dd/MM/yyyy') => date.toFormat(format),
+  toExcelSerial: (d) => (date.toEpoch(d) + (2208988800 + 60*60*24 *2)) / (60*60*24) ,
 
   epochNDays: nDays => 60 * 60 * 24 * nDays,
 }
 
 export default {
   date,
+  
+  warning,
+  error,
 }

@@ -112,9 +112,6 @@ function filterConsecutive(data) {
 // check if vaccination rcp is up-to-date
 async function checkVaccination(dataCompta, comptaName, AgendaName) {
   const epochToday = helperJs.date.toEpoch(helperJs.date.fromNowStartOfDay());
-  const rootDir = path.parse(comptaName).dir
-  const enterprise = path.parse(rootDir).base
-  const contractRootDir = rootDir + '\\Contrat Clients ' + enterprise
 
   console.log()
   console.log('-------------------------------------------------')
@@ -132,17 +129,22 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       // check in the contract if vaccination rcp is up-to-date
 
       // get the pdf contract
-      const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival']))
-      const currentContractDir = contractRootDir + '\\' + helperEmailContrat.getCurrentContractDir(contractRootDir, data['name']);
-      const contractName = helperEmailContrat.getContractName(sComptaArrival, currentContractDir);
-      if (contractName === undefined) {
+      // const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival']))
+      // const currentContractDir = contractRootDir + '\\' + helperEmailContrat.getCurrentContractDir(contractRootDir, data['name']);
+      // const contractName = helperEmailContrat.getContractName(sComptaArrival, currentContractDir);
+      // if (contractName === undefined) {
+      //   return
+      // }
+
+      // // check rcp date
+      // const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
+      // const fields = helperPdf.getFields(pdf, helperEmailContrat.fieldsMatch)
+      // const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
+      
+      const {decompose, contractName} = await helperEmailContrat.getPdfDataFromDataCompta(data, comptaName)
+      if (decompose === undefined) {
         return
       }
-
-      // check rcp date
-      const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
-      const fields = helperPdf.getFields(pdf, helperEmailContrat.fieldsMatch)
-      const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
 
       // if an rcp date starts with Error, that means something's wrong withe the extraction
       let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
@@ -165,7 +167,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
         // console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'], contractName)
         toBeCheckeds.push( {
           name: data['name'],
-          sComptaArrival,
+          sComptaArrival: helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival'])),
           rcp: decompose['rcp'],
           contractName,
           epochArrival,
@@ -183,7 +185,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 async function main() {
 
   // console.log(helperJs.date.fromNowStartOfDay())
-  // helperEmailContrat.error('QUIT')
+  // helperJs.error('QUIT')
 
   const argv = process.argv
   // console.log(argv)

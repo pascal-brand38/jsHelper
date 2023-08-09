@@ -126,7 +126,7 @@ async function getGender(formContract) {
         rl.question('0- Quit  or  1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ', resolve)
       })
       if (gender == 0) {
-        helperEmailContrat.error("Quitting")
+        helperJs.error("Quitting")
       }
     }
     genderError = 
@@ -306,7 +306,7 @@ async function checkXls(options) {
       let cont = await getYesNo(`On continue`)
       console.log()
       if (cont == 'n') {
-        helperEmailContrat.error('Quit')
+        helperJs.error('Quit')
       }
     }
 
@@ -317,7 +317,7 @@ async function checkXls(options) {
       let cont = await getYesNo(`On continue`)
       console.log()
       if (cont == 'n') {
-        helperEmailContrat.error('Quit')
+        helperJs.error('Quit')
       }
     }
 
@@ -332,7 +332,7 @@ async function checkXls(options) {
     let cont = await getYesNo(`On continue`)
     console.log()
     if (cont == 'n') {
-      helperEmailContrat.error('Quit')
+      helperJs.error('Quit')
     }
   }
 }
