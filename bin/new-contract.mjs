@@ -35,6 +35,7 @@ import { fileURLToPath } from 'url';
 import { exit } from 'process';
 import child_process from 'child_process'
 import {decode} from 'html-entities';
+import helperEmailContrat from '../helpers/helperEmailContrat.mjs';
 
 
 function error(s) {
@@ -124,94 +125,6 @@ function get_args() {
   options.services = decode(options.services)
 
   return options;
-}
-
-function getImmediateSubdirs(dir) {
-  return fs.readdirSync(dir, { withFileTypes: true })
-    .filter((item) => item.isDirectory())
-    .map((item) => item.name);
-}
-
-function getCurrentContractDir(rootDir, who, returnList=false) {
-  const reDoubleSpace = /[\s]{2,}/g;
-  const reSlash = /\//g;
-  const reTrailing = /[\s]+$/g;
-  const reStarting = /^[\s]+/g;
-  who = who
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-    .replace(reDoubleSpace, ' ')
-    .replace(reTrailing, '')
-    .replace(reStarting, '')
-    .replace(reSlash, '-')
-    .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
-  var candidates;
-
-  // 1st method: look if who and subdir are a prefix of the other after / and accents and double-space removal
-  candidates = [];
-  const subdirs = getImmediateSubdirs(rootDir);
-  subdirs.forEach((subdir) => {
-    var subdirProcessed = subdir
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-      .replace(reDoubleSpace, ' ')
-      .replace(reTrailing, '')
-      .replace(reStarting, '')
-      .replace(reSlash, '-')
-      .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
-
-    if (subdirProcessed.startsWith(who) || who.startsWith(subdirProcessed)) {
-      candidates.push(subdir);
-    }
-  })
-  if (candidates.length == 1) {
-    if (returnList) {
-      // for testing only
-      return candidates;
-    } else {
-      return candidates[0];
-    }
-  }
-
-  // 3rd method: look for catname only
-  const reCatNameExtract = /[\s]+-.*/;    // look for 1st dash, and remove the remaining
-  const catCompta = who.replace(reCatNameExtract, '');
-
-  candidates = [];
-  subdirs.forEach((subdir) => {
-    var subdirProcessed = subdir
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-      .replace(reDoubleSpace, ' ')
-      .replace(reTrailing, '')
-      .replace(reStarting, '')
-      .replace(reSlash, '-')
-      .toLowerCase()
-      .replace(reCatNameExtract, '');  // so now who does contain neither accents nor double-space nor slash (replace with dash)
-    if (subdirProcessed === catCompta) {
-      candidates.push(subdir);
-    }
-  })
-
-  if (returnList) {
-    return candidates;
-  } else {
-    if (candidates.length === 0) {
-      error('Impossible de trouver le répertoire de contrat de ' + catCompta);
-    } else if (candidates.length > 1) {
-      error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
-    }
-
-    return candidates[0];
-  }
-}
-
-
-function getLastContract(dir) {
-  const all_files = fs.readdirSync(dir, { withFileTypes: true })
-    .filter((item) => item.isFile() && item.name.startsWith('20'))
-    .map((item) => item.name);
-  if (all_files.length == 0) {
-    error('Aucun contrat existant dans ' + dir)
-  }
-  return all_files[all_files.length - 1];
 }
 
 
@@ -336,31 +249,13 @@ async function updatePDF(options, currentContractDir, lastContract) {
 }
 
 
-function testContractDir() {
-  // copy/paste from the compta excel sheet  -  to be updated
-  const comptaWho = [
-    'Isis / Dupond ',
-    'Luna / Durand',
-  ];
-  const base = 'XXX'
-  const rootDir = 'C:\\Users\\pasca\\Desktop\\' + base + '\\Contrat Clients ' + base;
-  comptaWho.forEach(who => {
-    const candidates = getCurrentContractDir(rootDir, who, true);
-    if (candidates.length != 1) {
-      console.log(who);
-    }
-  })
-}
-
 function main() {
   const options = get_args();
-  const currentContractDir = options.rootDir + '\\' + getCurrentContractDir(options.rootDir, options.who);
-  const lastContract = getLastContract(currentContractDir);
+  const currentContractDir = options.rootDir + '\\' + helperEmailContrat.getCurrentContractDir(options.rootDir, options.who);
+  const lastContract = helperEmailContrat.getLastContract(currentContractDir);
 
   updatePDF(options, currentContractDir, lastContract)
 }
 
 
 main();
-// testContractDir()    // uncomment to test
-                        // update this function with up-to-date who list from compta excel file
