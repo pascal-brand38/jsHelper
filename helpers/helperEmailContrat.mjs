@@ -405,8 +405,8 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, excludes) {
 
   // check rcp date
   const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
-  const fields = helperPdf.getFields(pdf, fieldsMatch, excludes)
-  const decompose = helperPdf.decomposeFields(fields, fieldsMatch)
+  const fields = helperPdf.getFields(pdf, fieldsMatch)
+  const decompose = helperPdf.decomposeFields(fields, fieldsMatch, excludes)
   
   return { fields, decompose, contractName }
 }
