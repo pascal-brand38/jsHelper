@@ -1,7 +1,6 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
 
-import { exit } from 'process';
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import {decode} from 'html-entities';

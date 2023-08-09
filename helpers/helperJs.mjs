@@ -2,6 +2,7 @@
 /// MIT License
 
 import { DateTime } from 'luxon'
+import { exit } from 'process';
 
 function warning(s) {
   console.log('WARNING');
