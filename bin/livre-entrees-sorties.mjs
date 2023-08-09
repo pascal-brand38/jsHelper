@@ -5,8 +5,6 @@ import helperExcel from '../helpers/helperExcel.mjs'
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 
-const from = "20/07/2023"
-
 function nameOrEmpty(name) { 
   return name!==undefined ? '\n' + name : ''
 }
@@ -14,7 +12,12 @@ async function main() {
   // helperExcel.writeXls('C:\\tmp\\test.ods', undefined, 'ods')
 
   const argv = process.argv
+  if (argv.length !== 4) {
+    helperJs.error('Usage: node bin/livre-entrees-sorties.mjs /c/Users/pasca/Desktop/P*Cats/compta.xls 01/01/2023')
+  }
+
   const comptaName = argv[2]
+  const from = argv[3]
   // console.log(argv)
 
   // Reading compta and agenda data
