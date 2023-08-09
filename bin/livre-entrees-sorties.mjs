@@ -34,19 +34,27 @@ async function main() {
   const excludes = [ 'felv', 'rcp', 'maladies' ]
   let rows = []
 
+  const verboseStr = ''   // set to name in compta to filter only these and have some verbose
+  if (verboseStr !== '') {
+    dataCompta = dataCompta.filter(c => (c.name === verboseStr))
+  }
+
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
     const arrivalCell = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data.arrival))
     let departureCell
     if (data.departure <= serialToday) {
-      const dDepature = helperJs.date.fromExcelSerialStartOfDay(data.departure)
-      const sDeparture = helperJs.date.toFormat(dDepature)
       departureCell = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data.departure))
     } else {
       departureCell = ''
     }
 
     const {fields, decompose, contractName} = await helperEmailContrat.getPdfDataFromDataCompta(data, comptaName, excludes)
+    if (verboseStr !== '') {
+      console.log('fields: ', fields)
+      console.log('decompose: ', decompose)
+    }
+
     const errorCell = `ERROR in ${contractName}`
     if (decompose === undefined) {
       rows.push([
@@ -69,7 +77,7 @@ async function main() {
       (decompose.chatNom.length !== decompose.chatNaissance.length) ||
       (decompose.chatNom.length !== decompose.id.length)
       // do not check the race. Take the same if not same length
-
+    
     if (error) {
       rows.push([
         data.arrival,
