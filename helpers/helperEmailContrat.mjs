@@ -159,7 +159,8 @@ function getLastContract(dir) {
     .filter((item) => item.isFile() && item.name.startsWith('20'))
     .map((item) => item.name);
   if (all_files.length == 0) {
-    helperJs.error('Aucun contrat existant dans ' + dir)
+    helperJs.warning('Aucun contrat existant dans ' + dir)
+    return undefined
   }
   return all_files[all_files.length - 1];
 }
@@ -204,7 +205,7 @@ function composeThunderbird(email, subject, body, attachment=null) {
 // - prope: property name in js structure
 // - fields: list of field names, the 1st one being in the more recent pdf version
 
-const catSeparator = [ ' et ', ' // ', ' / ']
+const catSeparator = [ ' / ', ' - ', ' // ', ' et ', ]   // 'et' is the last one because of race that may include it
 
 function separate(value) {
   let results = [ value ]
@@ -310,6 +311,8 @@ function decomposeCatName(prop, value, results) {
   results['chatNom'] = []
   results['chatNaissance'] = []
 
+  let firstBirthDate = undefined
+
   values.forEach(v => {
     let name = v.split(' dit ')
     let next
@@ -323,13 +326,20 @@ function decomposeCatName(prop, value, results) {
     }
 
     let d = getDate(next, prop)
-    if (d === '') {
-     results['chatNaissance'].push(`Error with ${v}`)
-     results['error'] = true
-    } else {
-     results['chatNaissance'].push(d)
+    results['chatNaissance'].push(d)
+    if ((d !== '') && (firstBirthDate !== undefined)) {
+      firstBirthDate = d
     }
   })
+
+  // check for all birth date, in case some are not found
+  if (firstBirthDate !== undefined) {
+    results['chatNaissance'].forEach((d, index) => {
+      if (d === '') {
+        results['chatNaissance'][index] = d
+      }
+    })
+  }
 }
 
 const fieldsMatch = [
@@ -398,11 +408,15 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, excludes) {
   // get the pdf contract
   const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(dataCompta['comptaArrival']))
   const currentContractDir = contractRootDir + '\\' + getCurrentContractDir(contractRootDir, dataCompta['name']);
-  const contractName = getContractName(sComptaArrival, currentContractDir);
+  let contractName = getContractName(sComptaArrival, currentContractDir);
+  if (contractName === undefined) {
+    // fall-back on last known contract
+    contractName = getLastContract(currentContractDir)
+  }
   if (contractName === undefined) {
     return { fields: undefined, decompose: undefined, contractName: dataCompta['name'] }
   }
-
+  
   // check rcp date
   const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
   const fields = helperPdf.getFields(pdf, fieldsMatch)

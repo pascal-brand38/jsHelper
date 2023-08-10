@@ -5,8 +5,9 @@ import helperExcel from '../helpers/helperExcel.mjs'
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 
-function nameOrEmpty(name) { 
-  return name!==undefined ? '\n' + name : ''
+function nameOrEmpty(name, first=false) { 
+  const sep = (first ? '' : '\n')
+  return (name!==undefined && name!=='') ? sep + name : ''
 }
 async function main() {
   // helperExcel.writeXls('C:\\tmp\\test.ods', undefined, 'ods')
@@ -34,7 +35,10 @@ async function main() {
   const excludes = [ 'felv', 'rcp', 'maladies' ]
   let rows = []
 
-  const verboseStr = ''   // set to name in compta to filter only these and have some verbose
+  // debug purpose
+  // set to name in compta to filter only these and have some verbose
+  // set it to '' to disable debug mode
+  const verboseStr = ''
   if (verboseStr !== '') {
     dataCompta = dataCompta.filter(c => (c.name === verboseStr))
   }
@@ -55,7 +59,7 @@ async function main() {
       console.log('decompose: ', decompose)
     }
 
-    const errorCell = `ERROR in ${contractName}`
+    const errorCell = `ERROR in ${contractName} from ${data.name}`
     if (decompose === undefined) {
       rows.push([
         data.arrival,
@@ -67,7 +71,6 @@ async function main() {
       ])
       return
     }
-
 
     // owner: name, address1, address2, phone
     const ownerCell = `${fields.nom}\n${fields.adr1}\n${fields.adr2}\n${fields.tel}`
@@ -107,7 +110,7 @@ async function main() {
         rows.push([
           data.arrival,
           arrivalCell,
-          `${decompose.chatNom[index]}\n${decompose.chatNaissance[index]}\n${decompose.id[index]}${nameOrEmpty(race)}${nameOrEmpty(sexe)}`,
+          `${nameOrEmpty(decompose.chatNom[index], true)}${nameOrEmpty(decompose.chatNaissance[index])}\n${decompose.id[index]}${nameOrEmpty(race)}${nameOrEmpty(sexe)}`,
           ownerCell,
           departureCell,
           '',  
