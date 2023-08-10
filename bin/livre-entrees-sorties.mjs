@@ -63,6 +63,7 @@ async function main() {
     if (decompose === undefined) {
       rows.push([
         data.arrival,
+        data.departure,
         arrivalCell,
         '',
         '',
@@ -73,7 +74,7 @@ async function main() {
     }
 
     // owner: name, address1, address2, phone
-    const ownerCell = `${fields.nom}\n${fields.adr1}\n${fields.adr2}\n${fields.tel}`
+    const ownerCell = `${nameOrEmpty(fields.nom,true)}${nameOrEmpty(fields.adr1)}${nameOrEmpty(fields.adr2)}${nameOrEmpty(fields.tel)}`
 
     const error = 
       (decompose.error !== undefined) ||
@@ -84,6 +85,7 @@ async function main() {
     if (error) {
       rows.push([
         data.arrival,
+        data.departure,
         arrivalCell,
         `${fields.chat}\n${fields.id}\n${fields.race}`,
         ownerCell,
@@ -109,6 +111,7 @@ async function main() {
 
         rows.push([
           data.arrival,
+          data.departure,
           arrivalCell,
           `${nameOrEmpty(decompose.chatNom[index], true)}${nameOrEmpty(decompose.chatNaissance[index])}\n${decompose.id[index]}${nameOrEmpty(race)}${nameOrEmpty(sexe)}`,
           ownerCell,
@@ -119,8 +122,13 @@ async function main() {
     }
   }))
 
-  rows.sort(function(a, b) { return a[0] - b[0] })    // sort using the serial arrival
-  rows.forEach(row => row.shift())    // remove serial arrival used to sort the rows
+  rows.sort(function(a, b) {
+    if (a[0] === b[0]) { 
+      return a[1] - b[1]    // sort on departure if same arrival
+    }
+    return a[0] - b[0]      // sort on arrival
+  })
+  rows.forEach(row => { row.shift(); row.shift()})    // remove serial arrival and departure used to sort the rows
 
   const odsFileName = 'C:\\tmp\\update-livre-entrees-sorties.ods'
   helperExcel.writeXls(odsFileName, 'Feuil 1', rows, 'ods')
