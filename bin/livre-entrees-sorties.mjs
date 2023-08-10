@@ -33,7 +33,8 @@ async function main() {
   dataCompta = dataCompta.filter(c => ((serialFrom <= c.arrival) && (c.arrival <= serialToday)))
 
   const excludes = [ 'felv', 'rcp', 'maladies' ]
-  let rows = []
+  let rows = []         // list of rows to be saved in the final ods file
+  let skippeds = []     // list of skipped arrival because of errors (no ids,...)
 
   // debug purpose
   // set to name in compta to filter only these and have some verbose
@@ -101,6 +102,16 @@ async function main() {
       } 
 
       decompose.chatNom.forEach((c, index) => {
+        if (decompose.id[index] === '') {
+          skippeds.push({
+            reason: 'id not found',
+            name: data.name,
+            contract: contractName,
+            arrival: arrivalCell,
+          })
+          return    // skip the cats without known id
+        }
+
         let race = decompose.race[index]
         if (race === undefined) {
           race = decompose.race[0]    // A single race is provided when several cats have the same
@@ -132,7 +143,9 @@ async function main() {
 
   const odsFileName = 'C:\\tmp\\update-livre-entrees-sorties.ods'
   helperExcel.writeXls(odsFileName, 'Feuil 1', rows, 'ods')
+
   console.log(`Written file: ${odsFileName}`)
+  console.log('skippeds: ', skippeds)
 }
 
 main();
