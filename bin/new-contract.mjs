@@ -161,19 +161,20 @@ async function updatePDF(options, currentContractDir, lastContract) {
   const fontToUse = await pdfNewContract.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
   const textFieldsToCopy = [
-    [ 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
-    [ 'Adresse 1' ],
-    [ 'Adresse 2' ],
-    [ 'Téléphone' ],
-    [ 'Adresse email' ],
-    [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ],
-    [ 'Téléphone_2' ],
-    [ '1' ],
-    [ '2' ],
-    [ 'undefined' ],
-    [ 'Leucose FELV' ],
-    [ 'Typhus coryza RCP' ],
-    [ 'Oui Non Si oui lesquelles' ],
+    [ 'pNom', 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
+    [ 'pAddr1', 'Adresse 1' ],
+    [ 'pAddr2', 'Adresse 2' ],
+    [ 'pTel', 'Téléphone' ],
+    [ 'pEmail', 'Adresse email' ],
+    [ 'pUrgence1', 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ],
+    [ 'pUrgence2', 'Téléphone_2' ],
+    
+    [ 'c1Nom', '1' ],
+    [ 'c1Id', '2' ],
+    [ 'c1Race', 'undefined' ],
+    [ 'c1VaccinFELV', 'Leucose FELV' ],
+    [ 'c1VaccinRCP', 'Typhus coryza RCP' ],
+    [ 'c1Maladie1', 'Oui Non Si oui lesquelles' ],
   ];
   textFieldsToCopy.forEach(field => {
     let value = '';
@@ -190,10 +191,10 @@ async function updatePDF(options, currentContractDir, lastContract) {
   })
 
   const checkBoxFieldsToCopy = [
-    [ 'Mâle' ],
-    [ 'Femelle' ],
-    [ 'undefined_2' ],
-    [ 'undefined_3' ],
+    [ 'c1Male', 'Mâle' ],
+    [ 'c1Femelle', 'Femelle' ],
+    [ 'undefined_2' ],    // Maladie oui  -  now obsolete
+    [ 'undefined_3' ],    // Maladie non  -  now obsolete
   ];
   checkBoxFieldsToCopy.forEach(field => {
     field.forEach(text => {
@@ -208,15 +209,15 @@ async function updatePDF(options, currentContractDir, lastContract) {
   });
 
   const reservations = [
-    [ 'Date darrivée', options.from ],
-    [ 'Date de départ', options.to ],
-    [ 'Nombre de jours', options.nbdays.toString() ],
-    [ 'Tarif Journalier', options.priceday + '€' ],
-    [ 'Total du séjour avec services', options.total + '€' ],
-    [ 'Acompte de 30  à la réservation', (options.accompte==='') ? ('0€') : (options.accompte + '€') ],
-    [ 'versé le', options.date_accompte ],
-    [ 'Le solde de la pension sera versé le jour de larrivée soit', options.solde + '€' ],
-    [ 'Services soins santé arrivéedépart dimanche', (options.services==='') ? ('0€') : (options.services) ],
+    [ 'sArriveeDate', options.from ],
+    [ 'sDepartDate', options.to ],
+    [ 'sNbJours', options.nbdays.toString() ],
+    [ 'sTarifJour', options.priceday + '€' ],
+    [ 'sTotal', options.total + '€' ],
+    [ 'sAcompte', (options.accompte==='') ? ('0€') : (options.accompte + '€') ],
+    [ 'sAcompteDate', options.date_accompte ],
+    [ 'sSolde', options.solde + '€' ],
+    [ 'sService1', (options.services==='') ? ('0€') : (options.services) ],
   ]
   reservations.forEach(resa => updateTextField(formNewContract, resa[0], resa[1], fontToUse))
 
