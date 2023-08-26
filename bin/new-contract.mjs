@@ -170,53 +170,159 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const __dirname = path.dirname(__filename);
   const fontToUse = await newContract.pdf.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
-  const textFieldsToCopy = [
-    [ 'pNom', 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
-    [ 'pAddr1', 'Adresse 1' ],
-    [ 'pAddr2', 'Adresse 2' ],
-    [ 'pTel', 'Téléphone' ],
-    [ 'pEmail', 'Adresse email' ],
-    [ 'pUrgence1', 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ],
-    [ 'pUrgence2', 'Téléphone_2' ],
-    
-    [ 'c1Nom', '1' ],
-    [ 'c1Id', '2' ],
-    [ 'c1Race', 'undefined' ],
-    [ 'c1VaccinFELV', 'Leucose FELV' ],
-    [ 'c1VaccinRCP', 'Typhus coryza RCP' ],
-    [ 'c1Maladie1', 'Oui Non Si oui lesquelles' ],
-  ];
-  textFieldsToCopy.forEach(field => {
-    let value = '';
-    field.forEach(text => {
-      try {
-        value = lastContract.form.getTextField(text).getText();
-        console.log(value);
-      } catch {
-        // cannot have it
-      }
-    });
-    
-    updateTextField(newContract.form, field[0], value, fontToUse)
-  })
+  if (lastContract.version === undefined) {
+    const fields = helperPdf.getFields(lastContract.pdf, helperEmailContrat.fieldsMatch)
+    const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
+    console.log(decompose)
 
-  const checkBoxFieldsToCopy = [
-    [ 'c1Male', 'Mâle' ],
-    [ 'c1Femelle', 'Femelle' ],
-    [ 'undefined_2' ],    // Maladie oui  -  now obsolete
-    [ 'undefined_3' ],    // Maladie non  -  now obsolete
-  ];
-  checkBoxFieldsToCopy.forEach(field => {
-    field.forEach(text => {
-      try {
-        if (lastContract.form.getCheckBox(text).isChecked()) {
-          newContract.form.getCheckBox(field[0]).check();
-        }
-      } catch {
-        // cannot have it
-      }
-    })
-  });
+    const lNom = decompose.chatNom.length
+    if (lNom == 0) {
+      helperJs.error(`Impossible d'extraire le nom du chat du contrat ${lastContractName}`)
+    }
+
+    const lNaissance = decompose.chatNaissance.length
+    if ((lNaissance!=0) && (lNaissance!==lNom)) {
+      helperJs.error(`Nombre de chats entre noms et date de naissance différent: ${decompose.chatNom}  vs  ${decompose.chatNaissance}`)
+    }
+
+    const lId = decompose.id.length
+    if ((lId!=0) && (lId!==lNom)) {
+      helperJs.error(`Nombre de chats entre noms et Id différent: ${decompose.chatNom}  vs  ${decompose.id}`)
+    }
+
+    const lRace = decompose.race.length
+    if ((lRace!=0) && (lRace!==lNom)) {
+      helperJs.error(`Nombre de chats entre noms et race différent: ${decompose.chatNom}  vs  ${decompose.race}`)
+    }
+
+    // TODO
+    // const lFelv = decompose.felv.length
+    // if ((lFelv!=0) && (lFelv!==lNom)) {
+    //   helperJs.error(`Nombre de chats entre noms et felv différent: ${decompose.chatNom}  vs  ${decompose.felv}`)
+    // }
+
+    const lRcp = decompose.rcp.length
+    if ((lRcp!=0) && (lRcp!==lNom)) {
+      helperJs.error(`Nombre de chats entre noms et rcp différent: ${decompose.chatNom}  vs  ${decompose.rcp}`)
+    }
+
+    updateTextField(newContract.form, 'pNom',       decompose.nom,        fontToUse)
+    updateTextField(newContract.form, 'pAddr1',     decompose.adr1,       fontToUse)
+    updateTextField(newContract.form, 'pAddr2',     decompose.adr2,       fontToUse)
+    updateTextField(newContract.form, 'pTel',       decompose.tel,        fontToUse)
+    updateTextField(newContract.form, 'pEmail',     decompose.email,      fontToUse)
+    updateTextField(newContract.form, 'pUrgence1',  decompose.urgenceNom, fontToUse)
+    updateTextField(newContract.form, 'pUrgence2',  decompose.urgenceTel, fontToUse)
+
+    if (lNom >= 1) {
+      updateTextField(newContract.form, 'c1Nom', decompose.chatNom[0], fontToUse)
+    }
+    if (lNom >= 2) {
+      updateTextField(newContract.form, 'c2Nom', decompose.chatNom[1], fontToUse)
+    }
+    if (lNom >= 3) {
+      updateTextField(newContract.form, 'c3Nom', decompose.chatNom[2], fontToUse)
+    }
+
+    if (lNaissance >= 1) {
+      updateTextField(newContract.form, 'c1Naissance', decompose.chatNaissance[0], fontToUse)
+    }
+    if (lNaissance >= 2) {
+      updateTextField(newContract.form, 'c2Naissance', decompose.chatNaissance[1], fontToUse)
+    }
+    if (lNaissance >= 3) {
+      updateTextField(newContract.form, 'c3Naissance', decompose.chatNaissance[2], fontToUse)
+    }
+
+    if (lId >= 1) {
+      updateTextField(newContract.form, 'c1Id', decompose.id[0], fontToUse)
+    }
+    if (lId >= 2) {
+      updateTextField(newContract.form, 'c2Id', decompose.id[1], fontToUse)
+    }
+    if (lId >= 3) {
+      updateTextField(newContract.form, 'c3Id', decompose.id[2], fontToUse)
+    }
+
+    if (lRace >= 1) {
+      updateTextField(newContract.form, 'c1Race', decompose.race[0], fontToUse)
+    }
+    if (lRace >= 2) {
+      updateTextField(newContract.form, 'c2Race', decompose.race[1], fontToUse)
+    }
+    if (lRace >= 3) {
+      updateTextField(newContract.form, 'c3Race', decompose.race[2], fontToUse)
+    }
+
+    // TODO FELV
+
+    if (lRcp >= 1) {
+      updateTextField(newContract.form, 'c1VaccinRCP', decompose.rcp[0], fontToUse)
+    }
+    if (lRcp >= 2) {
+      updateTextField(newContract.form, 'c2VaccinRCP', decompose.rcp[1], fontToUse)
+    }
+    if (lRcp >= 3) {
+      updateTextField(newContract.form, 'c3VaccinRCP', decompose.rcp[2], fontToUse)
+    }
+
+
+    // TODO MALE FEMELLE
+
+    // TODO MALADIES CONNUES SUR 3 LIGNES
+
+
+    // TODO si plus de 3 chats
+
+  }
+
+  // const textFieldsToCopy = [
+  //   [ 'pNom', 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
+  //   [ 'pAddr1', 'Adresse 1' ],
+  //   [ 'pAddr2', 'Adresse 2' ],
+  //   [ 'pTel', 'Téléphone' ],
+  //   [ 'pEmail', 'Adresse email' ],
+  //   [ 'pUrgence1', 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ],
+  //   [ 'pUrgence2', 'Téléphone_2' ],
+    
+  //   [ 'c1Nom', '1' ],
+  //   [ 'c1Id', '2' ],
+  //   [ 'c1Race', 'undefined' ],
+  //   [ 'c1VaccinFELV', 'Leucose FELV' ],
+  //   [ 'c1VaccinRCP', 'Typhus coryza RCP' ],
+  //   [ 'c1Maladie1', 'Oui Non Si oui lesquelles' ],
+  // ];
+  // textFieldsToCopy.forEach(field => {
+  //   let value = '';
+  //   field.forEach(text => {
+  //     try {
+  //       value = lastContract.form.getTextField(text).getText();
+  //       console.log(value);
+  //     } catch {
+  //       // cannot have it
+  //     }
+  //   });
+    
+  //   updateTextField(newContract.form, field[0], value, fontToUse)
+  // })
+
+  // const checkBoxFieldsToCopy = [
+  //   [ 'c1Male', 'Mâle' ],
+  //   [ 'c1Femelle', 'Femelle' ],
+  //   [ 'undefined_2' ],    // Maladie oui  -  now obsolete
+  //   [ 'undefined_3' ],    // Maladie non  -  now obsolete
+  // ];
+  // checkBoxFieldsToCopy.forEach(field => {
+  //   field.forEach(text => {
+  //     try {
+  //       if (lastContract.form.getCheckBox(text).isChecked()) {
+  //         newContract.form.getCheckBox(field[0]).check();
+  //       }
+  //     } catch {
+  //       // cannot have it
+  //     }
+  //   })
+  // });
 
   const reservations = [
     [ 'sArriveeDate', options.from ],
