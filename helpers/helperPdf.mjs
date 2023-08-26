@@ -12,10 +12,17 @@ async function load(pdfFullName) {
   return pdf
 }
 
-async function loadForm(pdfFullName) {
+async function loadObject(pdfFullName, init=undefined) {
   const pdf = await load(pdfFullName);
   const form = pdf.getForm();
-  return pdf, form
+  let result = {
+    pdf: pdf, 
+    form: form
+  }
+  if (init !== undefined) {
+    init(result)
+  }
+  return result
 }
 
 async function flatten(pdf, fullName) {
@@ -87,8 +94,8 @@ function decomposeFields(fields, fieldsMatch, excludes=[]) {
   return results
 }
 
-function getTextfieldAsInt(form, field) {
-  const result = form.getFieldMaybe(field)
+function getTextfieldAsInt(pdfObject, field) {
+  const result = pdfObject.form.getFieldMaybe(field)
   if (result === undefined) {
     return undefined
   } else {
@@ -101,7 +108,7 @@ export default {
   flatten,
   getFields,
   decomposeFields,
-  getTextfieldAsInt,
 
-  loadForm,       // async - load form from its filename - return { pdf, form }
+  loadObject,       // async - load pdf and form from its filename - return { pdf, form }
+  getTextfieldAsInt,
 }

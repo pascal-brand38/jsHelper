@@ -138,23 +138,23 @@ function updateTextField(form, fieldText, value, fontToUse) {
 }
 
 const _currentVersionContrat = 20230826
-async function updatePDF(options, currentContractDir, lastContract) {
-  const pdfLastContract = await helperPdf.load(currentContractDir + '\\' + lastContract)
-  const formLastContract = pdfLastContract.getForm();
-  const versionLast = helperPdf.getTextfieldAsInt(formLastContract, 'versionContrat')
 
-  const pdfNewContract = await helperPdf.load(options.rootDir + '\\' + options.blankContract);
-  const formNewContract = pdfNewContract.getForm();
-  const versionNew = helperPdf.getTextfieldAsInt(formNewContract, 'versionContrat')
+function getVersion(pdfObject) {
+  pdfObject.version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
+}
 
-  if (versionNew !== _currentVersionContrat) {
-    helperJs.error(`New contract version:\n  Expected: ${_currentVersionContrat}\n  and is: ${versionNew}`)
+async function updatePDF(options, currentContractDir, lastContractName) {
+  const lastContract = await helperPdf.loadObject(currentContractDir + '\\' + lastContractName, getVersion)
+  const newContract = await helperPdf.loadObject(options.rootDir + '\\' + options.blankContract, getVersion)
+
+  if (newContract.version !== _currentVersionContrat) {
+    helperJs.error(`New contract version:\n  Expected: ${_currentVersionContrat}\n  and is: ${newContract.version}`)
   }
 
   if (false) {
     console.log('printing...')
-    const fieldsLastContract = formLastContract.getFields()
-    fieldsLastContract.forEach(field => {
+    const fields = lastContract.form.getFields()
+    fields.forEach(field => {
       const type = field.constructor.name;
       const name = field.getName();
       console.log(type + '     ' + name);
@@ -163,12 +163,12 @@ async function updatePDF(options, currentContractDir, lastContract) {
   }
 
   // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
-  // const helvetica = await pdfNewContract.embedFont(StandardFonts.Helvetica)
-  pdfNewContract.registerFontkit(fontkit)
-  //const fontToUse = await pdfNewContract.embedFont(fs.readFileSync('C:\\Windows\\Fonts\\ARLRDBD.TTF'))
+  // const helvetica = await newContract.pdf.embedFont(StandardFonts.Helvetica)
+  newContract.pdf.registerFontkit(fontkit)
+  //const fontToUse = await newContract.pdf.embedFont(fs.readFileSync('C:\\Windows\\Fonts\\ARLRDBD.TTF'))
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const fontToUse = await pdfNewContract.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
+  const fontToUse = await newContract.pdf.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
   const textFieldsToCopy = [
     [ 'pNom', 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
@@ -190,14 +190,14 @@ async function updatePDF(options, currentContractDir, lastContract) {
     let value = '';
     field.forEach(text => {
       try {
-        value = formLastContract.getTextField(text).getText();
+        value = lastContract.form.getTextField(text).getText();
         console.log(value);
       } catch {
         // cannot have it
       }
     });
     
-    updateTextField(formNewContract, field[0], value, fontToUse)
+    updateTextField(newContract.form, field[0], value, fontToUse)
   })
 
   const checkBoxFieldsToCopy = [
@@ -209,8 +209,8 @@ async function updatePDF(options, currentContractDir, lastContract) {
   checkBoxFieldsToCopy.forEach(field => {
     field.forEach(text => {
       try {
-        if (formLastContract.getCheckBox(text).isChecked()) {
-          formNewContract.getCheckBox(field[0]).check();
+        if (lastContract.form.getCheckBox(text).isChecked()) {
+          newContract.form.getCheckBox(field[0]).check();
         }
       } catch {
         // cannot have it
@@ -229,11 +229,11 @@ async function updatePDF(options, currentContractDir, lastContract) {
     [ 'sSolde', options.solde + '€' ],
     [ 'sService1', (options.services==='') ? ('0€') : (options.services) ],
   ]
-  reservations.forEach(resa => updateTextField(formNewContract, resa[0], resa[1], fontToUse))
+  reservations.forEach(resa => updateTextField(newContract.form, resa[0], resa[1], fontToUse))
 
   // get new contract name
   const reContractName = /^[0-9]*[a-z]?[\s]*-[\s]*/;    // remove numbers (dates) 4 times
-  var newContrat = lastContract;
+  var newContrat = lastContractName;
   newContrat = newContrat.replace(reContractName, '');
   newContrat = newContrat.replace(reContractName, '');
   newContrat = newContrat.replace(reContractName, '');
@@ -244,12 +244,12 @@ async function updatePDF(options, currentContractDir, lastContract) {
   // following is causing some isses when opening it with Adobe DC - shows some squares
   // https://github.com/Hopding/pdf-lib/issues/569#issuecomment-1087328416
   // update needappearance field
-  //pdfNewContract.getForm().acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
+  //newContract.form.acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
 
 
   child_process.exec('explorer ' + currentContractDir);
   try {
-    const pdfBuf = await pdfNewContract.save(/*{ updateFieldAppearances: true }*/)
+    const pdfBuf = await newContract.pdf.save(/*{ updateFieldAppearances: true }*/)
     fs.writeFileSync(newContrat, pdfBuf, { flag: 'wx' });
   } catch(e) {
     console.log(e);
@@ -263,9 +263,9 @@ async function updatePDF(options, currentContractDir, lastContract) {
 function main() {
   const options = get_args();
   const currentContractDir = options.rootDir + '\\' + helperEmailContrat.getCurrentContractDir(options.rootDir, options.who);
-  const lastContract = helperEmailContrat.getLastContract(currentContractDir);
+  const lastContractName = helperEmailContrat.getLastContract(currentContractDir);
 
-  updatePDF(options, currentContractDir, lastContract)
+  updatePDF(options, currentContractDir, lastContractName)
 }
 
 
