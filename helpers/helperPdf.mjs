@@ -6,10 +6,16 @@ import fs from 'fs'
 
 
 
-// async - load PDF file from its filename
+// async - load PDF file from its filename, and extract the form
 async function load(pdfFullName) {
   const pdf = await PDFDocument.load(fs.readFileSync(pdfFullName));
   return pdf
+}
+
+async function loadForm(pdfFullName) {
+  const pdf = await load(pdfFullName);
+  const form = pdf.getForm();
+  return pdf, form
 }
 
 async function flatten(pdf, fullName) {
@@ -81,9 +87,21 @@ function decomposeFields(fields, fieldsMatch, excludes=[]) {
   return results
 }
 
+function getTextfieldAsInt(form, field) {
+  const result = form.getFieldMaybe(field)
+  if (result === undefined) {
+    return undefined
+  } else {
+    return parseInt(result.getText())
+  }
+}
+
 export default {
-  load,      // async - load PDF file from its filename
+  load,           // async - load PDF file from its filename
   flatten,
   getFields,
-  decomposeFields
+  decomposeFields,
+  getTextfieldAsInt,
+
+  loadForm,       // async - load form from its filename - return { pdf, form }
 }

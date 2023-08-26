@@ -36,6 +36,8 @@ import { exit } from 'process';
 import child_process from 'child_process'
 import {decode} from 'html-entities';
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs';
+import helperPdf from '../helpers/helperPdf.mjs'
+import helperJs from '../helpers/helperJs.mjs';
 
 
 function error(s) {
@@ -135,11 +137,21 @@ function updateTextField(form, fieldText, value, fontToUse) {
   f.updateAppearances(fontToUse)
 }
 
+const _currentVersionContrat = 20230826
 async function updatePDF(options, currentContractDir, lastContract) {
-  const pdfLastContract = await PDFDocument.load(fs.readFileSync(currentContractDir + '\\' + lastContract));
+  const pdfLastContract = await helperPdf.load(currentContractDir + '\\' + lastContract)
   const formLastContract = pdfLastContract.getForm();
+  const versionLast = helperPdf.getTextfieldAsInt(formLastContract, 'versionContrat')
 
-  if (true) {
+  const pdfNewContract = await helperPdf.load(options.rootDir + '\\' + options.blankContract);
+  const formNewContract = pdfNewContract.getForm();
+  const versionNew = helperPdf.getTextfieldAsInt(formNewContract, 'versionContrat')
+
+  if (versionNew !== _currentVersionContrat) {
+    helperJs.error(`New contract version:\n  Expected: ${_currentVersionContrat}\n  and is: ${versionNew}`)
+  }
+
+  if (false) {
     console.log('printing...')
     const fieldsLastContract = formLastContract.getFields()
     fieldsLastContract.forEach(field => {
@@ -147,10 +159,8 @@ async function updatePDF(options, currentContractDir, lastContract) {
       const name = field.getName();
       console.log(type + '     ' + name);
     });
+    error('QUIT')
   }
-
-  const pdfNewContract = await PDFDocument.load(fs.readFileSync(options.rootDir + '\\' + options.blankContract));
-  const formNewContract = pdfNewContract.getForm();
 
   // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
   // const helvetica = await pdfNewContract.embedFont(StandardFonts.Helvetica)
