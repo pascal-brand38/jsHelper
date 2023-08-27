@@ -130,13 +130,6 @@ function get_args() {
 }
 
 
-// Set a form field, and update appearance fontToUse on this field
-function updateTextField(form, fieldText, value, fontToUse) {
-  let f = form.getTextField(fieldText);
-  f.setText(value);
-  f.updateAppearances(fontToUse)
-}
-
 const _currentVersionContrat = 20230826
 
 function getVersion(pdfObject) {
@@ -179,6 +172,9 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     if (lNom == 0) {
       helperJs.error(`Impossible d'extraire le nom du chat du contrat ${lastContractName}`)
     }
+    if (lNom > 3) {
+      helperJs.error(`Impossible d'avoir plus de 3 chats dans le contrat`)
+    }
 
     const lNaissance = decompose.chatNaissance.length
     if ((lNaissance!=0) && (lNaissance!==lNom)) {
@@ -195,85 +191,42 @@ async function updatePDF(options, currentContractDir, lastContractName) {
       helperJs.error(`Nombre de chats entre noms et race différent: ${decompose.chatNom}  vs  ${decompose.race}`)
     }
 
-    // TODO
-    // const lFelv = decompose.felv.length
-    // if ((lFelv!=0) && (lFelv!==lNom)) {
-    //   helperJs.error(`Nombre de chats entre noms et felv différent: ${decompose.chatNom}  vs  ${decompose.felv}`)
-    // }
+    const lFelv = decompose.felv.length
+    if ((lFelv!=0) && (lFelv!==lNom)) {
+      helperJs.error(`Nombre de chats entre noms et felv différent: ${decompose.chatNom}  vs  ${decompose.felv}`)
+    }
 
     const lRcp = decompose.rcp.length
     if ((lRcp!=0) && (lRcp!==lNom)) {
       helperJs.error(`Nombre de chats entre noms et rcp différent: ${decompose.chatNom}  vs  ${decompose.rcp}`)
     }
 
-    updateTextField(newContract.form, 'pNom',       decompose.nom,        fontToUse)
-    updateTextField(newContract.form, 'pAddr1',     decompose.adr1,       fontToUse)
-    updateTextField(newContract.form, 'pAddr2',     decompose.adr2,       fontToUse)
-    updateTextField(newContract.form, 'pTel',       decompose.tel,        fontToUse)
-    updateTextField(newContract.form, 'pEmail',     decompose.email,      fontToUse)
-    updateTextField(newContract.form, 'pUrgence1',  decompose.urgenceNom, fontToUse)
-    updateTextField(newContract.form, 'pUrgence2',  decompose.urgenceTel, fontToUse)
+    helperPdf.updateTextField(newContract.form, 'pNom',       decompose.nom,        fontToUse)
+    helperPdf.updateTextField(newContract.form, 'pAddr1',     decompose.adr1,       fontToUse)
+    helperPdf.updateTextField(newContract.form, 'pAddr2',     decompose.adr2,       fontToUse)
+    helperPdf.updateTextField(newContract.form, 'pTel',       decompose.tel,        fontToUse)
+    helperPdf.updateTextField(newContract.form, 'pEmail',     decompose.email,      fontToUse)
+    helperPdf.updateTextField(newContract.form, 'pUrgence1',  decompose.urgenceNom, fontToUse)
+    helperPdf.updateTextField(newContract.form, 'pUrgence2',  decompose.urgenceTel, fontToUse)
 
-    if (lNom >= 1) {
-      updateTextField(newContract.form, 'c1Nom', decompose.chatNom[0], fontToUse)
-    }
-    if (lNom >= 2) {
-      updateTextField(newContract.form, 'c2Nom', decompose.chatNom[1], fontToUse)
-    }
-    if (lNom >= 3) {
-      updateTextField(newContract.form, 'c3Nom', decompose.chatNom[2], fontToUse)
-    }
-
-    if (lNaissance >= 1) {
-      updateTextField(newContract.form, 'c1Naissance', decompose.chatNaissance[0], fontToUse)
-    }
-    if (lNaissance >= 2) {
-      updateTextField(newContract.form, 'c2Naissance', decompose.chatNaissance[1], fontToUse)
-    }
-    if (lNaissance >= 3) {
-      updateTextField(newContract.form, 'c3Naissance', decompose.chatNaissance[2], fontToUse)
-    }
-
-    if (lId >= 1) {
-      updateTextField(newContract.form, 'c1Id', decompose.id[0], fontToUse)
-    }
-    if (lId >= 2) {
-      updateTextField(newContract.form, 'c2Id', decompose.id[1], fontToUse)
-    }
-    if (lId >= 3) {
-      updateTextField(newContract.form, 'c3Id', decompose.id[2], fontToUse)
-    }
-
-    if (lRace >= 1) {
-      updateTextField(newContract.form, 'c1Race', decompose.race[0], fontToUse)
-    }
-    if (lRace >= 2) {
-      updateTextField(newContract.form, 'c2Race', decompose.race[1], fontToUse)
-    }
-    if (lRace >= 3) {
-      updateTextField(newContract.form, 'c3Race', decompose.race[2], fontToUse)
-    }
-
-    // TODO FELV
-
-    if (lRcp >= 1) {
-      updateTextField(newContract.form, 'c1VaccinRCP', decompose.rcp[0], fontToUse)
-    }
-    if (lRcp >= 2) {
-      updateTextField(newContract.form, 'c2VaccinRCP', decompose.rcp[1], fontToUse)
-    }
-    if (lRcp >= 3) {
-      updateTextField(newContract.form, 'c3VaccinRCP', decompose.rcp[2], fontToUse)
-    }
+    helperPdf.updateListTextField(newContract.form, ['c1Nom', 'c2Nom', 'c3Nom'], decompose.chatNom, fontToUse)
+    helperPdf.updateListTextField(newContract.form, ['c1Naissance', 'c2Naissance', 'c3Naissance'], decompose.chatNaissance, fontToUse)
+    helperPdf.updateListTextField(newContract.form, ['c1Id', 'c2Id', 'c3Id'], decompose.id, fontToUse)
+    helperPdf.updateListTextField(newContract.form, ['c1Race', 'c2Race', 'c3Race'], decompose.race, fontToUse)
+    helperPdf.updateListTextField(newContract.form, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], decompose.felv, fontToUse)
+    helperPdf.updateListTextField(newContract.form, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], decompose.rcp, fontToUse)
 
 
     // TODO MALE FEMELLE
 
     // TODO MALADIES CONNUES SUR 3 LIGNES
 
+    // TODO Check date de vaccins avec remarque
 
     // TODO si plus de 3 chats
 
+  } else {
+    helperJs.error('NOT IMPLEMENTED YET')
   }
 
   // const textFieldsToCopy = [
@@ -324,6 +277,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   //   })
   // });
 
+  // TODO: service sur 3 lignes
   const reservations = [
     [ 'sArriveeDate', options.from ],
     [ 'sDepartDate', options.to ],
@@ -335,7 +289,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     [ 'sSolde', options.solde + '€' ],
     [ 'sService1', (options.services==='') ? ('0€') : (options.services) ],
   ]
-  reservations.forEach(resa => updateTextField(newContract.form, resa[0], resa[1], fontToUse))
+  reservations.forEach(resa => helperPdf.updateTextField(newContract.form, resa[0], resa[1], fontToUse))
 
   // get new contract name
   const reContractName = /^[0-9]*[a-z]?[\s]*-[\s]*/;    // remove numbers (dates) 4 times

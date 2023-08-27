@@ -103,11 +103,27 @@ function getTextfieldAsInt(pdfObject, field) {
   }
 }
 
+// Set a form field, and update appearance fontToUse on this field
+function updateTextField(form, fieldText, value, fontToUse) {
+  let f = form.getTextField(fieldText);
+  f.setText(value);
+  f.updateAppearances(fontToUse)
+}
+
+function updateListTextField(form, listFields, values, fontToUse) {
+  values.forEach((value, index) => {
+    updateTextField(form, listFields[index], value, fontToUse)
+  })
+}
+
+
 export default {
   load,           // async - load PDF file from its filename
   flatten,
   getFields,
   decomposeFields,
+  updateTextField,
+  updateListTextField,
 
   loadObject,       // async - load pdf and form from its filename - return { pdf, form }
   getTextfieldAsInt,
