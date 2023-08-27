@@ -218,14 +218,14 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
     // maladies on 3 lines, from https://stackoverflow.com/questions/6259515/how-can-i-split-a-string-into-segments-of-n-characters
     // when there is a maladie, and several cats, this is not possible to know which on it is
-    if ((lNom > 1) && (decompose.maladies !== '')) {
-      // TODO not an error, but only a 'y' required to continue or not
-      helperJs.error('Maladie and more than 1 cat')
-    }
     if (decompose.maladies !== '') {
-      const maladies = decompose.maladies.match(/.{1,18}/g)    // 18 characters are ok in a cell of the contract
-      console.log(maladies)
-      helperPdf.updateListTextField(newContract.form, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], maladies, fontToUse)
+      if (lNom > 1) {
+        await helperJs.question.question('Maladie and more than 1 cat - A DETERMINER MANUELLEMENT\nAppuyer sur Entrée')
+      } else {
+        const maladies = decompose.maladies.match(/.{1,18}/g)    // 18 characters are ok in a cell of the contract
+        console.log(maladies)
+        helperPdf.updateListTextField(newContract.form, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], maladies, fontToUse)
+      }
     }
 
     // male / femelle
@@ -234,73 +234,14 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     } else if (!decompose.male && decompose.femelle) {
       helperPdf.updateListCheck(newContract.form, ['c1Femelle', 'c2Femelle', 'c3Femelle'].slice(0, lNom))
     } else if (decompose.male && decompose.femelle) {
-      
+      await helperJs.question.question('Mâle ET Femelle - A DETERMINER MANUELLEMENT\nAppuyer sur Entrée')
     }
-      // checkBoxFieldsToCopy.forEach(field => {
-  //   field.forEach(text => {
-  //     try {
-  //       if (lastContract.form.getCheckBox(text).isChecked()) {
-  //         newContract.form.getCheckBox(field[0]).check();
-  //       }
-  //     } catch {
-  //       // cannot have it
-  //     }
-
-
-    // TODO MALE FEMELLE
 
     // TODO Check date de vaccins avec remarque
+
   } else {
     helperJs.error('NOT IMPLEMENTED YET')
   }
-
-  // const textFieldsToCopy = [
-  //   [ 'pNom', 'Nom Prénom' ],   // list of equivalent field name - 1st one is the one in the new contract
-  //   [ 'pAddr1', 'Adresse 1' ],
-  //   [ 'pAddr2', 'Adresse 2' ],
-  //   [ 'pTel', 'Téléphone' ],
-  //   [ 'pEmail', 'Adresse email' ],
-  //   [ 'pUrgence1', 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ],
-  //   [ 'pUrgence2', 'Téléphone_2' ],
-    
-  //   [ 'c1Nom', '1' ],
-  //   [ 'c1Id', '2' ],
-  //   [ 'c1Race', 'undefined' ],
-  //   [ 'c1VaccinFELV', 'Leucose FELV' ],
-  //   [ 'c1VaccinRCP', 'Typhus coryza RCP' ],
-  //   [ 'c1Maladie1', 'Oui Non Si oui lesquelles' ],
-  // ];
-  // textFieldsToCopy.forEach(field => {
-  //   let value = '';
-  //   field.forEach(text => {
-  //     try {
-  //       value = lastContract.form.getTextField(text).getText();
-  //       console.log(value);
-  //     } catch {
-  //       // cannot have it
-  //     }
-  //   });
-    
-  //   updateTextField(newContract.form, field[0], value, fontToUse)
-  // })
-
-  // const checkBoxFieldsToCopy = [
-  //   [ 'c1Male', 'Mâle' ],
-  //   [ 'c1Femelle', 'Femelle' ],
-  //   [ 'undefined_2' ],    // Maladie oui  -  now obsolete
-  //   [ 'undefined_3' ],    // Maladie non  -  now obsolete
-  // ];
-  // checkBoxFieldsToCopy.forEach(field => {
-  //   field.forEach(text => {
-  //     try {
-  //       if (lastContract.form.getCheckBox(text).isChecked()) {
-  //         newContract.form.getCheckBox(field[0]).check();
-  //       }
-  //     } catch {
-  //       // cannot have it
-  //     }
-  //   })
-  // });
 
   let services = []
   if (options.services==='') {
@@ -352,12 +293,12 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 }
 
 
-function main() {
+async function main() {
   const options = get_args();
   const currentContractDir = options.rootDir + '\\' + helperEmailContrat.getCurrentContractDir(options.rootDir, options.who);
   const lastContractName = helperEmailContrat.getLastContract(currentContractDir);
 
-  updatePDF(options, currentContractDir, lastContractName)
+  await updatePDF(options, currentContractDir, lastContractName)
 }
 
 

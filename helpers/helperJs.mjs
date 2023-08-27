@@ -4,6 +4,11 @@
 import { DateTime } from 'luxon'
 import { exit } from 'process';
 
+// https://nodejs.org/api/readline.html
+import * as readline from 'readline';
+import { stdin as input, stdout as output } from 'process';
+const rl = readline.createInterface({ input, output });
+
 function warning(s) {
   console.log('WARNING');
   console.log('WARNING  ', s);
@@ -41,8 +46,15 @@ const date = {
   epochNDays: nDays => 60 * 60 * 24 * nDays,
 }
 
+const question = {
+  question: async (text) =>  await new Promise(resolve => {
+    rl.question(`${text}`, resolve)
+  })
+}
+
 export default {
   date,
+  question,
   
   warning,
   error,
