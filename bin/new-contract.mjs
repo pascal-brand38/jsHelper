@@ -216,15 +216,40 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     helperPdf.updateListTextField(newContract.form, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], decompose.felv, fontToUse)
     helperPdf.updateListTextField(newContract.form, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], decompose.rcp, fontToUse)
 
+    // maladies on 3 lines, from https://stackoverflow.com/questions/6259515/how-can-i-split-a-string-into-segments-of-n-characters
+    // when there is a maladie, and several cats, this is not possible to know which on it is
+    if ((lNom > 1) && (decompose.maladies !== '')) {
+      // TODO not an error, but only a 'y' required to continue or not
+      helperJs.error('Maladie and more than 1 cat')
+    }
+    if (decompose.maladies !== '') {
+      const maladies = decompose.maladies.match(/.{1,18}/g)    // 18 characters are ok in a cell of the contract
+      console.log(maladies)
+      helperPdf.updateListTextField(newContract.form, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], maladies, fontToUse)
+    }
+
+    // male / femelle
+    if (decompose.male && !decompose.femelle) {
+      helperPdf.updateListCheck(newContract.form, ['c1Male', 'c2Male', 'c3Male'].slice(0, lNom))
+    } else if (!decompose.male && decompose.femelle) {
+      helperPdf.updateListCheck(newContract.form, ['c1Femelle', 'c2Femelle', 'c3Femelle'].slice(0, lNom))
+    } else if (decompose.male && decompose.femelle) {
+      
+    }
+      // checkBoxFieldsToCopy.forEach(field => {
+  //   field.forEach(text => {
+  //     try {
+  //       if (lastContract.form.getCheckBox(text).isChecked()) {
+  //         newContract.form.getCheckBox(field[0]).check();
+  //       }
+  //     } catch {
+  //       // cannot have it
+  //     }
+
 
     // TODO MALE FEMELLE
 
-    // TODO MALADIES CONNUES SUR 3 LIGNES
-
     // TODO Check date de vaccins avec remarque
-
-    // TODO si plus de 3 chats
-
   } else {
     helperJs.error('NOT IMPLEMENTED YET')
   }
@@ -277,7 +302,12 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   //   })
   // });
 
-  // TODO: service sur 3 lignes
+  let services = []
+  if (options.services==='') {
+    services.push('0€')
+  } else {
+    services = options.services.split(' + ')
+  }
   const reservations = [
     [ 'sArriveeDate', options.from ],
     [ 'sDepartDate', options.to ],
@@ -287,7 +317,9 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     [ 'sAcompte', (options.accompte==='') ? ('0€') : (options.accompte + '€') ],
     [ 'sAcompteDate', options.date_accompte ],
     [ 'sSolde', options.solde + '€' ],
-    [ 'sService1', (options.services==='') ? ('0€') : (options.services) ],
+    [ 'sService1', services[0] ],
+    [ 'sService2', (services.length >= 2) ? services[1] : '' ],
+    [ 'sService3', (services.length >= 3) ? services[2] : '' ],
   ]
   reservations.forEach(resa => helperPdf.updateTextField(newContract.form, resa[0], resa[1], fontToUse))
 

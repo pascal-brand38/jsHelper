@@ -103,17 +103,43 @@ function getTextfieldAsInt(pdfObject, field) {
   }
 }
 
+// from https://github.com/Hopding/pdf-lib/issues/602
+// get the size of the form field
+function getRectsFromField(field,doc) {
+	var widgets = (
+		field
+		.acroField.getWidgets()
+	)
+	
+	if(doc) {
+		return widgets.map(q=>{
+			var rect = q.getRectangle()
+			var pageNumber = doc
+				.getPages()
+				.findIndex(x => x.ref == q.P())
+			rect.pageNumber = pageNumber;
+			return rect;
+		})
+	} else 
+		return widgets.map(q=>q.getRectangle());
+}
+
 // Set a form field, and update appearance fontToUse on this field
 function updateTextField(form, fieldText, value, fontToUse) {
   let f = form.getTextField(fieldText);
   f.setText(value);
   f.updateAppearances(fontToUse)
+
 }
 
 function updateListTextField(form, listFields, values, fontToUse) {
   values.forEach((value, index) => {
     updateTextField(form, listFields[index], value, fontToUse)
   })
+}
+
+function updateListCheck(form, listCheck) {
+  listCheck.forEach(f => form.getCheckBox(f).check())
 }
 
 
@@ -124,6 +150,7 @@ export default {
   decomposeFields,
   updateTextField,
   updateListTextField,
+  updateListCheck,
 
   loadObject,       // async - load pdf and form from its filename - return { pdf, form }
   getTextfieldAsInt,

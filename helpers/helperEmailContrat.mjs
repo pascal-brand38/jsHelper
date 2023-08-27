@@ -355,7 +355,7 @@ const fieldsMatch = [
   { type: 'T', prop: 'race',        decompose: decomposeMultiple,     fields: [ 'undefined' ] },
   { type: 'T', prop: 'felv',        decompose: decomposeDatesCats,    fields: [ 'Leucose FELV' ] },
   { type: 'T', prop: 'rcp',         decompose: decomposeDatesCats,    fields: [ 'Typhus coryza RCP' ] },
-  { type: 'T', prop: 'maladies',                                      fields: [ 'Oui Non Si oui lesquelles' ] },
+  { type: 'T', prop: 'maladies',                                      fields: [ 'undefined_4' ] },
 
   { type: 'C', prop: 'male',                                          fields: [ 'Mâle' ] },
   { type: 'C', prop: 'femelle',                                       fields: [ 'Femelle' ] },
