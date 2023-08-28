@@ -125,19 +125,74 @@ function getVersion(pdfObject) {
   pdfObject.version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
 }
 
-function setPropFromTextfieldCandidates(pdfOject, prop, args) {
+function getTextfromCandidates(pdfOject, args) {
+  let result = undefined
   // args if a list of fields, being candidate to have the info
   args.every(field => {
     try {
-      pdfOject[prop] = pdfOject.form.getTextField(field).getText();
-      if (pdfOject[prop] === undefined) {
-        pdfOject[prop] = ''
+      result = pdfOject.form.getTextField(field).getText();
+      if (result === undefined) {
+        result = ''
       }
       return false    // found - stop the every function
     } catch {
       return true     // not found - continue
     }
   })
+  return result
+}
+
+function setPropFromTextfieldCandidates(pdfOject, prop, args) {
+  pdfOject[prop] = getTextfromCandidates(pdfOject, args)
+}
+
+function getNamesAndBirthFromNameAndBirth(value) {
+  value = helperEmailContrat.normalize(value)
+  let values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
+  let noms = []
+  let naissances = []
+
+  let firstBirthDate = undefined
+
+  values.forEach(v => {
+    let name = v.split(' dit ')
+    let next
+    if (name.length === 2) {
+      next = name[1].split(' ')
+      noms.push(`${name[0]} dit ${next.shift()}`)
+    } else {
+      name = v.split(' ')
+      noms.push(name.shift())
+      next = name
+    }
+
+    let d = helperEmailContrat.getDate(next, undefined)
+    naissances.push(d)
+    if ((d !== '') && (firstBirthDate !== undefined)) {
+      firstBirthDate = d
+    }
+  })
+
+  // check for all birth date, in case some are not found
+  if (firstBirthDate !== undefined) {
+    naissances.forEach((d, index) => {
+      if (d === '') {
+        naissances[index] = d
+      }
+    })
+  }
+
+  return { noms: noms, naissances: naissances}
+}
+
+function setCatNamesFromSingleName(pdfOject, prop, args) {
+  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfOject, args))
+  pdfOject[prop] = res.noms
+}
+
+function setBirthsFromSingleName(pdfOject, prop, args) {
+  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfOject, args))
+  pdfOject[prop] = res.naissances
 }
 
 function setPropFromFields(pdfObject, setPropFromFieldsDatas) {
@@ -155,14 +210,8 @@ function pdfExtractInfoDatas(version) {
         { prop: 'proprioEmail',           method: setPropFromTextfieldCandidates, args: [ 'Adresse email' ] },
         { prop: 'proprioUrgenceNom',      method: setPropFromTextfieldCandidates, args: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
         { prop: 'proprioUrgenceTel',      method: setPropFromTextfieldCandidates, args: [ 'Téléphone_2' ] },
-        // { type: 'T', prop: 'nom',         decompose: decomposeIdentical,    fields: [ 'Nom Prénom' ] },
-        // { type: 'T', prop: 'adr1',                                          fields: [ 'Adresse 1' ] },
-        // { type: 'T', prop: 'adr2',                                          fields: [ 'Adresse 2' ] },
-        // { type: 'T', prop: 'tel',                                           fields: [ 'Téléphone' ] },
-        // { type: 'T', prop: 'email',                                         fields: [ 'Adresse email' ] },
-        // { type: 'T', prop: 'urgenceNom',                                    fields: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
-        // { type: 'T', prop: 'urgenceTel',                                    fields: [ 'Téléphone_2' ] },
-        // { type: 'T', prop: 'chat',        decompose: decomposeCatName,      fields: [ '1' ] },
+        { prop: 'chatNoms',               method: setCatNamesFromSingleName,      args: [ '1' ] },
+        { prop: 'chatNaissances',         method: setBirthsFromSingleName,        args: [ '1' ] },
         // { type: 'T', prop: 'id',          decompose: decomposeMultiple,     fields: [ '2' ] },
         // { type: 'T', prop: 'race',        decompose: decomposeMultiple,     fields: [ 'undefined' ] },
         // { type: 'T', prop: 'felv',        decompose: decomposeDatesCats,    fields: [ 'Leucose FELV' ] },
@@ -216,7 +265,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
     console.log(decompose)
 
-    const lNom = decompose.chatNom.length
+    const lNom = lastContract.chatNoms.length
     if (lNom == 0) {
       helperJs.error(`Impossible d'extraire le nom du chat du contrat ${lastContractName}`)
     }
@@ -224,7 +273,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
       helperJs.error(`Impossible d'avoir plus de 3 chats dans le contrat`)
     }
 
-    const lNaissance = decompose.chatNaissance.length
+    const lNaissance = lastContract.chatNaissances.length
     if ((lNaissance!=0) && (lNaissance!==lNom)) {
       helperJs.error(`Nombre de chats entre noms et date de naissance différent: ${decompose.chatNom}  vs  ${decompose.chatNaissance}`)
     }
@@ -257,8 +306,8 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     helperPdf.pdflib.setTextfield(newContract, 'pUrgence1',  lastContract.proprioUrgenceNom, fontToUse)
     helperPdf.pdflib.setTextfield(newContract, 'pUrgence2',  lastContract.proprioUrgenceTel, fontToUse)
 
-    helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], decompose.chatNom, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], decompose.chatNaissance, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], lastContract.chatNoms, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract.chatNaissances, fontToUse)
     helperPdf.pdflib.setTextfields(newContract, ['c1Id', 'c2Id', 'c3Id'], decompose.id, fontToUse)
     helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], decompose.race, fontToUse)
     helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], decompose.felv, fontToUse)

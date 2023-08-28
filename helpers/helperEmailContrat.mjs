@@ -435,5 +435,8 @@ export default {
   fieldsMatch,
   xlsFormatCompta,
   xlsFormatAgenda,
-  getPdfDataFromDataCompta
+  getPdfDataFromDataCompta,
+  normalize,
+  separate,
+  getDate,
 }
