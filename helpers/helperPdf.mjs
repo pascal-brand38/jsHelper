@@ -12,18 +12,6 @@ async function load(pdfFullName) {
   return pdf
 }
 
-async function loadObject(pdfFullName, init=undefined) {
-  const pdf = await load(pdfFullName);
-  const form = pdf.getForm();
-  let result = {
-    pdf: pdf, 
-    form: form
-  }
-  if (init !== undefined) {
-    init(result)
-  }
-  return result
-}
 
 async function flatten(pdf, fullName) {
   pdf.getForm().flatten()
@@ -124,22 +112,46 @@ function getRectsFromField(field,doc) {
 		return widgets.map(q=>q.getRectangle());
 }
 
-// Set a form field, and update appearance fontToUse on this field
-function updateTextField(form, fieldText, value, fontToUse) {
-  let f = form.getTextField(fieldText);
-  f.setText(value);
-  f.updateAppearances(fontToUse)
-
+// load a pdf file, and return a pdf object that contain:
+// - pdf: the pdf as a pdj-lib.js structure
+// - form: the form
+// - pdfFullName
+// moreover, if init is provided, then the pdf object may be populated with a version for example
+async function _load(pdfFullName, init=undefined) {
+  const pdf = await PDFDocument.load(fs.readFileSync(pdfFullName));
+  const form = pdf.getForm();
+  let pdfObject = {
+    pdf: pdf, 
+    form: form,
+    pdfFullName: pdfFullName,
+  }
+  if (init !== undefined) {
+    init(pdfObject)
+  }
+  return pdfObject
 }
 
-function updateListTextField(form, listFields, values, fontToUse) {
-  values.forEach((value, index) => {
-    updateTextField(form, listFields[index], value, fontToUse)
-  })
+async function _save(pdfObject, pdfFullName) {
+  const pdfBuf = await pdfObject.pdf.save(/*{ updateFieldAppearances: true }*/)
+  fs.writeFileSync(pdfFullName, pdfBuf, { flag: 'wx' });
 }
 
-function updateListCheck(form, listCheck) {
-  listCheck.forEach(f => form.getCheckBox(f).check())
+// set a textfield, or a list of text fields
+function _setTextfield(pdfObject, Textfield, text, fontToUse=undefined) {
+  const f = pdfObject.form.getTextField(Textfield);
+  f.setText(text);
+  if (fontToUse !== undefined) {
+    f.updateAppearances(fontToUse)
+  }
+}
+
+function _setTextfields(pdfObject, Textfields, texts, fontToUse=undefined) {
+  texts.forEach((text, index) => _setTextfield(pdfObject, Textfields[index], text, fontToUse))
+}
+
+// check to true all field in checks list
+function _checks(pdfObject, checks) {
+  checks.forEach(f => pdfObject.form.getCheckBox(f).check())  
 }
 
 
@@ -148,10 +160,14 @@ export default {
   flatten,
   getFields,
   decomposeFields,
-  updateTextField,
-  updateListTextField,
-  updateListCheck,
 
-  loadObject,       // async - load pdf and form from its filename - return { pdf, form }
   getTextfieldAsInt,
+
+  pdflib: {
+    load: _load,    // async
+    save: _save,    // async
+    checks: _checks,
+    setTextfield: _setTextfield,
+    setTextfields: _setTextfields,
+  }
 }

@@ -27,27 +27,16 @@
 
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
-import { PDFDocument, PDFName, PDFBool, StandardFonts } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import fs from 'fs'
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { exit } from 'process';
 import child_process from 'child_process'
 import {decode} from 'html-entities';
 import helperEmailContrat from '../helpers/helperEmailContrat.mjs';
 import helperPdf from '../helpers/helperPdf.mjs'
 import helperJs from '../helpers/helperJs.mjs';
 
-
-function error(s) {
-  console.log('***');
-  console.log('***  ERREUR');
-  console.log('*** ', s);
-  console.log('***');
-
-  exit(-1)
-}
 
 function get_args() {
   console.log(process.argv)
@@ -137,8 +126,8 @@ function getVersion(pdfObject) {
 }
 
 async function updatePDF(options, currentContractDir, lastContractName) {
-  const lastContract = await helperPdf.loadObject(currentContractDir + '\\' + lastContractName, getVersion)
-  const newContract = await helperPdf.loadObject(options.rootDir + '\\' + options.blankContract, getVersion)
+  const lastContract = await helperPdf.pdflib.load(currentContractDir + '\\' + lastContractName, getVersion)
+  const newContract = await helperPdf.pdflib.load(options.rootDir + '\\' + options.blankContract, getVersion)
 
   if (newContract.version !== _currentVersionContrat) {
     helperJs.error(`New contract version:\n  Expected: ${_currentVersionContrat}\n  and is: ${newContract.version}`)
@@ -152,7 +141,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
       const name = field.getName();
       console.log(type + '     ' + name);
     });
-    error('QUIT')
+    helperJs.error('QUIT')
   }
 
   // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
@@ -201,20 +190,20 @@ async function updatePDF(options, currentContractDir, lastContractName) {
       helperJs.error(`Nombre de chats entre noms et rcp différent: ${decompose.chatNom}  vs  ${decompose.rcp}`)
     }
 
-    helperPdf.updateTextField(newContract.form, 'pNom',       decompose.nom,        fontToUse)
-    helperPdf.updateTextField(newContract.form, 'pAddr1',     decompose.adr1,       fontToUse)
-    helperPdf.updateTextField(newContract.form, 'pAddr2',     decompose.adr2,       fontToUse)
-    helperPdf.updateTextField(newContract.form, 'pTel',       decompose.tel,        fontToUse)
-    helperPdf.updateTextField(newContract.form, 'pEmail',     decompose.email,      fontToUse)
-    helperPdf.updateTextField(newContract.form, 'pUrgence1',  decompose.urgenceNom, fontToUse)
-    helperPdf.updateTextField(newContract.form, 'pUrgence2',  decompose.urgenceTel, fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pNom',       decompose.nom,        fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     decompose.adr1,       fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pAddr2',     decompose.adr2,       fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pTel',       decompose.tel,        fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pEmail',     decompose.email,      fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pUrgence1',  decompose.urgenceNom, fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pUrgence2',  decompose.urgenceTel, fontToUse)
 
-    helperPdf.updateListTextField(newContract.form, ['c1Nom', 'c2Nom', 'c3Nom'], decompose.chatNom, fontToUse)
-    helperPdf.updateListTextField(newContract.form, ['c1Naissance', 'c2Naissance', 'c3Naissance'], decompose.chatNaissance, fontToUse)
-    helperPdf.updateListTextField(newContract.form, ['c1Id', 'c2Id', 'c3Id'], decompose.id, fontToUse)
-    helperPdf.updateListTextField(newContract.form, ['c1Race', 'c2Race', 'c3Race'], decompose.race, fontToUse)
-    helperPdf.updateListTextField(newContract.form, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], decompose.felv, fontToUse)
-    helperPdf.updateListTextField(newContract.form, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], decompose.rcp, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], decompose.chatNom, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], decompose.chatNaissance, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Id', 'c2Id', 'c3Id'], decompose.id, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], decompose.race, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], decompose.felv, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], decompose.rcp, fontToUse)
 
     // maladies on 3 lines, from https://stackoverflow.com/questions/6259515/how-can-i-split-a-string-into-segments-of-n-characters
     // when there is a maladie, and several cats, this is not possible to know which on it is
@@ -224,15 +213,15 @@ async function updatePDF(options, currentContractDir, lastContractName) {
       } else {
         const maladies = decompose.maladies.match(/.{1,18}/g)    // 18 characters are ok in a cell of the contract
         console.log(maladies)
-        helperPdf.updateListTextField(newContract.form, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], maladies, fontToUse)
+        helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], maladies, fontToUse)
       }
     }
 
     // male / femelle
     if (decompose.male && !decompose.femelle) {
-      helperPdf.updateListCheck(newContract.form, ['c1Male', 'c2Male', 'c3Male'].slice(0, lNom))
+      helperPdf.pdflib.checks(newContract, ['c1Male', 'c2Male', 'c3Male'].slice(0, lNom))
     } else if (!decompose.male && decompose.femelle) {
-      helperPdf.updateListCheck(newContract.form, ['c1Femelle', 'c2Femelle', 'c3Femelle'].slice(0, lNom))
+      helperPdf.pdflib.checks(newContract, ['c1Femelle', 'c2Femelle', 'c3Femelle'].slice(0, lNom))
     } else if (decompose.male && decompose.femelle) {
       await helperJs.question.question('Mâle ET Femelle - A DETERMINER MANUELLEMENT\nAppuyer sur Entrée')
     }
@@ -262,17 +251,17 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     [ 'sService2', (services.length >= 2) ? services[1] : '' ],
     [ 'sService3', (services.length >= 3) ? services[2] : '' ],
   ]
-  reservations.forEach(resa => helperPdf.updateTextField(newContract.form, resa[0], resa[1], fontToUse))
+  reservations.forEach(resa => helperPdf.pdflib.setTextfield(newContract, resa[0], resa[1], fontToUse))
 
   // get new contract name
   const reContractName = /^[0-9]*[a-z]?[\s]*-[\s]*/;    // remove numbers (dates) 4 times
-  var newContrat = lastContractName;
-  newContrat = newContrat.replace(reContractName, '');
-  newContrat = newContrat.replace(reContractName, '');
-  newContrat = newContrat.replace(reContractName, '');
+  var newContractName = lastContractName;
+  newContractName = newContractName.replace(reContractName, '');
+  newContractName = newContractName.replace(reContractName, '');
+  newContractName = newContractName.replace(reContractName, '');
   const fromParts = options.from.split("/");
-  newContrat = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ' + newContrat;
-  newContrat = currentContractDir + '\\' + newContrat
+  newContractName = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ' + newContractName;
+  newContractName = currentContractDir + '\\' + newContractName
 
   // following is causing some isses when opening it with Adobe DC - shows some squares
   // https://github.com/Hopding/pdf-lib/issues/569#issuecomment-1087328416
@@ -280,16 +269,14 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   //newContract.form.acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
 
 
-  child_process.exec('explorer ' + currentContractDir);
   try {
-    const pdfBuf = await newContract.pdf.save(/*{ updateFieldAppearances: true }*/)
-    fs.writeFileSync(newContrat, pdfBuf, { flag: 'wx' });
+    await helperPdf.pdflib.save(newContract, newContractName)
   } catch(e) {
     console.log(e);
-    error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContrat);
+    helperJs.error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContractName);
   }
-  child_process.exec('explorer ' + newContrat);
-
+  child_process.exec('explorer ' + currentContractDir);
+  child_process.exec('explorer ' + newContractName);
 }
 
 
@@ -303,3 +290,5 @@ async function main() {
 
 
 main();
+
+// TODO: fontsize as auto
