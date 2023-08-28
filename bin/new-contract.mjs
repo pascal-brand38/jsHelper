@@ -125,6 +125,61 @@ function getVersion(pdfObject) {
   pdfObject.version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
 }
 
+function setPropFromTextfieldCandidates(pdfOject, prop, args) {
+  // args if a list of fields, being candidate to have the info
+  args.every(field => {
+    try {
+      pdfOject[prop] = pdfOject.form.getTextField(field).getText();
+      if (pdfOject[prop] === undefined) {
+        pdfOject[prop] = ''
+      }
+      return false    // found - stop the every function
+    } catch {
+      return true     // not found - continue
+    }
+  })
+}
+
+function setPropFromFields(pdfObject, setPropFromFieldsDatas) {
+  setPropFromFieldsDatas.forEach(data => data.method(pdfObject, data.prop, data.args))
+}
+
+function pdfExtractInfoDatas(version) {
+  if (version === undefined) {
+    return {
+      setPropFromFieldsDatas: [
+        { prop: 'proprioNom',             method: setPropFromTextfieldCandidates, args: [ 'Nom Prénom' ] },
+        { prop: 'proprioAdr1',            method: setPropFromTextfieldCandidates, args: [ 'Adresse 1' ] },
+        { prop: 'proprioAdr2',            method: setPropFromTextfieldCandidates, args: [ 'Adresse 2' ] },
+        { prop: 'proprioTel',             method: setPropFromTextfieldCandidates, args: [ 'Téléphone' ] },
+        { prop: 'proprioEmail',           method: setPropFromTextfieldCandidates, args: [ 'Adresse email' ] },
+        { prop: 'proprioUrgenceNom',      method: setPropFromTextfieldCandidates, args: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
+        { prop: 'proprioUrgenceTel',      method: setPropFromTextfieldCandidates, args: [ 'Téléphone_2' ] },
+        // { type: 'T', prop: 'nom',         decompose: decomposeIdentical,    fields: [ 'Nom Prénom' ] },
+        // { type: 'T', prop: 'adr1',                                          fields: [ 'Adresse 1' ] },
+        // { type: 'T', prop: 'adr2',                                          fields: [ 'Adresse 2' ] },
+        // { type: 'T', prop: 'tel',                                           fields: [ 'Téléphone' ] },
+        // { type: 'T', prop: 'email',                                         fields: [ 'Adresse email' ] },
+        // { type: 'T', prop: 'urgenceNom',                                    fields: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
+        // { type: 'T', prop: 'urgenceTel',                                    fields: [ 'Téléphone_2' ] },
+        // { type: 'T', prop: 'chat',        decompose: decomposeCatName,      fields: [ '1' ] },
+        // { type: 'T', prop: 'id',          decompose: decomposeMultiple,     fields: [ '2' ] },
+        // { type: 'T', prop: 'race',        decompose: decomposeMultiple,     fields: [ 'undefined' ] },
+        // { type: 'T', prop: 'felv',        decompose: decomposeDatesCats,    fields: [ 'Leucose FELV' ] },
+        // { type: 'T', prop: 'rcp',         decompose: decomposeDatesCats,    fields: [ 'Typhus coryza RCP' ] },
+        // { type: 'T', prop: 'maladies',                                      fields: [ 'undefined_4' ] },
+        // { type: 'C', prop: 'male',                                          fields: [ 'Mâle' ] },
+        // { type: 'C', prop: 'femelle',                                       fields: [ 'Femelle' ] },
+        // { type: 'C', prop: 'maladieOui',                                    fields: [ 'undefined_2' ] },
+        // { type: 'C', prop: 'maladieNon',                                    fields: [ 'undefined_3' ] },
+      ]
+    }
+  }
+
+  helperJs.error(`pdfExtractInfoDatas() does not knwo version ${version}`)
+  return undefined
+}
+
 async function updatePDF(options, currentContractDir, lastContractName) {
   const lastContract = await helperPdf.pdflib.load(currentContractDir + '\\' + lastContractName, getVersion)
   const newContract = await helperPdf.pdflib.load(options.rootDir + '\\' + options.blankContract, getVersion)
@@ -153,6 +208,8 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const fontToUse = await newContract.pdf.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(options.to))
+
+  setPropFromFields(lastContract, pdfExtractInfoDatas(lastContract.version).setPropFromFieldsDatas)
 
   if (lastContract.version === undefined) {
     const fields = helperPdf.getFields(lastContract.pdf, helperEmailContrat.fieldsMatch)
@@ -192,13 +249,13 @@ async function updatePDF(options, currentContractDir, lastContractName) {
       helperJs.error(`Nombre de chats entre noms et rcp différent: ${decompose.chatNom}  vs  ${decompose.rcp}`)
     }
 
-    helperPdf.pdflib.setTextfield(newContract, 'pNom',       decompose.nom,        fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     decompose.adr1,       fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pAddr2',     decompose.adr2,       fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pTel',       decompose.tel,        fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pEmail',     decompose.email,      fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pUrgence1',  decompose.urgenceNom, fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pUrgence2',  decompose.urgenceTel, fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract.proprioNom,        fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract.proprioAdr1,       fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pAddr2',     lastContract.proprioAdr2,       fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pTel',       lastContract.proprioTel,        fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pEmail',     lastContract.proprioEmail,      fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pUrgence1',  lastContract.proprioUrgenceNom, fontToUse)
+    helperPdf.pdflib.setTextfield(newContract, 'pUrgence2',  lastContract.proprioUrgenceTel, fontToUse)
 
     helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], decompose.chatNom, fontToUse)
     helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], decompose.chatNaissance, fontToUse)
