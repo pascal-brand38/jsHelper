@@ -152,6 +152,8 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const __dirname = path.dirname(__filename);
   const fontToUse = await newContract.pdf.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
+  const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(options.to))
+
   if (lastContract.version === undefined) {
     const fields = helperPdf.getFields(lastContract.pdf, helperEmailContrat.fieldsMatch)
     const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
@@ -226,11 +228,22 @@ async function updatePDF(options, currentContractDir, lastContractName) {
       await helperJs.question.question('Mâle ET Femelle - A DETERMINER MANUELLEMENT\nAppuyer sur Entrée')
     }
 
-    // TODO Check date de vaccins avec remarque
+    // check vaccination date
+    const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
+    decompose.rcp.forEach((date, index) => {
+      const epochRcp = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(date))
+      const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
+      console.log(`${epochRcp} ${epochRcp}`)
+      if (epochRcpNext < epochDeparture) {
+        console.log('A REFAIRE')
+        helperPdf.pdflib.setTextfield(newContract, remarque[index], 'RAPPEL A REFAIRE', fontToUse)
+      }
+    })
 
   } else {
     helperJs.error('NOT IMPLEMENTED YET')
   }
+
 
   let services = []
   if (options.services==='') {
@@ -269,13 +282,13 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   //newContract.form.acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
 
 
+  child_process.exec('explorer ' + currentContractDir);
   try {
     await helperPdf.pdflib.save(newContract, newContractName)
   } catch(e) {
     console.log(e);
     helperJs.error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContractName);
   }
-  child_process.exec('explorer ' + currentContractDir);
   child_process.exec('explorer ' + newContractName);
 }
 
@@ -290,5 +303,3 @@ async function main() {
 
 
 main();
-
-// TODO: fontsize as auto
