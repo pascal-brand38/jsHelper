@@ -146,6 +146,9 @@ function setPropFromTextfieldCandidates(pdfOject, prop, args) {
   pdfOject[prop] = getTextfromCandidates(pdfOject, args)
 }
 
+function setProplistFromTextfieldCandidates(pdfOject, prop, args) {
+  pdfOject[prop] = [ getTextfromCandidates(pdfOject, args) ]
+}
 function getNamesAndBirthFromNameAndBirth(value) {
   value = helperEmailContrat.normalize(value)
   let values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
@@ -195,6 +198,49 @@ function setBirthsFromSingleName(pdfOject, prop, args) {
   pdfOject[prop] = res.naissances
 }
 
+function setPropMultipleFromSingle(pdfOject, prop, args) {
+  let value = getTextfromCandidates(pdfOject, args)
+  value = helperEmailContrat.normalize(value)
+  const values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
+  pdfOject[prop] = values
+}
+
+function setDatesFromSingle(pdfOject, prop, args) {
+  let value = getTextfromCandidates(pdfOject, args)
+  value = helperEmailContrat.normalize(value)
+  let values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
+
+  let catNames = pdfOject['chatNoms']
+  if ((catNames !== undefined) && (catNames.length !== values.length)) {
+    // different number of cats and dates
+    pdfOject[prop] = [ `Error with cats and ${prop} number: ${catNames}  vs  ${values}` ]
+    pdfOject.error = true
+    return
+  }
+
+  pdfOject[prop] = []
+  values.forEach((v, i) => {
+    if (catNames !== undefined) {
+      catNames.every((cat, j) => {
+        if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
+          // different cats order
+          results[prop].push(`Error with cat order in ${values}`)
+          pdfOject.error = true
+          return false
+        }
+        return true
+      })
+    }
+     let d = helperEmailContrat.getDate(v.split(' '), prop)
+     if (d === '') {
+      pdfOject[prop].push(`Error with ${v}`)
+      pdfOject.error = true
+    } else {
+      pdfOject[prop].push(d)
+     }
+  })
+}
+
 function setPropFromFields(pdfObject, setPropFromFieldsDatas) {
   setPropFromFieldsDatas.forEach(data => data.method(pdfObject, data.prop, data.args))
 }
@@ -203,20 +249,20 @@ function pdfExtractInfoDatas(version) {
   if (version === undefined) {
     return {
       setPropFromFieldsDatas: [
-        { prop: 'proprioNom',             method: setPropFromTextfieldCandidates, args: [ 'Nom Prénom' ] },
-        { prop: 'proprioAdr1',            method: setPropFromTextfieldCandidates, args: [ 'Adresse 1' ] },
-        { prop: 'proprioAdr2',            method: setPropFromTextfieldCandidates, args: [ 'Adresse 2' ] },
-        { prop: 'proprioTel',             method: setPropFromTextfieldCandidates, args: [ 'Téléphone' ] },
-        { prop: 'proprioEmail',           method: setPropFromTextfieldCandidates, args: [ 'Adresse email' ] },
-        { prop: 'proprioUrgenceNom',      method: setPropFromTextfieldCandidates, args: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
-        { prop: 'proprioUrgenceTel',      method: setPropFromTextfieldCandidates, args: [ 'Téléphone_2' ] },
-        { prop: 'chatNoms',               method: setCatNamesFromSingleName,      args: [ '1' ] },
-        { prop: 'chatNaissances',         method: setBirthsFromSingleName,        args: [ '1' ] },
-        // { type: 'T', prop: 'id',          decompose: decomposeMultiple,     fields: [ '2' ] },
-        // { type: 'T', prop: 'race',        decompose: decomposeMultiple,     fields: [ 'undefined' ] },
-        // { type: 'T', prop: 'felv',        decompose: decomposeDatesCats,    fields: [ 'Leucose FELV' ] },
-        // { type: 'T', prop: 'rcp',         decompose: decomposeDatesCats,    fields: [ 'Typhus coryza RCP' ] },
-        // { type: 'T', prop: 'maladies',                                      fields: [ 'undefined_4' ] },
+        { prop: 'proprioNom',             method: setPropFromTextfieldCandidates,     args: [ 'Nom Prénom' ] },
+        { prop: 'proprioAdr1',            method: setPropFromTextfieldCandidates,     args: [ 'Adresse 1' ] },
+        { prop: 'proprioAdr2',            method: setPropFromTextfieldCandidates,     args: [ 'Adresse 2' ] },
+        { prop: 'proprioTel',             method: setPropFromTextfieldCandidates,     args: [ 'Téléphone' ] },
+        { prop: 'proprioEmail',           method: setPropFromTextfieldCandidates,     args: [ 'Adresse email' ] },
+        { prop: 'proprioUrgenceNom',      method: setPropFromTextfieldCandidates,     args: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
+        { prop: 'proprioUrgenceTel',      method: setPropFromTextfieldCandidates,     args: [ 'Téléphone_2' ] },
+        { prop: 'chatNoms',               method: setCatNamesFromSingleName,          args: [ '1' ] },
+        { prop: 'chatNaissances',         method: setBirthsFromSingleName,            args: [ '1' ] },
+        { prop: 'chatIds',                method: setPropMultipleFromSingle,          args: [ '2' ] },
+        { prop: 'chatRaces',              method: setPropMultipleFromSingle,          args: [ 'undefined' ] },
+        { prop: 'chatFelvs',              method: setDatesFromSingle,                 args: [ 'Leucose FELV' ] },
+        { prop: 'chatRcps',               method: setDatesFromSingle,                 args: [ 'Typhus coryza RCP' ] },
+        { prop: 'maladies',               method: setProplistFromTextfieldCandidates, args: [ 'undefined_4' ] },
         // { type: 'C', prop: 'male',                                          fields: [ 'Mâle' ] },
         // { type: 'C', prop: 'femelle',                                       fields: [ 'Femelle' ] },
         // { type: 'C', prop: 'maladieOui',                                    fields: [ 'undefined_2' ] },
@@ -263,7 +309,6 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   if (lastContract.version === undefined) {
     const fields = helperPdf.getFields(lastContract.pdf, helperEmailContrat.fieldsMatch)
     const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
-    console.log(decompose)
 
     const lNom = lastContract.chatNoms.length
     if (lNom == 0) {
@@ -275,27 +320,27 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
     const lNaissance = lastContract.chatNaissances.length
     if ((lNaissance!=0) && (lNaissance!==lNom)) {
-      helperJs.error(`Nombre de chats entre noms et date de naissance différent: ${decompose.chatNom}  vs  ${decompose.chatNaissance}`)
+      helperJs.error(`Nombre de chats entre noms et date de naissance différent: ${lastContract.chatNoms}  vs  ${lastContract.chatNaissances}`)
     }
 
-    const lId = decompose.id.length
+    const lId = lastContract.chatIds.length
     if ((lId!=0) && (lId!==lNom)) {
-      helperJs.error(`Nombre de chats entre noms et Id différent: ${decompose.chatNom}  vs  ${decompose.id}`)
+      helperJs.error(`Nombre de chats entre noms et Id différent: ${lastContract.chatNoms}  vs  ${lastContract.chatIds}`)
     }
 
-    const lRace = decompose.race.length
+    const lRace = lastContract.chatRaces.length
     if ((lRace!=0) && (lRace!==lNom)) {
-      helperJs.error(`Nombre de chats entre noms et race différent: ${decompose.chatNom}  vs  ${decompose.race}`)
+      helperJs.error(`Nombre de chats entre noms et race différent: ${lastContract.chatNoms}  vs  ${lastContract.chatRaces}`)
     }
 
-    const lFelv = decompose.felv.length
+    const lFelv = lastContract.chatFelvs.length
     if ((lFelv!=0) && (lFelv!==lNom)) {
-      helperJs.error(`Nombre de chats entre noms et felv différent: ${decompose.chatNom}  vs  ${decompose.felv}`)
+      helperJs.error(`Nombre de chats entre noms et felv différent: ${lastContract.chatNoms}  vs  ${lastContract.chatFelvs}`)
     }
 
-    const lRcp = decompose.rcp.length
+    const lRcp = lastContract.chatRcps.length
     if ((lRcp!=0) && (lRcp!==lNom)) {
-      helperJs.error(`Nombre de chats entre noms et rcp différent: ${decompose.chatNom}  vs  ${decompose.rcp}`)
+      helperJs.error(`Nombre de chats entre noms et rcp différent: ${lastContract.chatNoms}  vs  ${lastContract.chatRcps}`)
     }
 
     helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract.proprioNom,        fontToUse)
@@ -308,18 +353,18 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
     helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], lastContract.chatNoms, fontToUse)
     helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract.chatNaissances, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1Id', 'c2Id', 'c3Id'], decompose.id, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], decompose.race, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], decompose.felv, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], decompose.rcp, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Id', 'c2Id', 'c3Id'], lastContract.chatIds, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], lastContract.chatRaces, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract.chatFelvs, fontToUse)
+    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract.chatRcps, fontToUse)
 
     // maladies on 3 lines, from https://stackoverflow.com/questions/6259515/how-can-i-split-a-string-into-segments-of-n-characters
     // when there is a maladie, and several cats, this is not possible to know which on it is
-    if (decompose.maladies !== '') {
+    if (lastContract.maladies[0] !== '') {
       if (lNom > 1) {
         await helperJs.question.question('Maladie and more than 1 cat - A DETERMINER MANUELLEMENT\nAppuyer sur Entrée')
       } else {
-        const maladies = decompose.maladies.match(/.{1,18}/g)    // 18 characters are ok in a cell of the contract
+        const maladies = lastContract.maladies[0].match(/.{1,18}/g)    // 18 characters are ok in a cell of the contract
         console.log(maladies)
         helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], maladies, fontToUse)
       }
