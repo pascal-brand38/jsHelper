@@ -125,12 +125,12 @@ function getVersion(pdfObject) {
   pdfObject.version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
 }
 
-function getTextfromCandidates(pdfOject, args) {
+function getTextfromCandidates(pdfObject, args) {
   let result = undefined
   // args if a list of fields, being candidate to have the info
   args.every(field => {
     try {
-      result = pdfOject.form.getTextField(field).getText();
+      result = pdfObject.form.getTextField(field).getText();
       if (result === undefined) {
         result = ''
       }
@@ -142,12 +142,12 @@ function getTextfromCandidates(pdfOject, args) {
   return result
 }
 
-function setPropFromTextfieldCandidates(pdfOject, prop, args, result) {
-  result[prop] = getTextfromCandidates(pdfOject, args)
+function setPropFromTextfieldCandidates(pdfObject, prop, args, result) {
+  result[prop] = getTextfromCandidates(pdfObject, args)
 }
 
-function setProplistFromTextfieldCandidates(pdfOject, prop, args, result) {
-  result[prop] = [ getTextfromCandidates(pdfOject, args) ]
+function setProplistFromTextfieldCandidates(pdfObject, prop, args, result) {
+  result[prop] = [ getTextfromCandidates(pdfObject, args) ]
 }
 function getNamesAndBirthFromNameAndBirth(value) {
   value = helperEmailContrat.normalize(value)
@@ -188,35 +188,32 @@ function getNamesAndBirthFromNameAndBirth(value) {
   return { noms: noms, naissances: naissances}
 }
 
-function setCatNamesFromSingleName(pdfOject, prop, args, result) {
-  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfOject, args))
+function setCatNamesFromSingleName(pdfObject, prop, args, result) {
+  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfObject, args))
   result[prop] = res.noms
 }
 
-function setBirthsFromSingleName(pdfOject, prop, args, result) {
-  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfOject, args))
+function setBirthsFromSingleName(pdfObject, prop, args, result) {
+  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfObject, args))
   result[prop] = res.naissances
 }
 
-function setPropMultipleFromSingle(pdfOject, prop, args, result) {
-  let value = getTextfromCandidates(pdfOject, args)
+function setPropMultipleFromSingle(pdfObject, prop, args, result) {
+  let value = getTextfromCandidates(pdfObject, args)
   value = helperEmailContrat.normalize(value)
   const values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
   result[prop] = values
 }
 
-// TODO: error as a specific property in pdfObject
-
-function setDatesFromSingle(pdfOject, prop, args, result) {
-  let value = getTextfromCandidates(pdfOject, args)
+function setDatesFromSingle(pdfObject, prop, args, result) {
+  let value = getTextfromCandidates(pdfObject, args)
   value = helperEmailContrat.normalize(value)
   let values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
 
-  let catNames = pdfOject['chat']['noms']
+  let catNames = pdfObject['chat']['noms']
   if ((catNames !== undefined) && (catNames.length !== values.length)) {
     // different number of cats and dates
-    result[prop] = [ `Error with cats and ${prop} number: ${catNames}  vs  ${values}` ]
-    pdfOject.error = true
+    pdfObject.errors.push(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
     return
   }
 
@@ -226,8 +223,7 @@ function setDatesFromSingle(pdfOject, prop, args, result) {
       catNames.every((cat, j) => {
         if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
           // different cats order
-          result[prop].push(`Error with cat order in ${values}`)
-          pdfOject.error = true
+          pdfObject.errors.push(`setDatesFromSingle: error with cat order in ${values}`)
           return false
         }
         return true
@@ -235,8 +231,7 @@ function setDatesFromSingle(pdfOject, prop, args, result) {
     }
      let d = helperEmailContrat.getDate(v.split(' '), prop)
      if (d === '') {
-      result[prop].push(`Error with ${v}`)
-      pdfOject.error = true
+      pdfObject.errors.push(`setDatesFromSingle: error with ${v}`)
     } else {
       result[prop].push(d)
      }
@@ -246,9 +241,9 @@ function setDatesFromSingle(pdfOject, prop, args, result) {
 function setPropFromFields(pdfObject, setPropFromFieldsDatas, result=undefined) {
   if (result === undefined) {
     result = pdfObject
+    pdfObject.errors = []   // list of errors
   }
   setPropFromFieldsDatas.forEach(data => {
-    console.log(data)
     if (data.hasOwnProperty('setPropFromFieldsDatas')) {
       const prop = data['prop']
       result[prop] = {}
@@ -329,6 +324,11 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(options.to))
 
   setPropFromFields(lastContract, pdfExtractInfoDatas(lastContract.version).setPropFromFieldsDatas)
+  if (lastContract.errors.length !== 0) {
+    console.log('List of errors:')
+    console.log(lastContract.error)
+    helperJs.error('QUIT')
+  }
 
   if (lastContract.version === undefined) {
     const fields = helperPdf.getFields(lastContract.pdf, helperEmailContrat.fieldsMatch)
