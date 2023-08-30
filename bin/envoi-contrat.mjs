@@ -214,7 +214,7 @@ async function sendMail(options, currentContractDir) {
   body += `<br>`
   body += `<br>`
 
-  body += `${catName} ${getDevraEtreVermifuge(gender)} depuis moins de 4 mois, `
+  body += `${catName} ${getDevraEtreVermifuge(gender)} depuis moins de 3 mois, `
   body += `avec un produit vétérinaire (milbemax ou milbactor) et avoir reçu un traitement anti-puces `
   body += `8 jours avant son arrivée à la garderie.`
   body += `<br>`
