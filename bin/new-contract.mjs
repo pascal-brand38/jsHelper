@@ -254,7 +254,7 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
   })
 }
 
-function setPropFromFields(pdfObject, setPropFromFieldsDatas, result=undefined) {
+function setPropFromFields(pdfObject, setPropFromFieldsDatas, postproc, result=undefined) {
   if (result === undefined) {
     result = pdfObject[helperPdf.pdflib.helperProp]
   }
@@ -262,14 +262,14 @@ function setPropFromFields(pdfObject, setPropFromFieldsDatas, result=undefined) 
     if (data.hasOwnProperty('setPropFromFieldsDatas')) {
       const prop = data['prop']
       result[prop] = {}
-      setPropFromFields(pdfObject, data['setPropFromFieldsDatas'], result[prop])
+      setPropFromFields(pdfObject, data['setPropFromFieldsDatas'], undefined, result[prop])
     } else {
       data.method(pdfObject, data.prop, data.args, result)
     }
   })
 
-  if (setPropFromFieldsDatas.hasOwnProperty('postSetPropFromFields')) {
-    setPropFromFieldsDatas['postSetPropFromFields'](pdfObject, result)
+  if (postproc !== undefined) {
+    postproc(pdfObject, result)
   }
 }
 
@@ -381,7 +381,8 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(options.to))
 
-  setPropFromFields(lastContract, pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version).setPropFromFieldsDatas)
+  const pdfInfoData = pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version)
+  setPropFromFields(lastContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
 
   helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
   helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
