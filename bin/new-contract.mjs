@@ -122,7 +122,7 @@ function get_args() {
 const _currentVersionContrat = 20230826
 
 function getVersion(pdfObject) {
-  pdfObject.version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
+  pdfObject[helperPdf.pdflib.helperProp].version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
 }
 
 function getTextfromCandidates(pdfObject, args) {
@@ -149,6 +149,22 @@ function setPropFromTextfieldCandidates(pdfObject, prop, args, result) {
 function setProplistFromTextfieldCandidates(pdfObject, prop, args, result) {
   result[prop] = [ getTextfromCandidates(pdfObject, args) ]
 }
+
+function setProplistFromCheckCandidates(pdfObject, prop, args, result) {
+  let res = false
+  args.every(field => {
+    try {
+      res = pdfObject.form.getCheckBox(field).isChecked();
+      return false    // found - stop the every function
+    } catch {
+      return true     // not found - continue
+    }
+  })
+
+  const lNom = pdfObject[helperPdf.pdflib.helperProp].chat.noms.length
+  result[prop] = [ res ].slice(0, lNom)
+}
+
 function getNamesAndBirthFromNameAndBirth(value) {
   value = helperEmailContrat.normalize(value)
   let values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
@@ -210,10 +226,10 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
   value = helperEmailContrat.normalize(value)
   let values = helperEmailContrat.separate(value)    // get a list of values per cat in this pdf
 
-  let catNames = pdfObject['chat']['noms']
+  let catNames = pdfObject[helperPdf.pdflib.helperProp]['chat']['noms']
   if ((catNames !== undefined) && (catNames.length !== values.length)) {
     // different number of cats and dates
-    pdfObject.errors.push(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
     return
   }
 
@@ -223,7 +239,7 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
       catNames.every((cat, j) => {
         if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
           // different cats order
-          pdfObject.errors.push(`setDatesFromSingle: error with cat order in ${values}`)
+          pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with cat order in ${values}`)
           return false
         }
         return true
@@ -231,7 +247,7 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
     }
      let d = helperEmailContrat.getDate(v.split(' '), prop)
      if (d === '') {
-      pdfObject.errors.push(`setDatesFromSingle: error with ${v}`)
+      pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with ${v}`)
     } else {
       result[prop].push(d)
      }
@@ -240,8 +256,7 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
 
 function setPropFromFields(pdfObject, setPropFromFieldsDatas, result=undefined) {
   if (result === undefined) {
-    result = pdfObject
-    pdfObject.errors = []   // list of errors
+    result = pdfObject[helperPdf.pdflib.helperProp]
   }
   setPropFromFieldsDatas.forEach(data => {
     if (data.hasOwnProperty('setPropFromFieldsDatas')) {
@@ -252,6 +267,46 @@ function setPropFromFields(pdfObject, setPropFromFieldsDatas, result=undefined) 
       data.method(pdfObject, data.prop, data.args, result)
     }
   })
+
+  if (setPropFromFieldsDatas.hasOwnProperty('postSetPropFromFields')) {
+    setPropFromFieldsDatas['postSetPropFromFields'](pdfObject, result)
+  }
+}
+
+function postSetPropFromFieldsV0(pdfObject, result) {
+  const chat = result.chat
+
+  // check coherency on number of cats and number of ids,...
+  const nbChats = chat.noms.length
+  if (nbChats == 0) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'extraire le nom du chat du contrat ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}`)
+  }
+  if (nbChats > 3) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'avoir plus de 3 chats dans le contrat`)
+  }
+
+  [ chat.naissances, chat.ids, chat.races, chat.felvs, chat.rcps ] . forEach ( v => {
+    const l = v.length
+    if ((l !== 0) && (l != nbChats)) {
+      pdfObject[helperPdf.pdflib.helperProp].errors.push(`Incoherence entre nombre de chats et ${v}`)
+    }
+  })
+
+  // check maladies, when several cats, this is not possible to know which on it is
+  if ((chat.maladies[0] !== '') && (nbChats > 1)) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Maladies et plus de 1 chat`)
+  }
+
+  // check male and femelle
+  if ((chat.male[0]) && (chat.femelle[0])) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Male ET femelle`)
+  }
+
+  if (pdfObject[helperPdf.pdflib.helperProp].errors.length !== 0) {
+    console.log('List of errors:')
+    console.log(pdfObject[helperPdf.pdflib.helperProp].errors)
+    helperJs.error('QUIT')
+  }
 }
 
 function pdfExtractInfoDatas(version) {
@@ -280,17 +335,20 @@ function pdfExtractInfoDatas(version) {
             { prop: 'felvs',           method: setDatesFromSingle,                 args: [ 'Leucose FELV' ] },
             { prop: 'rcps',            method: setDatesFromSingle,                 args: [ 'Typhus coryza RCP' ] },
             { prop: 'maladies',        method: setProplistFromTextfieldCandidates, args: [ 'undefined_4' ] },
+            { prop: 'male',            method: setProplistFromCheckCandidates,     args: [ 'Mâle' ] },
+            { prop: 'femelle',         method: setProplistFromCheckCandidates,     args: [ 'Femelle' ] },
           ],
         },
         // { type: 'C', prop: 'male',                                          fields: [ 'Mâle' ] },
         // { type: 'C', prop: 'femelle',                                       fields: [ 'Femelle' ] },
         // { type: 'C', prop: 'maladieOui',                                    fields: [ 'undefined_2' ] },
         // { type: 'C', prop: 'maladieNon',                                    fields: [ 'undefined_3' ] },
-      ]
+      ],
+      postSetPropFromFields: postSetPropFromFieldsV0,
     }
   }
 
-  helperJs.error(`pdfExtractInfoDatas() does not knwo version ${version}`)
+  helperJs.error(`pdfExtractInfoDatas() does not know version ${version}`)
   return undefined
 }
 
@@ -298,8 +356,8 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const lastContract = await helperPdf.pdflib.load(currentContractDir + '\\' + lastContractName, getVersion)
   const newContract = await helperPdf.pdflib.load(options.rootDir + '\\' + options.blankContract, getVersion)
 
-  if (newContract.version !== _currentVersionContrat) {
-    helperJs.error(`New contract version:\n  Expected: ${_currentVersionContrat}\n  and is: ${newContract.version}`)
+  if (newContract[helperPdf.pdflib.helperProp].version !== _currentVersionContrat) {
+    helperJs.error(`New contract version:\n  Expected: ${_currentVersionContrat}\n  and is: ${newContract[helperPdf.pdflib.helperProp].version}`)
   }
 
   if (false) {
@@ -323,103 +381,48 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(options.to))
 
-  setPropFromFields(lastContract, pdfExtractInfoDatas(lastContract.version).setPropFromFieldsDatas)
-  if (lastContract.errors.length !== 0) {
-    console.log('List of errors:')
-    console.log(lastContract.error)
-    helperJs.error('QUIT')
-  }
+  setPropFromFields(lastContract, pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version).setPropFromFieldsDatas)
 
-  if (lastContract.version === undefined) {
-    const fields = helperPdf.getFields(lastContract.pdf, helperEmailContrat.fieldsMatch)
-    const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
+  helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
+  helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
+  helperPdf.pdflib.setTextfield(newContract, 'pAddr2',     lastContract[helperPdf.pdflib.helperProp].proprio.adr2,       fontToUse)
+  helperPdf.pdflib.setTextfield(newContract, 'pTel',       lastContract[helperPdf.pdflib.helperProp].proprio.tel,        fontToUse)
+  helperPdf.pdflib.setTextfield(newContract, 'pEmail',     lastContract[helperPdf.pdflib.helperProp].proprio.email,      fontToUse)
+  helperPdf.pdflib.setTextfield(newContract, 'pUrgence1',  lastContract[helperPdf.pdflib.helperProp].proprio.urgenceNom, fontToUse)
+  helperPdf.pdflib.setTextfield(newContract, 'pUrgence2',  lastContract[helperPdf.pdflib.helperProp].proprio.urgenceTel, fontToUse)
 
-    const lNom = lastContract.chat.noms.length
-    if (lNom == 0) {
-      helperJs.error(`Impossible d'extraire le nom du chat du contrat ${lastContractName}`)
+  helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], lastContract[helperPdf.pdflib.helperProp].chat.noms, fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract[helperPdf.pdflib.helperProp].chat.naissances, fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c1Id', 'c2Id', 'c3Id'], lastContract[helperPdf.pdflib.helperProp].chat.ids, fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], lastContract[helperPdf.pdflib.helperProp].chat.races, fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract[helperPdf.pdflib.helperProp].chat.felvs, fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract[helperPdf.pdflib.helperProp].chat.rcps, fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies, fontToUse)
+
+  // male / femelle
+  const m = ['c1Male', 'c2Male', 'c3Male']
+  const f = ['c1Femelle', 'c2Femelle', 'c3Femelle']
+  const chat = lastContract[helperPdf.pdflib.helperProp].chat
+  chat.noms.forEach((c, index) => {
+    if (chat.male[index]) {
+      helperPdf.pdflib.checks(newContract, [ m[index] ])
     }
-    if (lNom > 3) {
-      helperJs.error(`Impossible d'avoir plus de 3 chats dans le contrat`)
+    if (chat.femelle[index]) {
+      helperPdf.pdflib.checks(newContract, [ f[index] ])
     }
+  })
 
-    // TODO re-activate the following for coherency
-    // const lNaissance = lastContract.chatNaissances.length
-    // if ((lNaissance!=0) && (lNaissance!==lNom)) {
-    //   helperJs.error(`Nombre de chats entre noms et date de naissance différent: ${lastContract.chatNoms}  vs  ${lastContract.chatNaissances}`)
-    // }
-
-    // const lId = lastContract.chatIds.length
-    // if ((lId!=0) && (lId!==lNom)) {
-    //   helperJs.error(`Nombre de chats entre noms et Id différent: ${lastContract.chatNoms}  vs  ${lastContract.chatIds}`)
-    // }
-
-    // const lRace = lastContract.chatRaces.length
-    // if ((lRace!=0) && (lRace!==lNom)) {
-    //   helperJs.error(`Nombre de chats entre noms et race différent: ${lastContract.chatNoms}  vs  ${lastContract.chatRaces}`)
-    // }
-
-    // const lFelv = lastContract.chatFelvs.length
-    // if ((lFelv!=0) && (lFelv!==lNom)) {
-    //   helperJs.error(`Nombre de chats entre noms et felv différent: ${lastContract.chatNoms}  vs  ${lastContract.chatFelvs}`)
-    // }
-
-    // const lRcp = lastContract.chatRcps.length
-    // if ((lRcp!=0) && (lRcp!==lNom)) {
-    //   helperJs.error(`Nombre de chats entre noms et rcp différent: ${lastContract.chatNoms}  vs  ${lastContract.chatRcps}`)
-    // }
-
-    helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract.proprio.nom,        fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract.proprio.adr1,       fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pAddr2',     lastContract.proprio.adr2,       fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pTel',       lastContract.proprio.tel,        fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pEmail',     lastContract.proprio.email,      fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pUrgence1',  lastContract.proprio.urgenceNom, fontToUse)
-    helperPdf.pdflib.setTextfield(newContract, 'pUrgence2',  lastContract.proprio.urgenceTel, fontToUse)
-
-    helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], lastContract.chat.noms, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract.chat.naissances, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1Id', 'c2Id', 'c3Id'], lastContract.chat.ids, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], lastContract.chat.races, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract.chat.felvs, fontToUse)
-    helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract.chat.rcps, fontToUse)
-
-    // maladies on 3 lines, from https://stackoverflow.com/questions/6259515/how-can-i-split-a-string-into-segments-of-n-characters
-    // when there is a maladie, and several cats, this is not possible to know which on it is
-    if (lastContract.chat.maladies[0] !== '') {
-      if (lNom > 1) {
-        await helperJs.question.question('Maladie and more than 1 cat - A DETERMINER MANUELLEMENT\nAppuyer sur Entrée')
-      } else {
-        const maladies = lastContract.chat.maladies[0].match(/.{1,18}/g)    // 18 characters are ok in a cell of the contract
-        console.log(maladies)
-        helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], maladies, fontToUse)
-      }
+  // check vaccination date
+  const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
+  lastContract[helperPdf.pdflib.helperProp].chat.rcps.forEach((date, index) => {
+    const epochRcp = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(date))
+    const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
+    console.log(`${epochRcp} ${epochRcp}`)
+    if (epochRcpNext < epochDeparture) {
+      console.log('A REFAIRE')
+      helperPdf.pdflib.setTextfield(newContract, remarque[index], 'RAPPEL A REFAIRE', fontToUse)
     }
-
-    // male / femelle
-    if (decompose.male && !decompose.femelle) {
-      helperPdf.pdflib.checks(newContract, ['c1Male', 'c2Male', 'c3Male'].slice(0, lNom))
-    } else if (!decompose.male && decompose.femelle) {
-      helperPdf.pdflib.checks(newContract, ['c1Femelle', 'c2Femelle', 'c3Femelle'].slice(0, lNom))
-    } else if (decompose.male && decompose.femelle) {
-      await helperJs.question.question('Mâle ET Femelle - A DETERMINER MANUELLEMENT\nAppuyer sur Entrée')
-    }
-
-    // check vaccination date
-    const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
-    decompose.rcp.forEach((date, index) => {
-      const epochRcp = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(date))
-      const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
-      console.log(`${epochRcp} ${epochRcp}`)
-      if (epochRcpNext < epochDeparture) {
-        console.log('A REFAIRE')
-        helperPdf.pdflib.setTextfield(newContract, remarque[index], 'RAPPEL A REFAIRE', fontToUse)
-      }
-    })
-
-  } else {
-    helperJs.error('NOT IMPLEMENTED YET')
-  }
-
+  })
 
   let services = []
   if (options.services==='') {

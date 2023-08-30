@@ -123,7 +123,11 @@ async function _load(pdfFullName, init=undefined) {
   let pdfObject = {
     pdf: pdf, 
     form: form,
-    pdfFullName: pdfFullName,
+    helper: {
+      pdfFullName: pdfFullName,
+      version: undefined,
+      errors: [],
+    },
   }
   if (init !== undefined) {
     init(pdfObject)
@@ -154,7 +158,6 @@ function _checks(pdfObject, checks) {
   checks.forEach(f => pdfObject.form.getCheckBox(f).check())  
 }
 
-
 export default {
   load,           // async - load PDF file from its filename
   flatten,
@@ -166,6 +169,7 @@ export default {
   pdflib: {
     load: _load,    // async
     save: _save,    // async
+    helperProp: 'helper',
     checks: _checks,
     setTextfield: _setTextfield,
     setTextfields: _setTextfields,
