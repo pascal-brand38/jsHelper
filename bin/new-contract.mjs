@@ -127,17 +127,6 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     helperJs.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract[helperPdf.pdflib.helperProp].version}`)
   }
 
-  if (false) {
-    console.log('printing...')
-    const fields = lastContract.form.getFields()
-    fields.forEach(field => {
-      const type = field.constructor.name;
-      const name = field.getName();
-      console.log(type + '     ' + name);
-    });
-    helperJs.error('QUIT')
-  }
-
   // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
   // const helvetica = await newContract.pdf.embedFont(StandardFonts.Helvetica)
   newContract.pdf.registerFontkit(fontkit)

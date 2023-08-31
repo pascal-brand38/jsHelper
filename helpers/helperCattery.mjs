@@ -229,9 +229,6 @@ function normalize(value) {
       .replace(/\s+/g, " ")
 }
 
-function decomposeIdentical(prop, value, results) {
-  results[prop] = value
-}
 
 function getDate(array, prop) {
   const dateFormats = [ 'd/M/yy', 'd/M/y', 'M/y' ]
@@ -265,106 +262,6 @@ function getDate(array, prop) {
   return lastDate
 }
 
-function decomposeDatesCats(prop, value, results) {
-  value = normalize(value)
-  let values = separate(value)    // get a list of values per cat in this pdf
-
-  let catNames = results['chatNom']
-  if ((catNames !== undefined) && (catNames.length !== values.length)) {
-    // different number of cats and dates
-    results[prop] = [ `Error with cats and ${prop} number: ${catNames}  vs  ${values}` ]
-    results.error = true
-    return
-  }
-
-  results[prop] = []
-  values.forEach((v, i) => {
-    if (catNames !== undefined) {
-      catNames.every((cat, j) => {
-        if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
-          // different cats order
-          results[prop].push(`Error with cat order in ${values}`)
-          results.error = true
-          return false
-        }
-        return true
-      })
-    }
-     let d = getDate(v.split(' '), prop)
-     if (d === '') {
-      results[prop].push(`Error with ${v}`)
-      results['error'] = true
-     } else {
-      results[prop].push(d)
-     }
-  })
-}
-
-function decomposeMultiple(prop, value, results) {
-  value = normalize(value)
-  const values = separate(value)    // get a list of values per cat in this pdf
-  results[prop] = values
-}
-
-function decomposeCatName(prop, value, results) {
-  value = normalize(value)
-  let values = separate(value)    // get a list of values per cat in this pdf
-  results['chatNom'] = []
-  results['chatNaissance'] = []
-
-  let firstBirthDate = undefined
-
-  values.forEach(v => {
-    let name = v.split(' dit ')
-    let next
-    if (name.length === 2) {
-      next = name[1].split(' ')
-      results['chatNom'].push(`${name[0]} dit ${next.shift()}`)
-    } else {
-      name = v.split(' ')
-      results['chatNom'].push(name.shift())
-      next = name
-    }
-
-    let d = getDate(next, prop)
-    results['chatNaissance'].push(d)
-    if ((d !== '') && (firstBirthDate !== undefined)) {
-      firstBirthDate = d
-    }
-  })
-
-  // check for all birth date, in case some are not found
-  if (firstBirthDate !== undefined) {
-    results['chatNaissance'].forEach((d, index) => {
-      if (d === '') {
-        results['chatNaissance'][index] = d
-      }
-    })
-  }
-}
-
-const fieldsMatch = [
-  { type: 'T', prop: 'nom',         decompose: decomposeIdentical,    fields: [ 'Nom Prénom' ] },
-  { type: 'T', prop: 'adr1',                                          fields: [ 'Adresse 1' ] },
-  { type: 'T', prop: 'adr2',                                          fields: [ 'Adresse 2' ] },
-  { type: 'T', prop: 'tel',                                           fields: [ 'Téléphone' ] },
-  { type: 'T', prop: 'email',                                         fields: [ 'Adresse email' ] },
-  { type: 'T', prop: 'urgenceNom',                                    fields: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
-  { type: 'T', prop: 'urgenceTel',                                    fields: [ 'Téléphone_2' ] },
-  { type: 'T', prop: 'chat',        decompose: decomposeCatName,      fields: [ '1' ] },
-  { type: 'T', prop: 'id',          decompose: decomposeMultiple,     fields: [ '2' ] },
-  { type: 'T', prop: 'race',        decompose: decomposeMultiple,     fields: [ 'undefined' ] },
-  { type: 'T', prop: 'felv',        decompose: decomposeDatesCats,    fields: [ 'Leucose FELV' ] },
-  { type: 'T', prop: 'rcp',         decompose: decomposeDatesCats,    fields: [ 'Typhus coryza RCP' ] },
-  { type: 'T', prop: 'maladies',                                      fields: [ 'undefined_4' ] },
-
-  { type: 'C', prop: 'male',                                          fields: [ 'Mâle' ] },
-  { type: 'C', prop: 'femelle',                                       fields: [ 'Femelle' ] },
-  { type: 'C', prop: 'maladieOui',                                    fields: [ 'undefined_2' ] },
-  { type: 'C', prop: 'maladieNon',                                    fields: [ 'undefined_3' ] },
-
-  // now is the booking dates and others
-];
 
 function postComputationSheet(rows) {
   rows = rows.filter(e => (e.name !== undefined) && !isNaN(e.arrival) && !isNaN(e.departure))
@@ -415,7 +312,7 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, excludes) {
     contractName = getLastContract(currentContractDir)
   }
   if (contractName === undefined) {
-    return { fields: undefined, decompose: undefined, contractName: dataCompta['name'] }
+    return { pdfObject: undefined, contractName: dataCompta['name'] }
   }
   
   // check rcp date
@@ -447,13 +344,9 @@ export default {
   getLastContract,
   getContractName,
   composeThunderbird,
-  fieldsMatch,
   xlsFormatCompta,
   xlsFormatAgenda,
   getPdfDataFromDataCompta,
-  normalize,
-  separate,
-  getDate,
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {
