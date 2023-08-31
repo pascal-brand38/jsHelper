@@ -10,6 +10,7 @@ import { DateTime } from 'luxon'
 import path from 'path'
 import helperJs from './helperJs.mjs';
 import helperPdf from './helperPdf.mjs';
+import os from 'os'
 
 function get_args(usage) {
   console.log(process.argv)
@@ -425,6 +426,18 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, excludes) {
   return { fields, decompose, contractName }
 }
 
+function getEmail(pdfObject) {
+  let email = pdfObject[helperPdf.pdflib.helperProp].proprio.email
+  if ((email === undefined) || (email === '')) {
+    email = ''
+    helperJs.warning(`Impossible de connaitre l'email de ${options.who}`)
+  } else if (os.userInfo().username == 'pasca') {
+    helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
+    email = 'toto@titi.com'
+  }
+
+  return email
+}
 
 export default {
   get_args,
@@ -445,6 +458,7 @@ export default {
     currentVersionContrat: 20230826,
     getVersion: getVersion,
     pdfExtractInfoDatas: pdfExtractInfoDatas,    // TODO: comments
+    getEmail: getEmail,
   }
 }
 

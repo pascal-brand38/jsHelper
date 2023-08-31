@@ -7,7 +7,6 @@
 
 import path from 'path'
 import reader from 'xlsx'   // TODO: remove it!
-import os from 'os'
 
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
@@ -142,16 +141,8 @@ async function sendMail(options, currentContractDir) {
   const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(pdfContract[helperPdf.pdflib.helperProp].version)
   helperPdf.pdflib.setPropFromFields(pdfContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
 
-  let email = pdfContract[helperPdf.pdflib.helperProp].proprio.email
-  if ((email === undefined) || (email === '')) {
-    email = ''
-    helperJs.warning(`Impossible de connaitre l\'email de ${options.who}`)
-  }
+  const email = helperCattery.helperPdf.getEmail(pdfContract)
 
-  if (os.userInfo().username == 'pasca') {
-    helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
-    email = 'toto@titi.com'
-  }
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 

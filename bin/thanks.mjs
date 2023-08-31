@@ -1,31 +1,17 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
 ///
-// Based on pdf-lib
-//   npm install pdf-lib
-//
-
-
-
-
-import { PDFDocument } from 'pdf-lib'
-import fs from 'fs'
 
 import helperCattery from '../helpers/helperCattery.mjs'
+import helperPdf from '../helpers/helperPdf.mjs'
 
+async function sendMail(options, currentContractDir, lastContractName) {
+  const pdfContract = await helperPdf.pdflib.load(currentContractDir + '\\' + lastContractName, helperCattery.helperPdf.getVersion)
+  const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(pdfContract[helperPdf.pdflib.helperProp].version)
+  helperPdf.pdflib.setPropFromFields(pdfContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
 
-async function sendMail(options, currentContractDir, lastContract) {
-  const pdfLastContract = await PDFDocument.load(fs.readFileSync(currentContractDir + '\\' + lastContract));
-  const formLastContract = pdfLastContract.getForm();
+  const email = helperCattery.helperPdf.getEmail(pdfContract)
 
-  let email
-  try {
-    email = formLastContract.getTextField('Adresse email').getText();
-  } catch {
-    error('Impossible de connaitre l\'email de ' + options.who)
-  }
-
-  // email = 'toto@gmail.com'
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
@@ -46,13 +32,13 @@ async function sendMail(options, currentContractDir, lastContract) {
 }
 
 
-function main() {
+async function main() {
   const options = helperCattery.get_args('Open thinderbird to send a THANKS email, from an excel compta macro directly\n\nUsage: $0 [options]');
   const currentContractDir = options.rootDir + '\\' + helperCattery.getCurrentContractDir(options.rootDir, options.who);
-  const lastContract = helperCattery.getLastContract(currentContractDir);
+  const lastContractName = helperCattery.getLastContract(currentContractDir);
 
-  sendMail(options, currentContractDir, lastContract)
+  await sendMail(options, currentContractDir, lastContractName)
 }
 
 
-main();
+await main();
