@@ -119,14 +119,12 @@ function get_args() {
 }
 
 
-const _currentVersionContrat = 20230826
-
 async function updatePDF(options, currentContractDir, lastContractName) {
   const lastContract = await helperPdf.pdflib.load(currentContractDir + '\\' + lastContractName, helperCattery.helperPdf.getVersion)
   const newContract = await helperPdf.pdflib.load(options.rootDir + '\\' + options.blankContract, helperCattery.helperPdf.getVersion)
 
-  if (newContract[helperPdf.pdflib.helperProp].version !== _currentVersionContrat) {
-    helperJs.error(`New contract version:\n  Expected: ${_currentVersionContrat}\n  and is: ${newContract[helperPdf.pdflib.helperProp].version}`)
+  if (newContract[helperPdf.pdflib.helperProp].version !== helperCattery.helperPdf.currentVersionContrat) {
+    helperJs.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract[helperPdf.pdflib.helperProp].version}`)
   }
 
   if (false) {

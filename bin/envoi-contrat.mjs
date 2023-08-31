@@ -5,21 +5,13 @@
 //   npm install pdf-lib
 //
 
-import { PDFDocument } from 'pdf-lib'
-import fs from 'fs'
 import path from 'path'
-import reader from 'xlsx'
+import reader from 'xlsx'   // TODO: remove it!
 import os from 'os'
 
 import helperCattery from '../helpers/helperCattery.mjs'
-import helperExcel from '../helpers/helperExcel.mjs'
 import helperJs from '../helpers/helperJs.mjs'
-
-// https://nodejs.org/api/readline.html
-import * as readline from 'readline';
-import { stdin as input, stdout as output } from 'process';
-import { error } from 'console'
-const rl = readline.createInterface({ input, output });
+import helperPdf from '../helpers/helperPdf.mjs'
 
 function getVotrePtitLoulou(gender) {
   const nChoices = 2
@@ -105,26 +97,18 @@ function getDevraEtreVermifuge(gender) {
   }
 }
 
-async function getGender(formContract) {
-  let male = false
-  try {
-    male = formContract.getCheckBox('Mâle').isChecked();
-  } catch {
-  }
-  let female = false
-  try {
-    female = formContract.getCheckBox('Femelle').isChecked();
-  } catch {
-  }
+// TODO: automatically
+async function getGender(pdfContract) {
+  const chat = pdfContract[helperPdf.pdflib.helperProp].chat
+  const male = chat.male.some(m => m)
+  const female = chat.femelle.some(f => f)
 
   let genderError = true
   let gender
   while (genderError) {
     gender = '0'
     while ((gender!='1') && (gender!='2') && (gender!='3') && (gender!='4')) {
-      gender = await new Promise(resolve => {
-        rl.question('0- Quit  or  1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ', resolve)
-      })
+      gender = await helperJs.question.question('0- Quit  or  1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ')
       if (gender == 0) {
         helperJs.error("Quitting")
       }
@@ -144,9 +128,7 @@ async function getGender(formContract) {
 async function getYesNo(text) {
   let answer = ''
   while ((answer!='y') && (answer!='n')) {
-    answer = await new Promise(resolve => {
-      rl.question(`${text} (y/n)? `, resolve)
-    })
+    answer = await helperJs.question.question(`${text} (y/n)? `)
   }
   return answer
 }
@@ -154,27 +136,27 @@ async function getYesNo(text) {
 async function sendMail(options, currentContractDir) {
   const contractName = helperCattery.getContractName(options.from, currentContractDir);
   const pdfFullName = `${currentContractDir}\\${contractName}`
-  const pdfContract = await PDFDocument.load(fs.readFileSync(pdfFullName));
-  const formContract = pdfContract.getForm();
+  const pdfContract = await helperPdf.pdflib.load(pdfFullName, helperCattery.helperPdf.getVersion)
+  const formContract = pdfContract.form;
 
-  let email
-  try {
-    email = formContract.getTextField('Adresse email').getText();
-  } catch {
-    error('Impossible de connaitre l\'email de ' + options.who)
+  const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(pdfContract[helperPdf.pdflib.helperProp].version)
+  helperPdf.pdflib.setPropFromFields(pdfContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
+
+  let email = pdfContract[helperPdf.pdflib.helperProp].proprio.email
+  if ((email === undefined) || (email === '')) {
+    email = ''
+    helperJs.warning(`Impossible de connaitre l\'email de ${options.who}`)
   }
 
   if (os.userInfo().username == 'pasca') {
-    console.log(`WARNING`)
-    console.log(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
-    console.log(`WARNING`)
+    helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
     email = 'toto@titi.com'
   }
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
-  let gender = await getGender(formContract)
-  let vaccin = await getYesNo('Vaccins à refaire')
+  let gender = await getGender(pdfContract)
+  let vaccin = await getYesNo('Vaccins à refaire')    // TODO automatically
 
   let subject = `Réservation pour les vacances de ${catName} à ${options.entreprise}`
 
@@ -250,17 +232,16 @@ async function sendMail(options, currentContractDir) {
 
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
-  let flatFormFullName = path.join('C:', 'tmp', path.basename(pdfFullName))
-  formContract.flatten()
+  
+  helperPdf.pdflib.flatten(pdfContract)
+  const flattenName = path.join('C:', 'tmp', path.basename(pdfFullName))
   try {
-    const pdfBuf = await pdfContract.save(/*{ updateFieldAppearances: true }*/)
-    fs.writeFileSync(flatFormFullName, pdfBuf, { flag: 'w' });
+    await helperPdf.pdflib.save(pdfContract, flattenName, { flag: 'w' })
   } catch(e) {
-    console.log(e);
-    error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContrat);
+    helperJs.error(`Impossible to write file ${flattenName}`)
   }
 
-  let attachment = `file:///${flatFormFullName}`
+  let attachment = `file:///${flattenName}`
 
   helperCattery.composeThunderbird(email, subject, body, attachment)
 }
@@ -268,6 +249,7 @@ async function sendMail(options, currentContractDir) {
 // Check the contract is coherent with respect to the previous one
 // - deposit asking, or not
 // - same daily price, not to forget medecine
+// TODO use helperCattery
 async function checkXls(options) {
   const sheetName = 'Compta'
   const colName = 'B'

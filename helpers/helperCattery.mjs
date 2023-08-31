@@ -442,6 +442,7 @@ export default {
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {
+    currentVersionContrat: 20230826,
     getVersion: getVersion,
     pdfExtractInfoDatas: pdfExtractInfoDatas,    // TODO: comments
   }

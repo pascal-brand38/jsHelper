@@ -138,9 +138,9 @@ async function _load(pdfFullName, init=undefined) {
   return pdfObject
 }
 
-async function _save(pdfObject, pdfFullName) {
+async function _save(pdfObject, pdfFullName, flag={ flag: 'wx' }) {
   const pdfBuf = await pdfObject.pdf.save(/*{ updateFieldAppearances: true }*/)
-  fs.writeFileSync(pdfFullName, pdfBuf, { flag: 'wx' });
+  fs.writeFileSync(pdfFullName, pdfBuf, flag);
 }
 
 const helperProp = 'helper'
@@ -222,6 +222,7 @@ export default {
   pdflib: {
     load: _load,    // async
     save: _save,    // async
+    flatten: (pdfObject => pdfObject.form.flatten),
     helperProp: helperProp,
     setPropFromFields: setPropFromFields,
     setProplistFromTextfieldlist: _setProplistFromTextfieldlist,
