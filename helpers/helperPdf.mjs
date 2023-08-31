@@ -115,7 +115,10 @@ function getRectsFromField(field,doc) {
 // load a pdf file, and return a pdf object that contain:
 // - pdf: the pdf as a pdj-lib.js structure
 // - form: the form
-// - pdfFullName
+// - helper: set of extra data obtained from the form
+//   - pdfFullName
+//   - version: version of the pdf document
+//   - errors: list of errors encountered when extracting data - empty when no error
 // moreover, if init is provided, then the pdf object may be populated with a version for example
 async function _load(pdfFullName, init=undefined) {
   const pdf = await PDFDocument.load(fs.readFileSync(pdfFullName));
@@ -140,6 +143,45 @@ async function _save(pdfObject, pdfFullName) {
   fs.writeFileSync(pdfFullName, pdfBuf, { flag: 'wx' });
 }
 
+const helperProp = 'helper'
+
+// TODO COMMENTS
+// setPropFromFields: set propertys inside the helperProp property
+
+function setPropFromFields(pdfObject, setPropFromFieldsDatas, postproc, result=undefined) {
+  if (result === undefined) {
+    result = pdfObject[helperProp]
+  }
+  setPropFromFieldsDatas.forEach(data => {
+    if (data.hasOwnProperty('setPropFromFieldsDatas')) {
+      const prop = data['prop']
+      result[prop] = {}
+      setPropFromFields(pdfObject, data['setPropFromFieldsDatas'], undefined, result[prop])
+    } else {
+      console.log(`${data.prop} ${data.args}`)
+      data.method(pdfObject, data.prop, data.args, result)
+    }
+  })
+
+  if (postproc !== undefined) {
+    postproc(pdfObject, result)
+  }
+}
+
+function _setProplistFromTextfieldlist(pdfObject, prop, args, result) {
+  result[prop] = []
+  args.forEach(arg => {
+    result[prop].push(pdfObject.form.getTextField(arg).getText())
+  })
+}
+
+function _setProplistFromChecklist(pdfObject, prop, args, result) {
+  result[prop] = []
+  args.forEach(arg => {
+    result[prop].push(pdfObject.form.getCheckBox(arg).isChecked())
+  })
+}
+
 // set a textfield, or a list of text fields
 function _setTextfield(pdfObject, Textfield, text, fontToUse=undefined) {
   const f = pdfObject.form.getTextField(Textfield);
@@ -152,6 +194,7 @@ function _setTextfield(pdfObject, Textfield, text, fontToUse=undefined) {
 function _setTextfields(pdfObject, Textfields, texts, fontToUse=undefined) {
   texts.forEach((text, index) => _setTextfield(pdfObject, Textfields[index], text, fontToUse))
 }
+
 
 // check to true all field in checks list
 function _checks(pdfObject, checks) {
@@ -169,7 +212,10 @@ export default {
   pdflib: {
     load: _load,    // async
     save: _save,    // async
-    helperProp: 'helper',
+    helperProp: helperProp,
+    setPropFromFields: setPropFromFields,
+    setProplistFromTextfieldlist: _setProplistFromTextfieldlist,
+    setProplistFromChecklist: _setProplistFromChecklist,
     checks: _checks,
     setTextfield: _setTextfield,
     setTextfields: _setTextfields,

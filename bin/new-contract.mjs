@@ -254,24 +254,6 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
   })
 }
 
-function setPropFromFields(pdfObject, setPropFromFieldsDatas, postproc, result=undefined) {
-  if (result === undefined) {
-    result = pdfObject[helperPdf.pdflib.helperProp]
-  }
-  setPropFromFieldsDatas.forEach(data => {
-    if (data.hasOwnProperty('setPropFromFieldsDatas')) {
-      const prop = data['prop']
-      result[prop] = {}
-      setPropFromFields(pdfObject, data['setPropFromFieldsDatas'], undefined, result[prop])
-    } else {
-      data.method(pdfObject, data.prop, data.args, result)
-    }
-  })
-
-  if (postproc !== undefined) {
-    postproc(pdfObject, result)
-  }
-}
 
 function postSetPropFromFieldsV0(pdfObject, result) {
   const chat = result.chat
@@ -339,12 +321,41 @@ function pdfExtractInfoDatas(version) {
             { prop: 'femelle',         method: setProplistFromCheckCandidates,     args: [ 'Femelle' ] },
           ],
         },
-        // { type: 'C', prop: 'male',                                          fields: [ 'Mâle' ] },
-        // { type: 'C', prop: 'femelle',                                       fields: [ 'Femelle' ] },
-        // { type: 'C', prop: 'maladieOui',                                    fields: [ 'undefined_2' ] },
-        // { type: 'C', prop: 'maladieNon',                                    fields: [ 'undefined_3' ] },
       ],
       postSetPropFromFields: postSetPropFromFieldsV0,
+    }
+  } else if (version === 20230826) {
+    return {
+      setPropFromFieldsDatas: [
+        {
+          prop: 'proprio',
+          setPropFromFieldsDatas: [
+            { prop: 'nom',             method: setPropFromTextfieldCandidates,     args: [ 'pNom' ] },
+            { prop: 'adr1',            method: setPropFromTextfieldCandidates,     args: [ 'pAddr1' ] },
+            { prop: 'adr2',            method: setPropFromTextfieldCandidates,     args: [ 'pAddr2' ] },
+            { prop: 'tel',             method: setPropFromTextfieldCandidates,     args: [ 'pTel' ] },
+            { prop: 'email',           method: setPropFromTextfieldCandidates,     args: [ 'pEmail' ] },
+            { prop: 'urgenceNom',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence1' ] },
+            { prop: 'urgenceTel',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence1' ] },
+          ],
+        },
+        {
+          prop: 'chat',
+          setPropFromFieldsDatas: [
+            { prop: 'noms',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Nom', 'c2Nom', 'c3Nom' ] },
+            { prop: 'naissances',      method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Naissance', 'c2Naissance', 'c3Naissance' ] },
+            { prop: 'ids',             method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Id', 'c2Id', 'c3Id' ] },
+            { prop: 'races',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Race', 'c2Race', 'c3Race' ] },
+            { prop: 'felvs',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV' ] },
+            { prop: 'rcps',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP' ] },
+            // TODO bug on maladies as array of array
+            { prop: 'maladies',        method: setProplistFromTextfieldCandidates, args: [ 'c1Maladie1' ] },
+            { prop: 'male',            method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Male', 'c2Male', 'c3Male' ] },
+            { prop: 'femelle',         method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
+          ],
+        },
+      ],
+      postSetPropFromFields: undefined,   // TODO
     }
   }
 
@@ -382,7 +393,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(options.to))
 
   const pdfInfoData = pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version)
-  setPropFromFields(lastContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
+  helperPdf.pdflib.setPropFromFields(lastContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
 
   helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
   helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
