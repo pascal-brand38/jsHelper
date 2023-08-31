@@ -148,34 +148,34 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       // TODO: check vaccination date
       return
 
-      // if an rcp date starts with Error, that means something's wrong withe the extraction
-      let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
-      if (!toBeChecked) {
-        const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.departure))
+      // // if an rcp date starts with Error, that means something's wrong withe the extraction
+      // let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
+      // if (!toBeChecked) {
+      //   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.departure))
     
-        decompose['rcp'].every(date => {
-          toBeChecked = date.startsWith('Error')
-          if (!toBeChecked) {
-            const rcpDate = helperJs.date.fromFormatStartOfDay(date)
-            const epochRcp = helperJs.date.toEpoch(rcpDate)
-            const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
-            toBeChecked = (epochRcpNext < epochDeparture)
-          }
-          return !toBeChecked
-        })
-      }
+      //   decompose['rcp'].every(date => {
+      //     toBeChecked = date.startsWith('Error')
+      //     if (!toBeChecked) {
+      //       const rcpDate = helperJs.date.fromFormatStartOfDay(date)
+      //       const epochRcp = helperJs.date.toEpoch(rcpDate)
+      //       const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
+      //       toBeChecked = (epochRcpNext < epochDeparture)
+      //     }
+      //     return !toBeChecked
+      //   })
+      // }
 
-      if (toBeChecked) {
-        // console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'], contractName)
-        toBeCheckeds.push( {
-          name: data['name'],
-          sComptaArrival: helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival'])),
-          rcp: decompose['rcp'],
-          contractName,
-          epochArrival,
-        })
-      }
-      //console.log(decompose.chatNom, ': ', decompose['rcp'])
+      // if (toBeChecked) {
+      //   // console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'], contractName)
+      //   toBeCheckeds.push( {
+      //     name: data['name'],
+      //     sComptaArrival: helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival'])),
+      //     rcp: decompose['rcp'],
+      //     contractName,
+      //     epochArrival,
+      //   })
+      // }
+      // //console.log(decompose.chatNom, ': ', decompose['rcp'])
     }
   }))
 
