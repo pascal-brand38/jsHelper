@@ -99,8 +99,8 @@ function getDevraEtreVermifuge(gender) {
 // TODO: automatically
 async function getGender(pdfContract) {
   const chat = pdfContract[helperPdf.pdflib.helperProp].chat
-  const male = chat.male.some(m => m)
-  const female = chat.femelle.some(f => f)
+  const male = chat.males.some(m => m)
+  const female = chat.femelles.some(f => f)
 
   let genderError = true
   let gender
@@ -140,6 +140,7 @@ async function sendMail(options, currentContractDir) {
 
   const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(pdfContract[helperPdf.pdflib.helperProp].version)
   helperPdf.pdflib.setPropFromFields(pdfContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
+  helperCattery.helperPdf.postErrorCheck(pdfContract, undefined)
 
   const email = helperCattery.helperPdf.getEmail(pdfContract)
 

@@ -4,6 +4,7 @@
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
+import helperPdf from '../helpers/helperPdf.mjs'
 
 function nameOrEmpty(name, first=false) { 
   const sep = (first ? '' : '\n')
@@ -54,55 +55,49 @@ async function main() {
       departureCell = ''
     }
 
-    const {fields, decompose, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, excludes)
+    const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, excludes)
     if (verboseStr !== '') {
-      console.log('fields: ', fields)
-      console.log('decompose: ', decompose)
+      console.log('pdfObject: ', pdfObject[helperPdf.pdflib.helperProp])
     }
 
     const errorCell = `ERROR in ${contractName} from ${data.name}`
-    if (decompose === undefined) {
-      rows.push([
-        data.arrival,
-        data.departure,
-        arrivalCell,
-        '',
-        '',
-        departureCell,
-        errorCell,
-      ])
-      return
-    }
+    // if (decompose === undefined) {
+    //   rows.push([
+    //     data.arrival,
+    //     data.departure,
+    //     arrivalCell,
+    //     '',
+    //     '',
+    //     departureCell,
+    //     errorCell,
+    //   ])
+    //   return
+    // }
 
     // owner: name, address1, address2, phone
-    const ownerCell = `${nameOrEmpty(fields.nom,true)}${nameOrEmpty(fields.adr1)}${nameOrEmpty(fields.adr2)}${nameOrEmpty(fields.tel)}`
+    const proprio = pdfObject[helperPdf.pdflib.helperProp].proprio
+    const ownerCell = `${nameOrEmpty(proprio.nom,true)}${nameOrEmpty(proprio.adr1)}${nameOrEmpty(proprio.adr2)}${nameOrEmpty(proprio.tel)}`
 
-    const error = 
-      (decompose.error !== undefined) ||
-      (decompose.chatNom.length !== decompose.chatNaissance.length) ||
-      (decompose.chatNom.length !== decompose.id.length)
-      // do not check the race. Take the same if not same length
-    
+    // const error = 
+    //   (decompose.error !== undefined) ||
+    //   (decompose.chatNom.length !== decompose.chatNaissance.length) ||
+    //   (decompose.chatNom.length !== decompose.id.length)
+    //   // do not check the race. Take the same if not same length
+    const chat = pdfObject[helperPdf.pdflib.helperProp].chat
+    const error = (chat.noms === undefined)
     if (error) {
       rows.push([
         data.arrival,
         data.departure,
         arrivalCell,
-        `${fields.chat}\n${fields.id}\n${fields.race}`,
+        `${chat.noms}\n${chat.ids}\n${chat.races}`,
         ownerCell,
         departureCell,
         errorCell,
       ])
     } else {
-      let sexe = undefined
-      if (fields.male && !fields.femelle) {
-        sexe = 'Mâle'
-      } if (!fields.male && fields.femelle) {
-        sexe = 'Femelle'
-      } 
-
-      decompose.chatNom.forEach((c, index) => {
-        if (decompose.id[index] === '') {
+      chat.noms.forEach((c, index) => {
+        if (chat.ids[index] === '') {
           skippeds.push({
             reason: 'id not found',
             name: data.name,
@@ -112,19 +107,18 @@ async function main() {
           return    // skip the cats without known id
         }
 
-        let race = decompose.race[index]
-        if (race === undefined) {
-          race = decompose.race[0]    // A single race is provided when several cats have the same
-        }
-        if (race === '') {
-          race = undefined
+        let sexe = ''
+        if (chat.males[index]) {
+          sexe = 'Male'
+        } else if (chat.femelles[index]) {
+          sexe = 'Femelle'
         }
 
         rows.push([
           data.arrival,
           data.departure,
           arrivalCell,
-          `${nameOrEmpty(decompose.chatNom[index], true)}${nameOrEmpty(decompose.chatNaissance[index])}\n${decompose.id[index]}${nameOrEmpty(race)}${nameOrEmpty(sexe)}`,
+          `${nameOrEmpty(chat.noms[index], true)}${nameOrEmpty(chat.naissances[index])}\n${chat.ids[index]}${nameOrEmpty(chat.races[index])}${nameOrEmpty(sexe)}`,
           ownerCell,
           departureCell,
           '',  
@@ -148,4 +142,5 @@ async function main() {
   console.log('skippeds: ', skippeds)
 }
 
-main();
+await main();
+console.log('DONE!')

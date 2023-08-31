@@ -11,9 +11,6 @@ import helperCattery from '../helpers/helperCattery.mjs'
 import helperPdf from '../helpers/helperPdf.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 
-import path from 'path'
-import fs from 'fs'
-
 // populates unique arrival and departure dates, from readXls return data
 function populateDates(dates, data) {
   data.forEach(e => { 
@@ -141,10 +138,15 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       // const fields = helperPdf.getFields(pdf, helperCattery.fieldsMatch)
       // const decompose = helperPdf.decomposeFields(fields, helperCattery.fieldsMatch)
       
-      const {decompose, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName)
-      if (decompose === undefined) {
+      const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName)
+      if (pdfObject[helperPdf.pdflib.helperProp].version === undefined) {
+        // return when version is undefined as the rcp vaccination date is not accurate enough
         return
       }
+      helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
+
+      // TODO: check vaccination date
+      return
 
       // if an rcp date starts with Error, that means something's wrong withe the extraction
       let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
@@ -200,9 +202,9 @@ async function main() {
   dataCompta = dataCompta.filter(e => e.arrival >= firstDate)
 
   // check coherency
+  await checkVaccination(dataCompta, argv[2], argv[3])
   checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
-  await checkVaccination(dataCompta, argv[2], argv[3])
 }
 
-main();
+await main();

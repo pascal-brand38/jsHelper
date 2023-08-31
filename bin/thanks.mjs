@@ -9,6 +9,7 @@ async function sendMail(options, currentContractDir, lastContractName) {
   const pdfContract = await helperPdf.pdflib.load(currentContractDir + '\\' + lastContractName, helperCattery.helperPdf.getVersion)
   const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(pdfContract[helperPdf.pdflib.helperProp].version)
   helperPdf.pdflib.setPropFromFields(pdfContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
+  helperCattery.helperPdf.postErrorCheck(pdfContract, undefined)
 
   const email = helperCattery.helperPdf.getEmail(pdfContract)
 

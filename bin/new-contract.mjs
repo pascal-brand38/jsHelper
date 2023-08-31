@@ -150,6 +150,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
   const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version)
   helperPdf.pdflib.setPropFromFields(lastContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
+  helperCattery.helperPdf.postErrorCheck(pdfContract, undefined)
 
   helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
   helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
@@ -174,10 +175,10 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const f = ['c1Femelle', 'c2Femelle', 'c3Femelle']
   const chat = lastContract[helperPdf.pdflib.helperProp].chat
   chat.noms.forEach((c, index) => {
-    if (chat.male[index]) {
+    if (chat.males[index]) {
       helperPdf.pdflib.checks(newContract, [ m[index] ])
     }
-    if (chat.femelle[index]) {
+    if (chat.femelles[index]) {
       helperPdf.pdflib.checks(newContract, [ f[index] ])
     }
   })

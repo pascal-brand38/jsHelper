@@ -419,11 +419,13 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, excludes) {
   }
   
   // check rcp date
-  const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
-  const fields = helperPdf.getFields(pdf, fieldsMatch)
-  const decompose = helperPdf.decomposeFields(fields, fieldsMatch, excludes)
-  
-  return { fields, decompose, contractName }
+  const pdfObject = await helperPdf.pdflib.load(currentContractDir + '\\' + contractName, getVersion)
+  const pdfInfoData = pdfExtractInfoDatas(pdfObject[helperPdf.pdflib.helperProp].version)
+  helperPdf.pdflib.setPropFromFields(pdfObject, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
+  // no postErrorCheck(pdfContract, undefined)
+  // as we can have errors with old contracts. To be done manually later in the process when required
+
+  return { pdfObject, contractName }
 }
 
 function getEmail(pdfObject) {
@@ -459,6 +461,7 @@ export default {
     getVersion: getVersion,
     pdfExtractInfoDatas: pdfExtractInfoDatas,    // TODO: comments
     getEmail: getEmail,
+    postErrorCheck: postErrorCheck,
   }
 }
 
@@ -509,7 +512,7 @@ function setProplistFromCheckCandidates(pdfObject, prop, args, result) {
   })
 
   const lNom = pdfObject[helperPdf.pdflib.helperProp].chat.noms.length
-  result[prop] = [ res ].slice(0, lNom)
+  result[prop] = Array(lNom).fill(res)
 }
 
 function getNamesAndBirthFromNameAndBirth(value) {
@@ -604,7 +607,7 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
 
 function postErrorCheck(pdfObject, result) {
   if (pdfObject[helperPdf.pdflib.helperProp].errors.length !== 0) {
-    console.log('List of errors:')
+    console.log(`List of errors in ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}:`)
     console.log(pdfObject[helperPdf.pdflib.helperProp].errors)
     helperJs.error('QUIT')
   }
@@ -623,9 +626,13 @@ function postSetPropFromFieldsV0(pdfObject, result) {
   }
 
   [ chat.naissances, chat.ids, chat.races, chat.felvs, chat.rcps ] . forEach ( v => {
-    const l = v.length
-    if ((l !== 0) && (l != nbChats)) {
-      pdfObject[helperPdf.pdflib.helperProp].errors.push(`Incoherence entre nombre de chats et ${v}`)
+    if (v === undefined) {
+      pdfObject[helperPdf.pdflib.helperProp].errors.push(`Une des entrées du chat est undefined`)
+    } else {
+      const l = v.length
+      if ((l !== 0) && (l != nbChats)) {
+        pdfObject[helperPdf.pdflib.helperProp].errors.push(`Incoherence entre nombre de chats et ${v}`)
+      }
     }
   })
 
@@ -639,11 +646,11 @@ function postSetPropFromFieldsV0(pdfObject, result) {
   chat.maladies = [ [ m[0] ], [], [] ]
 
   // check male and femelle
-  if ((chat.male[0]) && (chat.femelle[0])) {
+  if ((chat.males[0]) && (chat.femelles[0])) {
+    chat.males.forEach((v, index) => chat.males[index] = false)
+    chat.femelles.forEach((v, index) => chat.femelles[index] = false)
     pdfObject[helperPdf.pdflib.helperProp].errors.push(`Male ET femelle`)
   }
-
-  postErrorCheck(pdfObject, result)
 }
 
 
@@ -674,8 +681,8 @@ function pdfExtractInfoDatas(version) {
             { prop: 'felvs',           method: setDatesFromSingle,                 args: [ 'Leucose FELV' ] },
             { prop: 'rcps',            method: setDatesFromSingle,                 args: [ 'Typhus coryza RCP' ] },
             { prop: 'maladies',        method: setProplistFromTextfieldCandidates, args: [ 'undefined_4' ] },
-            { prop: 'male',            method: setProplistFromCheckCandidates,     args: [ 'Mâle' ] },
-            { prop: 'femelle',         method: setProplistFromCheckCandidates,     args: [ 'Femelle' ] },
+            { prop: 'males',           method: setProplistFromCheckCandidates,     args: [ 'Mâle' ] },
+            { prop: 'femelles',        method: setProplistFromCheckCandidates,     args: [ 'Femelle' ] },
           ],
         },
       ],
@@ -706,16 +713,15 @@ function pdfExtractInfoDatas(version) {
             { prop: 'felvs',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV' ] },
             { prop: 'rcps',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP' ] },
             { prop: 'maladies',        method: helperPdf.pdflib.setProplistlistFromTextfieldlistlist, args: [ [ 'c1Maladie1', 'c1Maladie2', 'c1Maladie3' ], [ 'c2Maladie1', 'c2Maladie2', 'c2Maladie3' ], [ 'c3Maladie1', 'c3Maladie2', 'c3Maladie3' ] ] },
-            { prop: 'male',            method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Male', 'c2Male', 'c3Male' ] },
-            { prop: 'femelle',         method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
+            { prop: 'males',           method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Male', 'c2Male', 'c3Male' ] },
+            { prop: 'femelles',        method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
           ],
         },
       ],
-      postSetPropFromFields: postErrorCheck,
+      postSetPropFromFields: undefined,
     }
   }
 
   helperJs.error(`pdfExtractInfoDatas() does not know version ${version}`)
   return undefined
 }
-
