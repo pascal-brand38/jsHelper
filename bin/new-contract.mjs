@@ -255,6 +255,14 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
 }
 
 
+function postErrorCheck(pdfObject, result) {
+  if (pdfObject[helperPdf.pdflib.helperProp].errors.length !== 0) {
+    console.log('List of errors:')
+    console.log(pdfObject[helperPdf.pdflib.helperProp].errors)
+    helperJs.error('QUIT')
+  }
+}
+
 function postSetPropFromFieldsV0(pdfObject, result) {
   const chat = result.chat
 
@@ -279,17 +287,19 @@ function postSetPropFromFieldsV0(pdfObject, result) {
     pdfObject[helperPdf.pdflib.helperProp].errors.push(`Maladies et plus de 1 chat`)
   }
 
+  // post proc maladies as array of array
+  const m = chat.maladies
+  chat.maladies = [ [ m[0] ], [], [] ]
+
   // check male and femelle
   if ((chat.male[0]) && (chat.femelle[0])) {
     pdfObject[helperPdf.pdflib.helperProp].errors.push(`Male ET femelle`)
   }
 
-  if (pdfObject[helperPdf.pdflib.helperProp].errors.length !== 0) {
-    console.log('List of errors:')
-    console.log(pdfObject[helperPdf.pdflib.helperProp].errors)
-    helperJs.error('QUIT')
-  }
+  postErrorCheck(pdfObject, result)
 }
+
+
 
 function pdfExtractInfoDatas(version) {
   if (version === undefined) {
@@ -348,14 +358,13 @@ function pdfExtractInfoDatas(version) {
             { prop: 'races',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Race', 'c2Race', 'c3Race' ] },
             { prop: 'felvs',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV' ] },
             { prop: 'rcps',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP' ] },
-            // TODO bug on maladies as array of array
-            { prop: 'maladies',        method: setProplistFromTextfieldCandidates, args: [ 'c1Maladie1' ] },
+            { prop: 'maladies',        method: helperPdf.pdflib.setProplistlistFromTextfieldlistlist, args: [ [ 'c1Maladie1', 'c1Maladie2', 'c1Maladie3' ], [ 'c2Maladie1', 'c2Maladie2', 'c2Maladie3' ], [ 'c3Maladie1', 'c3Maladie2', 'c3Maladie3' ] ] },
             { prop: 'male',            method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Male', 'c2Male', 'c3Male' ] },
             { prop: 'femelle',         method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
           ],
         },
       ],
-      postSetPropFromFields: undefined,   // TODO
+      postSetPropFromFields: postErrorCheck,
     }
   }
 
@@ -409,7 +418,9 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], lastContract[helperPdf.pdflib.helperProp].chat.races, fontToUse)
   helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract[helperPdf.pdflib.helperProp].chat.felvs, fontToUse)
   helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract[helperPdf.pdflib.helperProp].chat.rcps, fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies, fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[0], fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c2Maladie1', 'c2Maladie2', 'c2Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[1], fontToUse)
+  helperPdf.pdflib.setTextfields(newContract, ['c3Maladie1', 'c3Maladie2', 'c3Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[2], fontToUse)
 
   // male / femelle
   const m = ['c1Male', 'c2Male', 'c3Male']

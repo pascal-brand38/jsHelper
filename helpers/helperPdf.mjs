@@ -158,7 +158,6 @@ function setPropFromFields(pdfObject, setPropFromFieldsDatas, postproc, result=u
       result[prop] = {}
       setPropFromFields(pdfObject, data['setPropFromFieldsDatas'], undefined, result[prop])
     } else {
-      console.log(`${data.prop} ${data.args}`)
       data.method(pdfObject, data.prop, data.args, result)
     }
   })
@@ -172,6 +171,17 @@ function _setProplistFromTextfieldlist(pdfObject, prop, args, result) {
   result[prop] = []
   args.forEach(arg => {
     result[prop].push(pdfObject.form.getTextField(arg).getText())
+  })
+}
+
+function _setProplistlistFromTextfieldlistlist(pdfObject, prop, args, result) {
+  result[prop] = []
+  args.forEach(arg => {
+    let n = []
+    arg.forEach(a => {
+      n.push(pdfObject.form.getTextField(a).getText())
+    })
+    result[prop].push(n)
   })
 }
 
@@ -215,6 +225,7 @@ export default {
     helperProp: helperProp,
     setPropFromFields: setPropFromFields,
     setProplistFromTextfieldlist: _setProplistFromTextfieldlist,
+    setProplistlistFromTextfieldlistlist: _setProplistlistFromTextfieldlistlist,
     setProplistFromChecklist: _setProplistFromChecklist,
     checks: _checks,
     setTextfield: _setTextfield,
