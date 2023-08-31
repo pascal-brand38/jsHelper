@@ -7,7 +7,7 @@
 /// arg1 is the compta, and arg2 is the agenda
 
 import helperExcel from '../helpers/helperExcel.mjs'
-import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
+import helperCattery from '../helpers/helperCattery.mjs'
 import helperPdf from '../helpers/helperPdf.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 
@@ -130,18 +130,18 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
       // get the pdf contract
       // const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival']))
-      // const currentContractDir = contractRootDir + '\\' + helperEmailContrat.getCurrentContractDir(contractRootDir, data['name']);
-      // const contractName = helperEmailContrat.getContractName(sComptaArrival, currentContractDir);
+      // const currentContractDir = contractRootDir + '\\' + helperCattery.getCurrentContractDir(contractRootDir, data['name']);
+      // const contractName = helperCattery.getContractName(sComptaArrival, currentContractDir);
       // if (contractName === undefined) {
       //   return
       // }
 
       // // check rcp date
       // const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
-      // const fields = helperPdf.getFields(pdf, helperEmailContrat.fieldsMatch)
-      // const decompose = helperPdf.decomposeFields(fields, helperEmailContrat.fieldsMatch)
+      // const fields = helperPdf.getFields(pdf, helperCattery.fieldsMatch)
+      // const decompose = helperPdf.decomposeFields(fields, helperCattery.fieldsMatch)
       
-      const {decompose, contractName} = await helperEmailContrat.getPdfDataFromDataCompta(data, comptaName)
+      const {decompose, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName)
       if (decompose === undefined) {
         return
       }
@@ -191,8 +191,8 @@ async function main() {
   // console.log(argv)
 
   // Reading compta and agenda data
-  let dataCompta = helperExcel.readXls(argv[2], helperEmailContrat.xlsFormatCompta)
-  let dataAgenda = helperExcel.readXls(argv[3], helperEmailContrat.xlsFormatAgenda)
+  let dataCompta = helperExcel.readXls(argv[2], helperCattery.xlsFormatCompta)
+  let dataAgenda = helperExcel.readXls(argv[3], helperCattery.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
   // filter the dates from the compta that are prior the 1st arrival in the agenda

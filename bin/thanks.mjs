@@ -11,7 +11,7 @@
 import { PDFDocument } from 'pdf-lib'
 import fs from 'fs'
 
-import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
+import helperCattery from '../helpers/helperCattery.mjs'
 
 
 async function sendMail(options, currentContractDir, lastContract) {
@@ -42,14 +42,14 @@ async function sendMail(options, currentContractDir, lastContract) {
   
   body += `En vous remerciant,`
 
-  helperEmailContrat.composeThunderbird(email, subject, body)
+  helperCattery.composeThunderbird(email, subject, body)
 }
 
 
 function main() {
-  const options = helperEmailContrat.get_args('Open thinderbird to send a THANKS email, from an excel compta macro directly\n\nUsage: $0 [options]');
-  const currentContractDir = options.rootDir + '\\' + helperEmailContrat.getCurrentContractDir(options.rootDir, options.who);
-  const lastContract = helperEmailContrat.getLastContract(currentContractDir);
+  const options = helperCattery.get_args('Open thinderbird to send a THANKS email, from an excel compta macro directly\n\nUsage: $0 [options]');
+  const currentContractDir = options.rootDir + '\\' + helperCattery.getCurrentContractDir(options.rootDir, options.who);
+  const lastContract = helperCattery.getLastContract(currentContractDir);
 
   sendMail(options, currentContractDir, lastContract)
 }

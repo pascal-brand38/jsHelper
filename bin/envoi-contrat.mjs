@@ -11,7 +11,7 @@ import path from 'path'
 import reader from 'xlsx'
 import os from 'os'
 
-import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
+import helperCattery from '../helpers/helperCattery.mjs'
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 
@@ -152,7 +152,7 @@ async function getYesNo(text) {
 }
 
 async function sendMail(options, currentContractDir) {
-  const contractName = helperEmailContrat.getContractName(options.from, currentContractDir);
+  const contractName = helperCattery.getContractName(options.from, currentContractDir);
   const pdfFullName = `${currentContractDir}\\${contractName}`
   const pdfContract = await PDFDocument.load(fs.readFileSync(pdfFullName));
   const formContract = pdfContract.getForm();
@@ -262,7 +262,7 @@ async function sendMail(options, currentContractDir) {
 
   let attachment = `file:///${flatFormFullName}`
 
-  helperEmailContrat.composeThunderbird(email, subject, body, attachment)
+  helperCattery.composeThunderbird(email, subject, body, attachment)
 }
 
 // Check the contract is coherent with respect to the previous one
@@ -338,9 +338,9 @@ async function checkXls(options) {
 }
 
 async function main() {
-  const options = helperEmailContrat.get_args('Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]');
+  const options = helperCattery.get_args('Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]');
   await checkXls(options)
-  const currentContractDir = options.rootDir + '\\' + helperEmailContrat.getCurrentContractDir(options.rootDir, options.who);
+  const currentContractDir = options.rootDir + '\\' + helperCattery.getCurrentContractDir(options.rootDir, options.who);
 
   await sendMail(options, currentContractDir)
 }

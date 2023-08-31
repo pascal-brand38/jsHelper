@@ -2,7 +2,7 @@
 /// MIT License
 
 import helperExcel from '../helpers/helperExcel.mjs'
-import helperEmailContrat from '../helpers/helperEmailContrat.mjs'
+import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 
 function nameOrEmpty(name, first=false) { 
@@ -22,7 +22,7 @@ async function main() {
   // console.log(argv)
 
   // Reading compta and agenda data
-  let dataCompta = helperExcel.readXls(comptaName, helperEmailContrat.xlsFormatCompta)
+  let dataCompta = helperExcel.readXls(comptaName, helperCattery.xlsFormatCompta)
 
   const dFrom = helperJs.date.fromFormatStartOfDay(from)
   const serialFrom = helperJs.date.toExcelSerial(dFrom)
@@ -54,7 +54,7 @@ async function main() {
       departureCell = ''
     }
 
-    const {fields, decompose, contractName} = await helperEmailContrat.getPdfDataFromDataCompta(data, comptaName, excludes)
+    const {fields, decompose, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, excludes)
     if (verboseStr !== '') {
       console.log('fields: ', fields)
       console.log('decompose: ', decompose)

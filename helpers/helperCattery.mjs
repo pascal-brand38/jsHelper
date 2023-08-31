@@ -439,4 +439,268 @@ export default {
   normalize,
   separate,
   getDate,
+
+  // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
+  helperPdf: {
+    getVersion: getVersion,
+    pdfExtractInfoDatas: pdfExtractInfoDatas,    // TODO: comments
+  }
 }
+
+
+//
+// Set of function to help getting pdf form fields, setting properties, and setting 
+// pdf form fields of contract of the cattery
+//
+
+function getVersion(pdfObject) {
+  pdfObject[helperPdf.pdflib.helperProp].version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
+}
+
+function getTextfromCandidates(pdfObject, args) {
+  let result = undefined
+  // args if a list of fields, being candidate to have the info
+  args.every(field => {
+    try {
+      result = pdfObject.form.getTextField(field).getText();
+      if (result === undefined) {
+        result = ''
+      }
+      return false    // found - stop the every function
+    } catch {
+      return true     // not found - continue
+    }
+  })
+  return result
+}
+
+function setPropFromTextfieldCandidates(pdfObject, prop, args, result) {
+  result[prop] = getTextfromCandidates(pdfObject, args)
+}
+
+function setProplistFromTextfieldCandidates(pdfObject, prop, args, result) {
+  result[prop] = [ getTextfromCandidates(pdfObject, args) ]
+}
+
+function setProplistFromCheckCandidates(pdfObject, prop, args, result) {
+  let res = false
+  args.every(field => {
+    try {
+      res = pdfObject.form.getCheckBox(field).isChecked();
+      return false    // found - stop the every function
+    } catch {
+      return true     // not found - continue
+    }
+  })
+
+  const lNom = pdfObject[helperPdf.pdflib.helperProp].chat.noms.length
+  result[prop] = [ res ].slice(0, lNom)
+}
+
+function getNamesAndBirthFromNameAndBirth(value) {
+  value = normalize(value)
+  let values = separate(value)    // get a list of values per cat in this pdf
+  let noms = []
+  let naissances = []
+
+  let firstBirthDate = undefined
+
+  values.forEach(v => {
+    let name = v.split(' dit ')
+    let next
+    if (name.length === 2) {
+      next = name[1].split(' ')
+      noms.push(`${name[0]} dit ${next.shift()}`)
+    } else {
+      name = v.split(' ')
+      noms.push(name.shift())
+      next = name
+    }
+
+    let d = getDate(next, undefined)
+    naissances.push(d)
+    if ((d !== '') && (firstBirthDate !== undefined)) {
+      firstBirthDate = d
+    }
+  })
+
+  // check for all birth date, in case some are not found
+  if (firstBirthDate !== undefined) {
+    naissances.forEach((d, index) => {
+      if (d === '') {
+        naissances[index] = d
+      }
+    })
+  }
+
+  return { noms: noms, naissances: naissances}
+}
+
+function setCatNamesFromSingleName(pdfObject, prop, args, result) {
+  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfObject, args))
+  result[prop] = res.noms
+}
+
+function setBirthsFromSingleName(pdfObject, prop, args, result) {
+  let res = getNamesAndBirthFromNameAndBirth(getTextfromCandidates(pdfObject, args))
+  result[prop] = res.naissances
+}
+
+function setPropMultipleFromSingle(pdfObject, prop, args, result) {
+  let value = getTextfromCandidates(pdfObject, args)
+  value = normalize(value)
+  const values = separate(value)    // get a list of values per cat in this pdf
+  result[prop] = values
+}
+
+function setDatesFromSingle(pdfObject, prop, args, result) {
+  let value = getTextfromCandidates(pdfObject, args)
+  value = normalize(value)
+  let values = separate(value)    // get a list of values per cat in this pdf
+
+  let catNames = pdfObject[helperPdf.pdflib.helperProp]['chat']['noms']
+  if ((catNames !== undefined) && (catNames.length !== values.length)) {
+    // different number of cats and dates
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
+    return
+  }
+
+  result[prop] = []
+  values.forEach((v, i) => {
+    if (catNames !== undefined) {
+      catNames.every((cat, j) => {
+        if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
+          // different cats order
+          pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with cat order in ${values}`)
+          return false
+        }
+        return true
+      })
+    }
+     let d = getDate(v.split(' '), prop)
+     if (d === '') {
+      pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with ${v}`)
+    } else {
+      result[prop].push(d)
+     }
+  })
+}
+
+
+function postErrorCheck(pdfObject, result) {
+  if (pdfObject[helperPdf.pdflib.helperProp].errors.length !== 0) {
+    console.log('List of errors:')
+    console.log(pdfObject[helperPdf.pdflib.helperProp].errors)
+    helperJs.error('QUIT')
+  }
+}
+
+function postSetPropFromFieldsV0(pdfObject, result) {
+  const chat = result.chat
+
+  // check coherency on number of cats and number of ids,...
+  const nbChats = chat.noms.length
+  if (nbChats == 0) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'extraire le nom du chat du contrat ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}`)
+  }
+  if (nbChats > 3) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'avoir plus de 3 chats dans le contrat`)
+  }
+
+  [ chat.naissances, chat.ids, chat.races, chat.felvs, chat.rcps ] . forEach ( v => {
+    const l = v.length
+    if ((l !== 0) && (l != nbChats)) {
+      pdfObject[helperPdf.pdflib.helperProp].errors.push(`Incoherence entre nombre de chats et ${v}`)
+    }
+  })
+
+  // check maladies, when several cats, this is not possible to know which on it is
+  if ((chat.maladies[0] !== '') && (nbChats > 1)) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Maladies et plus de 1 chat`)
+  }
+
+  // post proc maladies as array of array
+  const m = chat.maladies
+  chat.maladies = [ [ m[0] ], [], [] ]
+
+  // check male and femelle
+  if ((chat.male[0]) && (chat.femelle[0])) {
+    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Male ET femelle`)
+  }
+
+  postErrorCheck(pdfObject, result)
+}
+
+
+
+function pdfExtractInfoDatas(version) {
+  if (version === undefined) {
+    return {
+      setPropFromFieldsDatas: [
+        {
+          prop: 'proprio',
+          setPropFromFieldsDatas: [
+            { prop: 'nom',             method: setPropFromTextfieldCandidates,     args: [ 'Nom Prénom' ] },
+            { prop: 'adr1',            method: setPropFromTextfieldCandidates,     args: [ 'Adresse 1' ] },
+            { prop: 'adr2',            method: setPropFromTextfieldCandidates,     args: [ 'Adresse 2' ] },
+            { prop: 'tel',             method: setPropFromTextfieldCandidates,     args: [ 'Téléphone' ] },
+            { prop: 'email',           method: setPropFromTextfieldCandidates,     args: [ 'Adresse email' ] },
+            { prop: 'urgenceNom',      method: setPropFromTextfieldCandidates,     args: [ 'Personne autre que moi à prévenir en cas durgence', 'Personne à prévenir en cas durgence' ] },
+            { prop: 'urgenceTel',      method: setPropFromTextfieldCandidates,     args: [ 'Téléphone_2' ] },
+          ],
+        },
+        {
+          prop: 'chat',
+          setPropFromFieldsDatas: [
+            { prop: 'noms',            method: setCatNamesFromSingleName,          args: [ '1' ] },
+            { prop: 'naissances',      method: setBirthsFromSingleName,            args: [ '1' ] },
+            { prop: 'ids',             method: setPropMultipleFromSingle,          args: [ '2' ] },
+            { prop: 'races',           method: setPropMultipleFromSingle,          args: [ 'undefined' ] },
+            { prop: 'felvs',           method: setDatesFromSingle,                 args: [ 'Leucose FELV' ] },
+            { prop: 'rcps',            method: setDatesFromSingle,                 args: [ 'Typhus coryza RCP' ] },
+            { prop: 'maladies',        method: setProplistFromTextfieldCandidates, args: [ 'undefined_4' ] },
+            { prop: 'male',            method: setProplistFromCheckCandidates,     args: [ 'Mâle' ] },
+            { prop: 'femelle',         method: setProplistFromCheckCandidates,     args: [ 'Femelle' ] },
+          ],
+        },
+      ],
+      postSetPropFromFields: postSetPropFromFieldsV0,
+    }
+  } else if (version === 20230826) {
+    return {
+      setPropFromFieldsDatas: [
+        {
+          prop: 'proprio',
+          setPropFromFieldsDatas: [
+            { prop: 'nom',             method: setPropFromTextfieldCandidates,     args: [ 'pNom' ] },
+            { prop: 'adr1',            method: setPropFromTextfieldCandidates,     args: [ 'pAddr1' ] },
+            { prop: 'adr2',            method: setPropFromTextfieldCandidates,     args: [ 'pAddr2' ] },
+            { prop: 'tel',             method: setPropFromTextfieldCandidates,     args: [ 'pTel' ] },
+            { prop: 'email',           method: setPropFromTextfieldCandidates,     args: [ 'pEmail' ] },
+            { prop: 'urgenceNom',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence1' ] },
+            { prop: 'urgenceTel',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence1' ] },
+          ],
+        },
+        {
+          prop: 'chat',
+          setPropFromFieldsDatas: [
+            { prop: 'noms',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Nom', 'c2Nom', 'c3Nom' ] },
+            { prop: 'naissances',      method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Naissance', 'c2Naissance', 'c3Naissance' ] },
+            { prop: 'ids',             method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Id', 'c2Id', 'c3Id' ] },
+            { prop: 'races',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Race', 'c2Race', 'c3Race' ] },
+            { prop: 'felvs',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV' ] },
+            { prop: 'rcps',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP' ] },
+            { prop: 'maladies',        method: helperPdf.pdflib.setProplistlistFromTextfieldlistlist, args: [ [ 'c1Maladie1', 'c1Maladie2', 'c1Maladie3' ], [ 'c2Maladie1', 'c2Maladie2', 'c2Maladie3' ], [ 'c3Maladie1', 'c3Maladie2', 'c3Maladie3' ] ] },
+            { prop: 'male',            method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Male', 'c2Male', 'c3Male' ] },
+            { prop: 'femelle',         method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
+          ],
+        },
+      ],
+      postSetPropFromFields: postErrorCheck,
+    }
+  }
+
+  helperJs.error(`pdfExtractInfoDatas() does not know version ${version}`)
+  return undefined
+}
+
