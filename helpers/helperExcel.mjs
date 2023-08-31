@@ -8,7 +8,7 @@ import fs from 'fs'
 
 // read a sheet of an xls or ods file
 // name is the excel filename,
-// xlsFormat is how the sheet is formatted. Cf. helperEmailContrat.mjs, variable xlsFormatCompta
+// xlsFormat is how the sheet is formatted. Cf. helperCattery.mjs, variable xlsFormatCompta
 // it returns a json with all the sheet information
 function readXls(name, xlsFormat) {
   // sheetName, colName, colArrival, colDeparture, colStatusPay1=null, colStatusPay2=null, colStatusPay3=null) {
