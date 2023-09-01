@@ -139,7 +139,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
   const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version)
   helperPdf.pdflib.setPropFromFields(lastContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
-  helperCattery.helperPdf.postErrorCheck(pdfContract, undefined)
+  helperCattery.helperPdf.postErrorCheck(lastContract, undefined)
 
   helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
   helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
