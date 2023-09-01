@@ -141,7 +141,7 @@ export default {
   pdflib: {
     load: _load,    // async
     save: _save,    // async
-    flatten: (pdfObject => pdfObject.form.flatten),
+    flatten: (pdfObject => pdfObject.form.flatten()),
     helperProp: helperProp,
     setPropFromFields: setPropFromFields,
     setProplistFromTextfieldlist: _setProplistFromTextfieldlist,
