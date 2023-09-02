@@ -182,7 +182,6 @@ function getContractName(from, dir) {
     return a2[0].name
   }
 
-  helperJs.warning(`Aucun contrat commençant par ${start1} ou ${start2} n'est trouvé dans ${dir}`)
   return undefined
 }
 
