@@ -133,7 +133,7 @@ async function getYesNo(text) {
 }
 
 async function sendMail(options) {
-  const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta({name: options.who, sComptaArrival: options.from}, options.comptaXls, true)
+  const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta({name: options.who, sComptaArrival: options.from}, options.comptaXls, true)
   helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
   const email = helperCattery.helperPdf.getEmail(pdfObject)

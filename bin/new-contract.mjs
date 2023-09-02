@@ -233,8 +233,8 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
 async function main() {
   const options = get_args();
-  const currentContractDir = options.rootDir + '\\' + helperCattery.getCurrentContractDir(options.rootDir, options.who);
-  const lastContractName = helperCattery.getLastContract(currentContractDir);
+  const currentContractDir = options.rootDir + '\\' + helperCattery.helperPdf.getCurrentContractDir(options.rootDir, options.who);
+  const lastContractName = helperCattery.helperPdf.getLastContract(currentContractDir);
 
   await updatePDF(options, currentContractDir, lastContractName)
 }

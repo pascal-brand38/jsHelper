@@ -7,7 +7,7 @@ import path from 'path'
 
 async function sendMail(options) {
   console.log(options.rootDir)
-  const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(
+  const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(
     {name: options.who, sComptaArrival: options.from}, 
     path.parse(options.rootDir).dir + '\\compta.xls',
     true)

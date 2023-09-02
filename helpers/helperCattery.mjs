@@ -597,18 +597,21 @@ function pdfExtractInfoDatas(version) {
 
 export default {
   get_args,
-  getCurrentContractDir,
-  getLastContract,
-  xlsFormatCompta,
-  xlsFormatAgenda,
-  getPdfDataFromDataCompta,
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {
     currentVersionContrat: 20230826,
-    getVersion: getVersion,
-    pdfExtractInfoDatas: pdfExtractInfoDatas,    // TODO: comments
-    getEmail: getEmail,
-    postErrorCheck: postErrorCheck,
+    getVersion,
+    pdfExtractInfoDatas,    // TODO: comments
+    getEmail,
+    postErrorCheck,
+    getCurrentContractDir,
+    getLastContract,
+    getPdfDataFromDataCompta,
+    },
+
+  helperXls: {
+    xlsFormatCompta,
+    xlsFormatAgenda,  
   }
 }

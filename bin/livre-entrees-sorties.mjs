@@ -23,7 +23,7 @@ async function main() {
   // console.log(argv)
 
   // Reading compta and agenda data
-  let dataCompta = helperExcel.readXls(comptaName, helperCattery.xlsFormatCompta)
+  let dataCompta = helperExcel.readXls(comptaName, helperCattery.helperXls.xlsFormatCompta)
 
   const dFrom = helperJs.date.fromFormatStartOfDay(from)
   const serialFrom = helperJs.date.toExcelSerial(dFrom)
@@ -54,7 +54,7 @@ async function main() {
       departureCell = ''
     }
 
-    const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, false)
+    const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
     if (verboseStr !== '') {
       console.log('pdfObject: ', pdfObject[helperPdf.pdflib.helperProp])
     }

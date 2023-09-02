@@ -122,7 +122,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
     const epochArrival = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.arrival))
 
     if (epochToday < epochArrival) {
-      const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, false)
+      const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
       if (pdfObject[helperPdf.pdflib.helperProp].version === undefined) {
         // return when version is undefined as the rcp vaccination date is not accurate enough
         return
@@ -177,8 +177,8 @@ async function main() {
   // console.log(argv)
 
   // Reading compta and agenda data
-  let dataCompta = helperExcel.readXls(argv[2], helperCattery.xlsFormatCompta)
-  let dataAgenda = helperExcel.readXls(argv[3], helperCattery.xlsFormatAgenda)
+  let dataCompta = helperExcel.readXls(argv[2], helperCattery.helperXls.xlsFormatCompta)
+  let dataAgenda = helperExcel.readXls(argv[3], helperCattery.helperXls.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
   // filter the dates from the compta that are prior the 1st arrival in the agenda
