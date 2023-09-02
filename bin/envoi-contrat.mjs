@@ -230,7 +230,7 @@ async function sendMail(options) {
 
   let attachment = `file:///${flattenName}`
 
-  helperCattery.composeThunderbird(email, subject, body, attachment)
+  helperJs.thunderbird.compose(email, subject, body, attachment)
 }
 
 // Check the contract is coherent with respect to the previous one

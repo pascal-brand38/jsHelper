@@ -52,9 +52,30 @@ const question = {
   })
 }
 
+const  thunderbird = {
+  compose: (email, subject, body, attachment = null, exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"') => {
+    // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird
+    const to = `to='${email}'`
+    subject = `subject=${encodeURIComponent(subject)}`
+    body = `body=${encodeURIComponent(body)}`
+
+    let cmd
+    if (attachment != null) {
+      attachment = `attachment=${attachment.replace(/\\/g, '/')}`
+      cmd = `${exe} -compose "${to},${subject},${body},${attachment}"`
+    } else {
+      cmd = `${exe} -compose "${to},${subject},${body}"`
+    }
+    console.log(cmd)
+    child_process.exec(cmd)
+  },
+}
+
+
 export default {
   date,
   question,
+  thunderbird,
   
   warning,
   error,

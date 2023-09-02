@@ -32,7 +32,7 @@ async function sendMail(options) {
   
   body += `En vous remerciant,`
 
-  helperCattery.composeThunderbird(email, subject, body)
+  helperJs.thunderbird.compose(email, subject, body)
 }
 
 

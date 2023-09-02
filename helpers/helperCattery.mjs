@@ -182,24 +182,6 @@ function getContractName(from, dir) {
   return undefined
 }
 
-function composeThunderbird(email, subject, body, attachment = null) {
-  // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird
-  let exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"'
-  let to = `to='${email}'`
-  subject = `subject=${encodeURIComponent(subject)}`
-  body = `body=${encodeURIComponent(body)}`
-
-  let cmd
-  if (attachment != null) {
-    attachment = `attachment=${attachment.replace(/\\/g, '/')}`
-    cmd = `${exe} -compose "${to},${subject},${body},${attachment}"`
-  } else {
-    cmd = `${exe} -compose "${to},${subject},${body}"`
-  }
-  console.log(cmd)
-  child_process.exec(cmd)
-}
-
 
 // list of equivalent field name - 1st one is the one in the new contract
 // Each item is an object that contains:
@@ -617,7 +599,6 @@ export default {
   get_args,
   getCurrentContractDir,
   getLastContract,
-  composeThunderbird,
   xlsFormatCompta,
   xlsFormatAgenda,
   getPdfDataFromDataCompta,
