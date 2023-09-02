@@ -3,7 +3,7 @@
 
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
-import {decode} from 'html-entities';
+import { decode } from 'html-entities';
 import child_process from 'child_process'
 import fs from 'fs'
 import { DateTime } from 'luxon'
@@ -53,7 +53,7 @@ function get_args(usage) {
         requiresArg: true,
         required: true
       },
-      "date_accompte":   {
+      "date_accompte": {
         description: "Date of the accompte if already paid",
         requiresArg: true,
         required: true
@@ -68,10 +68,10 @@ function get_args(usage) {
         requiresArg: true,
         required: true
       },
-      
+
     })
     .argv;
-  
+
   options.who = decode(options.who)
   options.services = decode(options.services)
 
@@ -84,7 +84,7 @@ function getImmediateSubdirs(dir) {
     .map((item) => item.name);
 }
 
-function getCurrentContractDir(rootDir, who, returnList=false) {
+function getCurrentContractDir(rootDir, who, returnList = false) {
   const reDoubleSpace = /[\s]{2,}/g;
   const reSlash = /\//g;
   const reTrailing = /[\s]+$/g;
@@ -169,23 +169,20 @@ function getLastContract(dir) {
 function getContractName(from, dir) {
   // TODO: only consider "dd/MM/yyyy" and "MM/yyyy"
   const fromParts = from.split("/");
-  const start1 = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - '
-  const start2 = fromParts[2] + ' - ' + fromParts[1]                        + ' - '
+  const start = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - '
+  console.log(from)
 
   const all_files = fs.readdirSync(dir, { withFileTypes: true })
-  const a1 = all_files.filter((item) => item.isFile() && item.name.startsWith(start1))
-  if (a1.length === 1) {
-    return a1[0].name
-  }
-  const a2 = all_files.filter((item) => item.isFile() && item.name.startsWith(start2))
-  if (a2.length === 1) {
-    return a2[0].name
+    .filter((item) => item.isFile() && item.name.startsWith(start))
+    .map(item => item.name)
+  if (all_files.length === 1) {
+    return all_files[0]
   }
 
   return undefined
 }
 
-function composeThunderbird(email, subject, body, attachment=null) {
+function composeThunderbird(email, subject, body, attachment = null) {
   // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird
   let exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"'
   let to = `to='${email}'`
@@ -195,9 +192,9 @@ function composeThunderbird(email, subject, body, attachment=null) {
   let cmd
   if (attachment != null) {
     attachment = `attachment=${attachment.replace(/\\/g, '/')}`
-    cmd = `${exe} -compose "${to},${subject},${body},${attachment}"` 
+    cmd = `${exe} -compose "${to},${subject},${body},${attachment}"`
   } else {
-    cmd = `${exe} -compose "${to},${subject},${body}"` 
+    cmd = `${exe} -compose "${to},${subject},${body}"`
   }
   console.log(cmd)
   child_process.exec(cmd)
@@ -210,10 +207,10 @@ function composeThunderbird(email, subject, body, attachment=null) {
 // - prope: property name in js structure
 // - fields: list of field names, the 1st one being in the more recent pdf version
 
-const catSeparator = [ ' / ', ' - ', ' // ', ' et ', ]   // 'et' is the last one because of race that may include it
+const catSeparator = [' / ', ' - ', ' // ', ' et ',]   // 'et' is the last one because of race that may include it
 
 function separate(value) {
-  let results = [ value ]
+  let results = [value]
   catSeparator.forEach(sep => {
     let split = value.split(sep)
     if (split.length > results.length) {
@@ -226,16 +223,16 @@ function separate(value) {
 
 function normalize(value) {
   return value
-      .trim()
-      // .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-      .replace(/[,:()]/g, " ")
-      // .replace(/[.-]/g, "/")
-      .replace(/\s+/g, " ")
+    .trim()
+    // .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
+    .replace(/[,:()]/g, " ")
+    // .replace(/[.-]/g, "/")
+    .replace(/\s+/g, " ")
 }
 
 
 function getDate(array, prop) {
-  const dateFormats = [ 'd/M/yy', 'd/M/y', 'M/y' ]
+  const dateFormats = ['d/M/yy', 'd/M/y', 'M/y']
   let lastDate = ''
   let found = false
   array.every(s => {
@@ -255,7 +252,7 @@ function getDate(array, prop) {
   // }
 
   if (!found && array.length >= 2) {
-    const s = `${array[array.length-2]} ${array[array.length-1]}`
+    const s = `${array[array.length - 2]} ${array[array.length - 1]}`
     let date = DateTime.fromFormat(s, 'MMMM yyyy', { locale: 'fr' })
     if (date.isValid) {
       lastDate = date.toFormat('dd/MM/yyyy')
@@ -269,7 +266,7 @@ function getDate(array, prop) {
 
 function postComputationSheet(rows) {
   rows = rows.filter(e => (e.name !== undefined) && !isNaN(e.arrival) && !isNaN(e.departure))
-  rows.sort(function(a, b) { return a.arrival - b.arrival } );
+  rows.sort(function (a, b) { return a.arrival - b.arrival });
   return rows
 }
 
@@ -302,24 +299,29 @@ const xlsFormatAgenda = {
   postComputationSheet: postComputationSheet,
 }
 
-async function getPdfDataFromDataCompta(dataCompta, comptaName, excludes) {
+async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
   const rootDir = path.parse(comptaName).dir
   const enterprise = path.parse(rootDir).base
   const contractRootDir = rootDir + '\\Contrat Clients ' + enterprise
 
   // get the pdf contract
-  const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(dataCompta['comptaArrival']))
+  let sComptaArrival
+  if (dataCompta.hasOwnProperty('sComptaArrival')) {
+    sComptaArrival = dataCompta['sComptaArrival']
+  } else {
+   sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(dataCompta['comptaArrival']))
+  }
   const currentContractDir = contractRootDir + '\\' + getCurrentContractDir(contractRootDir, dataCompta['name']);
   let contractName = getContractName(sComptaArrival, currentContractDir);
-  if (contractName === undefined) {
+  if ((contractName === undefined) && (!exact)) {
     // fall-back on last known contract
     contractName = getLastContract(currentContractDir)
   }
   if (contractName === undefined) {
     return { pdfObject: undefined, contractName: dataCompta['name'] }
   }
-  
-  // check rcp date
+
+  // load the pdf and extract properties
   const pdfObject = await helperPdf.pdflib.load(currentContractDir + '\\' + contractName, getVersion)
   const pdfInfoData = pdfExtractInfoDatas(pdfObject[helperPdf.pdflib.helperProp].version)
   helperPdf.pdflib.setPropFromFields(pdfObject, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
@@ -346,7 +348,6 @@ export default {
   get_args,
   getCurrentContractDir,
   getLastContract,
-  getContractName,
   composeThunderbird,
   xlsFormatCompta,
   xlsFormatAgenda,
@@ -492,12 +493,12 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
         return true
       })
     }
-     let d = getDate(v.split(' '), prop)
-     if (d === '') {
+    let d = getDate(v.split(' '), prop)
+    if (d === '') {
       pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with ${v}`)
     } else {
       result[prop].push(d)
-     }
+    }
   })
 }
 
@@ -522,7 +523,7 @@ function postSetPropFromFieldsV0(pdfObject, result) {
     pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'avoir plus de 3 chats dans le contrat`)
   }
 
-  [ chat.naissances, chat.ids, chat.races, chat.felvs, chat.rcps ] . forEach ( v => {
+  [chat.naissances, chat.ids, chat.races, chat.felvs, chat.rcps].forEach(v => {
     if (v === undefined) {
       pdfObject[helperPdf.pdflib.helperProp].errors.push(`Une des entrées du chat est undefined`)
     } else {
@@ -540,7 +541,7 @@ function postSetPropFromFieldsV0(pdfObject, result) {
 
   // post proc maladies as array of array
   const m = chat.maladies
-  chat.maladies = [ [ m[0] ], [], [] ]
+  chat.maladies = [[m[0]], [], []]
 
   // check male and femelle
   if ((chat.males[0]) && (chat.femelles[0])) {

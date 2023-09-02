@@ -122,23 +122,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
     const epochArrival = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.arrival))
 
     if (epochToday < epochArrival) {
-      // this one should come in the future
-      // check in the contract if vaccination rcp is up-to-date
-
-      // get the pdf contract
-      // const sComptaArrival = helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival']))
-      // const currentContractDir = contractRootDir + '\\' + helperCattery.getCurrentContractDir(contractRootDir, data['name']);
-      // const contractName = helperCattery.getContractName(sComptaArrival, currentContractDir);
-      // if (contractName === undefined) {
-      //   return
-      // }
-
-      // // check rcp date
-      // const pdf = await helperPdf.load(currentContractDir + '\\' + contractName)
-      // const fields = helperPdf.getFields(pdf, helperCattery.fieldsMatch)
-      // const decompose = helperPdf.decomposeFields(fields, helperCattery.fieldsMatch)
-      
-      const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName)
+      const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, false)
       if (pdfObject[helperPdf.pdflib.helperProp].version === undefined) {
         // return when version is undefined as the rcp vaccination date is not accurate enough
         return

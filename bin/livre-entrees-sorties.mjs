@@ -33,7 +33,6 @@ async function main() {
 
   dataCompta = dataCompta.filter(c => ((serialFrom <= c.arrival) && (c.arrival <= serialToday)))
 
-  const excludes = [ 'felv', 'rcp', 'maladies' ]
   let rows = []         // list of rows to be saved in the final ods file
   let skippeds = []     // list of skipped arrival because of errors (no ids,...)
 
@@ -55,7 +54,7 @@ async function main() {
       departureCell = ''
     }
 
-    const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, excludes)
+    const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta(data, comptaName, false)
     if (verboseStr !== '') {
       console.log('pdfObject: ', pdfObject[helperPdf.pdflib.helperProp])
     }

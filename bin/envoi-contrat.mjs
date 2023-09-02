@@ -97,8 +97,8 @@ function getDevraEtreVermifuge(gender) {
 }
 
 // TODO: automatically
-async function getGender(pdfContract) {
-  const chat = pdfContract[helperPdf.pdflib.helperProp].chat
+async function getGender(pdfObject) {
+  const chat = pdfObject[helperPdf.pdflib.helperProp].chat
   const male = chat.males.some(m => m)
   const female = chat.femelles.some(f => f)
 
@@ -133,21 +133,16 @@ async function getYesNo(text) {
 }
 
 async function sendMail(options, currentContractDir) {
-  const contractName = helperCattery.getContractName(options.from, currentContractDir);
-  const pdfFullName = `${currentContractDir}\\${contractName}`
-  const pdfContract = await helperPdf.pdflib.load(pdfFullName, helperCattery.helperPdf.getVersion)
-  const formContract = pdfContract.form;
+  const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta({name: options.who, sComptaArrival: options.from}, options.comptaXls, true)
+  helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
-  const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(pdfContract[helperPdf.pdflib.helperProp].version)
-  helperPdf.pdflib.setPropFromFields(pdfContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
-  helperCattery.helperPdf.postErrorCheck(pdfContract, undefined)
+  const email = helperCattery.helperPdf.getEmail(pdfObject)
 
-  const email = helperCattery.helperPdf.getEmail(pdfContract)
-
+  // TODO: use name in contract - remove ' dit '
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = options.who.replace(reCatNameExtract, '');
 
-  let gender = await getGender(pdfContract)
+  let gender = await getGender(pdfObject)
   let vaccin = await getYesNo('Vaccins à refaire')    // TODO automatically
 
   let subject = `Réservation pour les vacances de ${catName} à ${options.entreprise}`
@@ -225,10 +220,10 @@ async function sendMail(options, currentContractDir) {
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
   
-  helperPdf.pdflib.flatten(pdfContract)
-  const flattenName = path.join('C:', 'tmp', path.basename(pdfFullName))
+  helperPdf.pdflib.flatten(pdfObject)
+  const flattenName = path.join('C:', 'tmp', path.basename(contractName))
   try {
-    await helperPdf.pdflib.save(pdfContract, flattenName, { flag: 'w' })
+    await helperPdf.pdflib.save(pdfObject, flattenName, { flag: 'w' })
   } catch(e) {
     helperJs.error(`Impossible to write file ${flattenName}`)
   }
