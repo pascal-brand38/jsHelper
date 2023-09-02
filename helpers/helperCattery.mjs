@@ -546,6 +546,13 @@ function postSetPropFromFieldsV0(pdfObject, result) {
   }
 }
 
+function postSetPropFromFieldsV20230826(pdfObject, result) {
+  // shrink cats array when less than 3 cats
+  let chat = pdfObject[helperPdf.pdflib.helperProp].chat
+  chat.noms = chat.noms.filter(n => n !== '')
+  const lNom = chat.noms.length
+  Object.keys(chat).forEach(key => { chat[key] = chat[key].slice(0, lNom) })
+}
 
 
 function pdfExtractInfoDatas(version) {
@@ -611,7 +618,7 @@ function pdfExtractInfoDatas(version) {
           ],
         },
       ],
-      postSetPropFromFields: undefined,
+      postSetPropFromFields: postSetPropFromFieldsV20230826,
     }
   }
 
