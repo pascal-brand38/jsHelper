@@ -144,3 +144,4 @@ async function main() {
 
 await main();
 console.log('DONE!')
+process.exit(0)

@@ -169,16 +169,21 @@ function getLastContract(dir) {
 function getContractName(from, dir) {
   // TODO: only consider "dd/MM/yyyy" and "MM/yyyy"
   const fromParts = from.split("/");
-  const start = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - '
+  const start1 = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - '
+  const start2 = fromParts[2] + ' - ' + fromParts[1]                        + ' - '
 
-  let all_files = fs.readdirSync(dir, { withFileTypes: true })
-    .filter((item) => item.isFile() && item.name.startsWith(start))
-    .map((item) => item.name)
-  if (all_files.length == 0) {
-    helperJs.warning('Aucun contrat existant dans ' + dir)
-    return undefined
+  const all_files = fs.readdirSync(dir, { withFileTypes: true })
+  const a1 = all_files.filter((item) => item.isFile() && item.name.startsWith(start1))
+  if (a1.length === 1) {
+    return a1[0].name
   }
-  return all_files[all_files.length - 1];
+  const a2 = all_files.filter((item) => item.isFile() && item.name.startsWith(start2))
+  if (a2.length === 1) {
+    return a2[0].name
+  }
+
+  helperJs.warning(`Aucun contrat commençant par ${start1} ou ${start2} n'est trouvé dans ${dir}`)
+  return undefined
 }
 
 function composeThunderbird(email, subject, body, attachment=null) {
