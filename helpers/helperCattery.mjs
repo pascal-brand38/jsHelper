@@ -344,25 +344,6 @@ function getEmail(pdfObject) {
   return email
 }
 
-export default {
-  get_args,
-  getCurrentContractDir,
-  getLastContract,
-  composeThunderbird,
-  xlsFormatCompta,
-  xlsFormatAgenda,
-  getPdfDataFromDataCompta,
-
-  // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
-  helperPdf: {
-    currentVersionContrat: 20230826,
-    getVersion: getVersion,
-    pdfExtractInfoDatas: pdfExtractInfoDatas,    // TODO: comments
-    getEmail: getEmail,
-    postErrorCheck: postErrorCheck,
-  }
-}
-
 
 //
 // Set of function to help getting pdf form fields, setting properties, and setting 
@@ -629,4 +610,24 @@ function pdfExtractInfoDatas(version) {
 
   helperJs.error(`pdfExtractInfoDatas() does not know version ${version}`)
   return undefined
+}
+
+
+export default {
+  get_args,
+  getCurrentContractDir,
+  getLastContract,
+  composeThunderbird,
+  xlsFormatCompta,
+  xlsFormatAgenda,
+  getPdfDataFromDataCompta,
+
+  // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
+  helperPdf: {
+    currentVersionContrat: 20230826,
+    getVersion: getVersion,
+    pdfExtractInfoDatas: pdfExtractInfoDatas,    // TODO: comments
+    getEmail: getEmail,
+    postErrorCheck: postErrorCheck,
+  }
 }

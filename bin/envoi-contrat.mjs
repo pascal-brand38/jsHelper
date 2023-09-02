@@ -132,7 +132,7 @@ async function getYesNo(text) {
   return answer
 }
 
-async function sendMail(options, currentContractDir) {
+async function sendMail(options) {
   const {pdfObject, contractName} = await helperCattery.getPdfDataFromDataCompta({name: options.who, sComptaArrival: options.from}, options.comptaXls, true)
   helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
@@ -309,9 +309,7 @@ async function checkXls(options) {
 async function main() {
   const options = helperCattery.get_args('Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]');
   await checkXls(options)
-  const currentContractDir = options.rootDir + '\\' + helperCattery.getCurrentContractDir(options.rootDir, options.who);
-
-  await sendMail(options, currentContractDir)
+  await sendMail(options)
 }
 
 
