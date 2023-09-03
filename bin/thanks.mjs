@@ -7,18 +7,18 @@ import helperJs from '../helpers/helperJs.mjs'
 
 
 async function main() {
-  const getArgsComptaPdf = await helperCattery.getArgsComptaPdf({
+  const argsComptaPdf = await helperCattery.getArgsComptaPdf({
       usage: 'Open thinderbird to send a THANKS email, from an excel compta macro directly\n\nUsage: $0 [options]',
       exactPdf: true,
       checkError: true,
     }
   );
 
-  const email = helperCattery.helperPdf.getEmail(getArgsComptaPdf.pdfObject)
+  const email = helperCattery.helperPdf.getEmail(argsComptaPdf.pdfObject)
 
   // TODO use the one in the pdf
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
-  const catName = getArgsComptaPdf.options.who.replace(reCatNameExtract, '');
+  const catName = argsComptaPdf.options.who.replace(reCatNameExtract, '');
 
   let subject = 'Merci pour votre acompte'
   let body = ""
@@ -26,9 +26,9 @@ async function main() {
   body += `<br>`
   body += `<br>`
   
-  body += `J'ai bien reçu l'acompte de ${getArgsComptaPdf.rowCompta.accompte}€ `
-  body += `pour les vacances de ${catName} à ${getArgsComptaPdf.options.enterprise} `
-  body += `du ${getArgsComptaPdf.options.from} au ${getArgsComptaPdf.options.to}.`
+  body += `J'ai bien reçu l'acompte de ${argsComptaPdf.rowCompta.accompte}€ `
+  body += `pour les vacances de ${catName} à ${argsComptaPdf.options.enterprise} `
+  body += `du ${argsComptaPdf.options.from} au ${argsComptaPdf.options.to}.`
   body += `<br>`
   body += `<br>`
   

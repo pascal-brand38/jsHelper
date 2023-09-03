@@ -333,7 +333,9 @@ const xlsFormatCompta = {
     { col: 'X', prop: 'departure',          postComputation: Math.floor,    },
     { col: 'C', prop: 'comptaArrival',      postComputation: Math.floor,    },    // arrival on the contract
     { col: 'D', prop: 'comptaDeparture',    postComputation: Math.floor,    },
+    { col: 'E', prop: 'prixJour'                                            },
     { col: 'H', prop: 'accompte'                                            },
+    { col: 'I', prop: 'dateAccompte'                                        },
     { col: 'K', prop: 'statusPayAcompte',                                   },
     { col: 'O', prop: 'statusPaySolde',                                     },
     { col: 'S', prop: 'statusPayExtra',                                     },

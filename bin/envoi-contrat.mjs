@@ -6,7 +6,6 @@
 //
 
 import path from 'path'
-import reader from 'xlsx'   // TODO: remove it!
 
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
@@ -132,31 +131,28 @@ async function getYesNo(text) {
   return answer
 }
 
-async function sendMail(options) {
-  const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta({name: options.who, sComptaArrival: options.from}, options.comptaXls, true)
-  helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
-
-  const email = helperCattery.helperPdf.getEmail(pdfObject)
+async function sendMail(argsComptaPdf) {
+  const email = helperCattery.helperPdf.getEmail(argsComptaPdf.pdfObject)
 
   // TODO: use name in contract - remove ' dit '
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
-  const catName = options.who.replace(reCatNameExtract, '');
+  const catName = argsComptaPdf.options.who.replace(reCatNameExtract, '');
 
-  let gender = await getGender(pdfObject)
+  let gender = await getGender(argsComptaPdf.pdfObject)
   let vaccin = await getYesNo('Vaccins à refaire')    // TODO automatically
 
-  let subject = `Réservation pour les vacances de ${catName} à ${options.entreprise}`
+  let subject = `Réservation pour les vacances de ${catName} à ${argsComptaPdf.options.entreprise}`
 
   let body = ""
   body += `Bonjour,`
   body += `<br>`
   body += `<br>`
 
-  body += `Je vous envoie le contrat pour les vacances de ${catName} à ${options.entreprise} `
-  body += `du ${options.from} au ${options.to}. `
+  body += `Je vous envoie le contrat pour les vacances de ${catName} à ${argsComptaPdf.options.enterprise} `
+  body += `du ${argsComptaPdf.options.from} au ${argsComptaPdf.options.to}. `
   body += `<br>`
   body += `En vous remerciant de finir de le remplir, notamment les anti-parasitaires et de me le retourner signé, `
-  body += `à l'arrivée de ${getVotrePtitLoulou(gender)} pour le début des vacances le ${options.from}.`
+  body += `à l'arrivée de ${getVotrePtitLoulou(gender)} pour le début des vacances le ${argsComptaPdf.options.from}.`
   body += `<br>`
   body += `<br>`
 
@@ -167,9 +163,11 @@ async function sendMail(options) {
     body += `<br>`  
   }
 
-  if (((options.accompte !== '') && (options.accompte !== '0')) && ((options.date_accompte === '') || (options.date_accompte === undefined))) {
+  const accompte = argsComptaPdf.rowCompta.accompte
+  const dateAccompte = argsComptaPdf.rowCompta.dateAccompte
+  if (((accompte !== undefined) && (accompte !== '0')) && ((dateAccompte === '') || (dateAccompte === undefined))) {
     body += `Afin de valider la réservation de ${getVotrePtitLoulou(gender)}, un acompte de 30% du montant total `
-    body += `vous est demandé, soit ${options.accompte}€. `
+    body += `vous est demandé, soit ${accompte}€. `
     body += `<br>`
     body += `Vous pouvez régler soit par virement (coordonnées bancaires dans le contrat) soit par `
     body += `chèque à l'ordre de Virginie Roux, car je suis auto-entrepreneur. `
@@ -220,10 +218,10 @@ async function sendMail(options) {
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
   
-  helperPdf.pdflib.flatten(pdfObject)
-  const flattenName = path.join('C:', 'tmp', path.basename(contractName))
+  helperPdf.pdflib.flatten(argsComptaPdf.pdfObject)
+  const flattenName = path.join('C:', 'tmp', path.basename(argsComptaPdf.contractName))
   try {
-    await helperPdf.pdflib.save(pdfObject, flattenName, { flag: 'w' })
+    await helperPdf.pdflib.save(argsComptaPdf.pdfObject, flattenName, { flag: 'w' })
   } catch(e) {
     helperJs.error(`Impossible to write file ${flattenName}`)
   }
@@ -237,35 +235,27 @@ async function sendMail(options) {
 // - deposit asking, or not
 // - same daily price, not to forget medecine
 // TODO use helperCattery
-async function checkXls(options) {
-  const sheetName = 'Compta'
-  const colName = 'B'
-  const colFrom = 'C'
-  const file = reader.readFile(options.comptaXls)
+async function checkXls(argsComptaPdf) {
+  const dFrom = helperJs.date.fromFormatStartOfDay(argsComptaPdf.options.from)
+  const serialFrom = helperJs.date.toExcelSerial(dFrom)
+  const rows = argsComptaPdf.dataCompta.filter(row => row.name === argsComptaPdf.options.who)
 
-  // { header: "A" } indicates the json keys are A, B, C,... (cf. https://docs.sheetjs.com/docs/api/utilities/)
-  const dFrom = helperJs.date.fromFormatStartOfDay(options.from)
   let rowPrev = null
   let rowCurrent = null
-  reader.utils.sheet_to_json(file.Sheets[sheetName], { header: "A" }).every((row) => {
-    if (row[colName] === options.who) {
-      let d = helperJs.date.fromExcelSerialStartOfDay(row[colFrom])
-      if (helperJs.date.toEpoch(dFrom) == helperJs.date.toEpoch(d)) {
-        rowCurrent = row
-        return false
-      }
+  rows.every((row) => {
+    if (serialFrom === row.comptaArrival) {
+      rowCurrent = row
+      return false  // stop the loop
+    } else {
       rowPrev = row
-      return true
+      return true   // we continue
     }
-    return true
   })
 
-  const colDailyPrice = 'E'
-  const colDepositAmount = 'H'
-  const askedDepositCurrent = (rowCurrent[colDepositAmount] != undefined)
+  const askedDepositCurrent = (rowCurrent.accompte != undefined)
   if (rowPrev && rowCurrent) {
     // check a deposit asking is the same (always ask, or never ask)
-    const askedDepositPrev = (rowPrev[colDepositAmount] != undefined)
+    const askedDepositPrev = (rowPrev.accompte != undefined)
     if (askedDepositPrev != askedDepositCurrent) {
       if (!askedDepositCurrent) {
         console.log(`Pas de demande d'accompte, alors que demande la fois précédente`)
@@ -280,9 +270,8 @@ async function checkXls(options) {
     }
 
     // check daily price is the same - can be different in case of medecine
-    // console.log(`${rowPrev[colDailyPrice]}    ${rowCurrent[colDailyPrice]}`)
-    if (rowPrev[colDailyPrice] != rowCurrent[colDailyPrice])  {
-      console.log(`Le prix journalier a été modifié: ${rowCurrent[colDailyPrice]}€ contre ${rowPrev[colDailyPrice]}€ précédemment`)
+    if (rowPrev.prixJour != rowCurrent.prixJour)  {
+      console.log(`Le prix journalier a été modifié: ${rowCurrent.prixJour}€ contre ${rowPrev.prixJour}€ précédemment`)
       let cont = await getYesNo(`On continue`)
       console.log()
       if (cont == 'n') {
@@ -292,7 +281,7 @@ async function checkXls(options) {
 
   } else {
     console.log(`1ere réservation`)
-    console.log(`    Prix journalier de (${rowCurrent[colDailyPrice]}€)?`)
+    console.log(`    Prix journalier de (${rowCurrent.prixJour}€)?`)
     if (askedDepositCurrent) {
       console.log(`    AVEC demande d'acompte?`)
     } else {
@@ -307,9 +296,14 @@ async function checkXls(options) {
 }
 
 async function main() {
-  const options = helperCattery.get_args('Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]');
-  await checkXls(options)
-  await sendMail(options)
+  const argsComptaPdf = await helperCattery.getArgsComptaPdf({
+    usage: 'Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]',
+    exactPdf: true,
+    checkError: true,
+  })
+
+  await checkXls(argsComptaPdf)
+  await sendMail(argsComptaPdf)
 }
 
 
