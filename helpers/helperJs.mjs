@@ -3,6 +3,7 @@
 
 import { DateTime } from 'luxon'
 import { exit } from 'process';
+import child_process from 'child_process'
 
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
@@ -25,9 +26,9 @@ function error(s) {
 }
 
 const date = {
-  fromNowStartOfDay: () => DateTime.now().startOf('day'),
-  fromEpochStartOfDay: (epoch) => DateTime.fromSeconds(epoch).startOf('day'),
-  fromFormatStartOfDay: (str, format = 'd/M/y') => DateTime.fromFormat(str, format).startOf('day'),
+  fromNowStartOfDay: () => DateTime.now({zone: 'utc'}).startOf('day'),
+  fromEpochStartOfDay: (epoch) => DateTime.fromSeconds(epoch, {zone: 'utc'}).startOf('day'),
+  fromFormatStartOfDay: (str, format = 'd/M/y') => DateTime.fromFormat(str, format, {zone: 'utc'}).startOf('day'),
 
   // from a serial day in excel (nb of days since 01/01/1900),
   // https://stackoverflow.com/questions/26792144/converting-days-since-jan-1-1900-to-todays-date
