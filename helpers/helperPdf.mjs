@@ -54,6 +54,7 @@ async function _load(pdfFullName, init=undefined) {
       pdfFullName: pdfFullName,
       version: undefined,
       errors: [],
+      warnings: [],
     },
   }
   if (init !== undefined) {

@@ -127,7 +127,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
         // return when version is undefined as the rcp vaccination date is not accurate enough
         return
       }
-      helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
+      await helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
       // TODO: check vaccination date
       return

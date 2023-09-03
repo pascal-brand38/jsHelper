@@ -62,10 +62,6 @@ async function main() {
 
   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(argsComptaPdfLastContract.options.to))
 
-  const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version)
-  helperPdf.pdflib.setPropFromFields(lastContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
-  helperCattery.helperPdf.postErrorCheck(lastContract, undefined)
-
   helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
   helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
   helperPdf.pdflib.setTextfield(newContract, 'pAddr2',     lastContract[helperPdf.pdflib.helperProp].proprio.adr2,       fontToUse)
@@ -104,7 +100,6 @@ async function main() {
     const epochRcp = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(date))
     const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
     if (epochRcpNext < epochDeparture) {
-      console.log('A REFAIRE')
       helperPdf.pdflib.setTextfield(newContract, remarque[index], 'RAPPEL A REFAIRE', fontToUse)
     }
   })

@@ -63,9 +63,6 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
     rowCompta, 
     options.comptaXls,
     exactPdf)
-  if (checkError) {
-    postErrorCheck(pdfObject, undefined)
-  }
 
   // populate other properties in options
   const rootDir = path.parse(options.comptaXls).dir
@@ -73,6 +70,16 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   const d = helperJs.date.fromExcelSerialStartOfDay(rowCompta.comptaDeparture)
   options.to = helperJs.date.toFormat(d, 'dd/MM/yyyy')
 
+  // Dump values
+  console.log()
+  console.log(`Properties extracted from ${contractName}:`)
+  console.log(pdfObject[helperPdf.pdflib.helperProp])
+  console.log()
+
+  if (checkError) {
+    await postErrorCheck(pdfObject, undefined)
+  }
+  
   return {
     options,
     dataCompta,
@@ -445,6 +452,10 @@ function setPropMultipleFromSingle(pdfObject, prop, args, result) {
 
 function setDatesFromSingle(pdfObject, prop, args, result) {
   let value = getTextfromCandidates(pdfObject, args)
+  if (value === '') {
+    result[prop] = []
+    return
+  }
   value = normalize(value)
   let values = separate(value)    // get a list of values per cat in this pdf
 
@@ -477,11 +488,16 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
 }
 
 
-function postErrorCheck(pdfObject, result) {
+async function postErrorCheck(pdfObject, result) {
   if (pdfObject[helperPdf.pdflib.helperProp].errors.length !== 0) {
     console.log(`List of errors in ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}:`)
     console.log(pdfObject[helperPdf.pdflib.helperProp].errors)
     helperJs.error('QUIT')
+  }
+  if (pdfObject[helperPdf.pdflib.helperProp].warnings.length !== 0) {
+    console.log(`List of warnings in ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}:`)
+    console.log(pdfObject[helperPdf.pdflib.helperProp].warnings)
+    await helperJs.question.question('Liste des warnings à manipuler à la main - Appuyer sur entrée')
   }
 }
 
@@ -497,20 +513,23 @@ function postSetPropFromFieldsV0(pdfObject, result) {
     pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'avoir plus de 3 chats dans le contrat`)
   }
 
-  [chat.naissances, chat.ids, chat.races, chat.felvs, chat.rcps].forEach(v => {
-    if (v === undefined) {
-      pdfObject[helperPdf.pdflib.helperProp].errors.push(`Une des entrées du chat est undefined`)
-    } else {
-      const l = v.length
+  ['naissances', 'ids', 'races', 'felvs', 'rcps', ].forEach(key => {
+    if (chat.hasOwnProperty(key)) {
+      const l = chat[key].length
       if ((l !== 0) && (l != nbChats)) {
-        pdfObject[helperPdf.pdflib.helperProp].errors.push(`Incoherence entre nombre de chats et ${v}`)
+        pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Incoherence entre nombre de chats et nombre de ${key}`)
+        chat[key] = []
       }
+    } else {
+      pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Une des entrées du chat est undefined`)
+      chat[key] = []
     }
   })
-
+      
   // check maladies, when several cats, this is not possible to know which on it is
   if ((chat.maladies[0] !== '') && (nbChats > 1)) {
-    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Maladies et plus de 1 chat`)
+    pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Maladies et plus de 1 chat`)
+    chat.maladies[0] = ''
   }
 
   // post proc maladies as array of array
@@ -521,7 +540,7 @@ function postSetPropFromFieldsV0(pdfObject, result) {
   if ((chat.males[0]) && (chat.femelles[0])) {
     chat.males.forEach((v, index) => chat.males[index] = false)
     chat.femelles.forEach((v, index) => chat.femelles[index] = false)
-    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Male ET femelle`)
+    pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Male ET femelle`)
   }
 }
 
@@ -615,7 +634,7 @@ export default {
     getVersion,
     pdfExtractInfoDatas,    // TODO: comments
     getEmail,
-    postErrorCheck,
+    postErrorCheck,             // async
     getCurrentContractDir,
     getLastContract,
     getPdfDataFromDataCompta,
