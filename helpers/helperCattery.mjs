@@ -4,13 +4,13 @@
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import { decode } from 'html-entities';
-import child_process from 'child_process'
 import fs from 'fs'
+import os from 'os'
 import { DateTime } from 'luxon'
 import path from 'path'
 import helperJs from './helperJs.mjs';
 import helperPdf from './helperPdf.mjs';
-import os from 'os'
+import helperExcel from './helperExcel.mjs'
 
 function get_args(usage) {
   console.log(process.argv)
@@ -76,6 +76,79 @@ function get_args(usage) {
   options.services = decode(options.services)
 
   return options;
+}
+
+async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
+  console.log(process.argv)
+  const yargs = _yargs(hideBin(process.argv));
+
+  let options = yargs
+    .usage(usage)
+    .help('help').alias('help', 'h')
+    .version('version', '1.0').alias('version', 'V')
+    .options({
+      "compta-xls": {
+        description: "fullname of the compta.xls file",
+        requiresArg: true,
+        required: false
+      },
+      "who": {
+        description: "who in the compta. Contains cat's name and owner's name",
+        requiresArg: true,
+        required: true
+      },
+      "from": {
+        description: "Starting date, format dd/mm/yyyy. This is the one in the contract",
+        requiresArg: true,
+        required: true
+      },
+      "services": {
+        description: "Services string to be included in new contract",
+        requiresArg: true,
+        required: true
+      },
+    })
+    .argv;
+
+  options.who = decode(options.who)
+  options.services = decode(options.services)
+
+  // from these options, read the compta.xls, and get the row data used for this request
+  let dataCompta = helperExcel.readXls(options.comptaXls, xlsFormatCompta)
+  const dArrival = helperJs.date.fromFormatStartOfDay(options.from)
+  console.log(dArrival)
+  console.log(helperJs.date.toEpoch(dArrival))
+  console.log(helperJs.date.toEpoch(dArrival) / ((60*60*24)))
+  const serialArrival = helperJs.date.toExcelSerial(dArrival)
+  const rows = dataCompta.filter(row => (row.name === options.who) && (row.comptaArrival === serialArrival))
+  if (rows.length !== 1) {
+    console.log(`serialArrival = ${serialArrival}`)
+    helperJs.error(`Cannot find in ${options.comptaXls} name ${options.who} arriving at ${options.from}`)
+  }
+  const rowCompta = rows[0]
+
+  // get pdf properties
+  const {pdfObject, contractName} = await getPdfDataFromDataCompta(
+    rowCompta, 
+    options.comptaXls,
+    exactPdf)
+  if (checkError) {
+    postErrorCheck(pdfObject, undefined)
+  }
+
+  // populate other properties in options
+  const rootDir = path.parse(options.comptaXls).dir
+  options.enterprise = path.parse(rootDir).base
+  const d = helperJs.date.fromExcelSerialStartOfDay(rowCompta.comptaDeparture)
+  options.to = helperJs.date.toFormat(d, 'dd/MM/yyyy')
+
+  return {
+    options,
+    dataCompta,
+    rowCompta,
+    pdfObject,
+    contractName
+  }
 }
 
 function getImmediateSubdirs(dir) {
@@ -260,6 +333,7 @@ const xlsFormatCompta = {
     { col: 'X', prop: 'departure',          postComputation: Math.floor,    },
     { col: 'C', prop: 'comptaArrival',      postComputation: Math.floor,    },    // arrival on the contract
     { col: 'D', prop: 'comptaDeparture',    postComputation: Math.floor,    },
+    { col: 'H', prop: 'accompte'                                            },
     { col: 'K', prop: 'statusPayAcompte',                                   },
     { col: 'O', prop: 'statusPaySolde',                                     },
     { col: 'S', prop: 'statusPayExtra',                                     },
@@ -597,6 +671,7 @@ function pdfExtractInfoDatas(version) {
 
 export default {
   get_args,
+  getArgsComptaPdf,
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {

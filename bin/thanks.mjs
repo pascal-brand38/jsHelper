@@ -3,21 +3,22 @@
 ///
 
 import helperCattery from '../helpers/helperCattery.mjs'
-import path from 'path'
+import helperJs from '../helpers/helperJs.mjs'
 
-async function sendMail(options) {
-  console.log(options.rootDir)
-  const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(
-    {name: options.who, sComptaArrival: options.from}, 
-    path.parse(options.rootDir).dir + '\\compta.xls',
-    true)
-  helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
-  const email = helperCattery.helperPdf.getEmail(pdfObject)
+async function main() {
+  const getArgsComptaPdf = await helperCattery.getArgsComptaPdf({
+      usage: 'Open thinderbird to send a THANKS email, from an excel compta macro directly\n\nUsage: $0 [options]',
+      exactPdf: true,
+      checkError: true,
+    }
+  );
+
+  const email = helperCattery.helperPdf.getEmail(getArgsComptaPdf.pdfObject)
 
   // TODO use the one in the pdf
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
-  const catName = options.who.replace(reCatNameExtract, '');
+  const catName = getArgsComptaPdf.options.who.replace(reCatNameExtract, '');
 
   let subject = 'Merci pour votre acompte'
   let body = ""
@@ -25,8 +26,9 @@ async function sendMail(options) {
   body += `<br>`
   body += `<br>`
   
-  body += `J'ai bien reçu l'acompte de ${options.accompte}€ pour les vacances de ${catName} à ${options.entreprise} `
-  body += `du ${options.from} au ${options.to}.`
+  body += `J'ai bien reçu l'acompte de ${getArgsComptaPdf.rowCompta.accompte}€ `
+  body += `pour les vacances de ${catName} à ${getArgsComptaPdf.options.enterprise} `
+  body += `du ${getArgsComptaPdf.options.from} au ${getArgsComptaPdf.options.to}.`
   body += `<br>`
   body += `<br>`
   
@@ -34,13 +36,5 @@ async function sendMail(options) {
 
   helperJs.thunderbird.compose(email, subject, body)
 }
-
-
-async function main() {
-  const options = helperCattery.get_args('Open thinderbird to send a THANKS email, from an excel compta macro directly\n\nUsage: $0 [options]');
-
-  await sendMail(options, currentContractDir, lastContractName)
-}
-
 
 await main();
