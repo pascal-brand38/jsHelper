@@ -12,71 +12,6 @@ import helperJs from './helperJs.mjs';
 import helperPdf from './helperPdf.mjs';
 import helperExcel from './helperExcel.mjs'
 
-function get_args(usage) {
-  console.log(process.argv)
-  const yargs = _yargs(hideBin(process.argv));
-
-  var options = yargs
-    .usage(usage)
-    .help('help').alias('help', 'h')
-    .version('version', '1.0').alias('version', 'V')
-    .options({
-      "compta-xls": {
-        description: "fullname of the compta.xls file",
-        requiresArg: true,
-        required: false
-      },
-      "root-dir": {
-        description: "directory that contains all contract directories, as well as the blank contract",
-        requiresArg: true,
-        required: true
-      },
-      "who": {
-        description: "who in the compta. Contains cat's name and owner's name",
-        requiresArg: true,
-        required: true
-      },
-
-      "from": {
-        description: "Starting date, format dd/mm/yyyy",
-        requiresArg: true,
-        required: true
-      },
-      "to": {
-        description: "End date, format dd/mm/yyyy",
-        requiresArg: true,
-        required: true
-      },
-
-      "accompte": {
-        description: "Accompte asked for",
-        requiresArg: true,
-        required: true
-      },
-      "date_accompte": {
-        description: "Date of the accompte if already paid",
-        requiresArg: true,
-        required: true
-      },
-      "solde": {
-        description: "Amount on arrival date",
-        requiresArg: true,
-        required: true
-      },
-      "entreprise": {
-        description: "Enterprise name",
-        requiresArg: true,
-        required: true
-      },
-
-    })
-    .argv;
-
-  options.who = decode(options.who)
-  options.services = decode(options.services)
-
-  return options;
-}
 
 async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   console.log(process.argv)
@@ -116,13 +51,9 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   // from these options, read the compta.xls, and get the row data used for this request
   let dataCompta = helperExcel.readXls(options.comptaXls, xlsFormatCompta)
   const dArrival = helperJs.date.fromFormatStartOfDay(options.from)
-  console.log(dArrival)
-  console.log(helperJs.date.toEpoch(dArrival))
-  console.log(helperJs.date.toEpoch(dArrival) / ((60*60*24)))
   const serialArrival = helperJs.date.toExcelSerial(dArrival)
   const rows = dataCompta.filter(row => (row.name === options.who) && (row.comptaArrival === serialArrival))
   if (rows.length !== 1) {
-    console.log(`serialArrival = ${serialArrival}`)
     helperJs.error(`Cannot find in ${options.comptaXls} name ${options.who} arriving at ${options.from}`)
   }
   const rowCompta = rows[0]
@@ -334,7 +265,11 @@ const xlsFormatCompta = {
     { col: 'C', prop: 'comptaArrival',      postComputation: Math.floor,    },    // arrival on the contract
     { col: 'D', prop: 'comptaDeparture',    postComputation: Math.floor,    },
     { col: 'E', prop: 'prixJour'                                            },
+    { col: 'F', prop: 'nbJours'                                             },
+    { col: 'G', prop: 'total'                                               },
     { col: 'H', prop: 'accompte'                                            },
+    { col: 'I', prop: 'dateAccompte'                                        },
+    { col: 'L', prop: 'solde'                                               },
     { col: 'I', prop: 'dateAccompte'                                        },
     { col: 'K', prop: 'statusPayAcompte',                                   },
     { col: 'O', prop: 'statusPaySolde',                                     },
@@ -672,7 +607,6 @@ function pdfExtractInfoDatas(version) {
 
 
 export default {
-  get_args,
   getArgsComptaPdf,
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery

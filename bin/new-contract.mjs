@@ -26,102 +26,27 @@
 
 
 import _yargs from 'yargs'
-import { hideBin } from 'yargs/helpers';
 import fontkit from '@pdf-lib/fontkit'
 import fs from 'fs'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import child_process from 'child_process'
-import {decode} from 'html-entities';
 import helperCattery from '../helpers/helperCattery.mjs';
 import helperPdf from '../helpers/helperPdf.mjs'
 import helperJs from '../helpers/helperJs.mjs';
 
 
-function get_args() {
-  console.log(process.argv)
-  const yargs = _yargs(hideBin(process.argv));
 
-  var options = yargs
-    .usage('Create a contract from an excel compta macro directly\n\nUsage: $0 [options]')
-    .help('help').alias('help', 'h')
-    .version('version', '1.0').alias('version', 'V')
-    .options({
-      "root-dir": {
-        description: "directory that contains all contract directories, as well as the blank contract",
-        requiresArg: true,
-        required: true
-      },
-      "blank-contract": {
-        description: "<filename.pdf> of the blank contract",
-        requiresArg: true,
-        required: true
-      },
-      "who": {
-        description: "who in the compta. Contains cat's name and owner's name",
-        requiresArg: true,
-        required: true
-      },
+async function main() {
+  const argsComptaPdfLastContract = await helperCattery.getArgsComptaPdf({
+    usage: 'Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]',
+    exactPdf: false,
+    checkError: true,
+  })
 
-      "from": {
-        description: "Starting date, format dd/mm/yyyy",
-        requiresArg: true,
-        required: true
-      },
-      "to": {
-        description: "End date, format dd/mm/yyyy",
-        requiresArg: true,
-        required: true
-      },
-      "priceday": {
-        description: "Price per day, without the € sign",
-        requiresArg: true,
-        required: true
-      },
-      "nbdays": {
-        description: "Nb of days",
-        requiresArg: true,
-        required: true
-      },
-      "services": {
-        description: "Services to be included",
-        requiresArg: true,
-        required: true
-      },
-      "total": {
-        description: "Total price",
-        requiresArg: true,
-        required: true
-      },
-      "accompte": {
-        description: "Accompte asked for",
-        requiresArg: true,
-        required: true
-      },
-      "date_accompte": {
-        description: "Date of the accompte if already paid",
-        requiresArg: true,
-        required: true
-      },
-      "solde": {
-        description: "Amount on arrival date",
-        requiresArg: true,
-        required: true
-      },
-      
-    })
-    .argv;
-  
-  options.who = decode(options.who)
-  options.services = decode(options.services)
-
-  return options;
-}
-
-
-async function updatePDF(options, currentContractDir, lastContractName) {
-  const lastContract = await helperPdf.pdflib.load(currentContractDir + '\\' + lastContractName, helperCattery.helperPdf.getVersion)
-  const newContract = await helperPdf.pdflib.load(options.rootDir + '\\' + options.blankContract, helperCattery.helperPdf.getVersion)
+  const contratDir =  path.parse(argsComptaPdfLastContract.options.comptaXls).dir + '\\Contrat Clients ' + argsComptaPdfLastContract.options.enterprise
+  const lastContract = argsComptaPdfLastContract.pdfObject
+  const newContract = await helperPdf.pdflib.load(contratDir + '\\' + argsComptaPdfLastContract.options.blankContract, helperCattery.helperPdf.getVersion)
 
   if (newContract[helperPdf.pdflib.helperProp].version !== helperCattery.helperPdf.currentVersionContrat) {
     helperJs.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract[helperPdf.pdflib.helperProp].version}`)
@@ -135,7 +60,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   const __dirname = path.dirname(__filename);
   const fontToUse = await newContract.pdf.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
-  const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(options.to))
+  const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(argsComptaPdfLastContract.options.to))
 
   const pdfInfoData = helperCattery.helperPdf.pdfExtractInfoDatas(lastContract[helperPdf.pdflib.helperProp].version)
   helperPdf.pdflib.setPropFromFields(lastContract, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
@@ -174,6 +99,7 @@ async function updatePDF(options, currentContractDir, lastContractName) {
 
   // check vaccination date
   const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
+  console.log(lastContract[helperPdf.pdflib.helperProp].chat)
   lastContract[helperPdf.pdflib.helperProp].chat.rcps.forEach((date, index) => {
     const epochRcp = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(date))
     const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
@@ -184,20 +110,20 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   })
 
   let services = []
-  if (options.services==='') {
+  if (argsComptaPdfLastContract.options.services==='') {
     services.push('0€')
   } else {
-    services = options.services.split(' + ')
+    services = argsComptaPdfLastContract.options.services.split(' + ')
   }
   const reservations = [
-    [ 'sArriveeDate', options.from ],
-    [ 'sDepartDate', options.to ],
-    [ 'sNbJours', options.nbdays.toString() ],
-    [ 'sTarifJour', options.priceday + '€' ],
-    [ 'sTotal', options.total + '€' ],
-    [ 'sAcompte', (options.accompte==='') ? ('0€') : (options.accompte + '€') ],
-    [ 'sAcompteDate', options.date_accompte ],
-    [ 'sSolde', options.solde + '€' ],
+    [ 'sArriveeDate', argsComptaPdfLastContract.options.from ],
+    [ 'sDepartDate', argsComptaPdfLastContract.options.to ],
+    [ 'sNbJours', argsComptaPdfLastContract.rowCompta.nbJours.toString() ],
+    [ 'sTarifJour', argsComptaPdfLastContract.rowCompta.prixJour + '€' ],
+    [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
+    [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.accompte===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.accompte + '€') ],
+    [ 'sAcompteDate', argsComptaPdfLastContract.rowCompta.dateAccompte ],
+    [ 'sSolde', argsComptaPdfLastContract.rowCompta.solde + '€' ],
     [ 'sService1', services[0] ],
     [ 'sService2', (services.length >= 2) ? services[1] : '' ],
     [ 'sService3', (services.length >= 3) ? services[2] : '' ],
@@ -205,12 +131,13 @@ async function updatePDF(options, currentContractDir, lastContractName) {
   reservations.forEach(resa => helperPdf.pdflib.setTextfield(newContract, resa[0], resa[1], fontToUse))
 
   // get new contract name
+  const currentContractDir = path.parse(lastContract[helperPdf.pdflib.helperProp].pdfFullName).dir
   const reContractName = /^[0-9]*[a-z]?[\s]*-[\s]*/;    // remove numbers (dates) 4 times
-  var newContractName = lastContractName;
+  var newContractName = argsComptaPdfLastContract.contractName;
   newContractName = newContractName.replace(reContractName, '');
   newContractName = newContractName.replace(reContractName, '');
   newContractName = newContractName.replace(reContractName, '');
-  const fromParts = options.from.split("/");
+  const fromParts = argsComptaPdfLastContract.options.from.split("/");
   newContractName = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - ' + newContractName;
   newContractName = currentContractDir + '\\' + newContractName
 
@@ -225,18 +152,11 @@ async function updatePDF(options, currentContractDir, lastContractName) {
     await helperPdf.pdflib.save(newContract, newContractName)
   } catch(e) {
     console.log(e);
-    helperJs.error("Impossible d'écrire le fichier   " + options.rootDir + '\\' + newContractName);
+    helperJs.error("Impossible d'écrire le fichier   " + newContractName);
   }
   child_process.exec('explorer ' + newContractName);
 }
 
 
-async function main() {
-  const options = get_args();
-  const currentContractDir = options.rootDir + '\\' + helperCattery.helperPdf.getCurrentContractDir(options.rootDir, options.who);
-  const lastContractName = helperCattery.helperPdf.getLastContract(currentContractDir);
-
-  await updatePDF(options, currentContractDir, lastContractName)
-}
 
 main();
