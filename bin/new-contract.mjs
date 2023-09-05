@@ -145,6 +145,7 @@ async function main() {
   // update needappearance field
   //newContract.form.acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
 
+  helperPdf.pdflib.addText(newContract, 'Hello')
 
   child_process.exec('explorer ' + currentContractDir);
   try {

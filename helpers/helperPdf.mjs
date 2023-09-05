@@ -136,6 +136,20 @@ function _checks(pdfObject, checks) {
   checks.forEach(f => pdfObject.form.getCheckBox(f).check())  
 }
 
+function addText(pdfObject, text) {
+  const page = pdfObject.pdf.getPage(0)
+  const { width, height } = page.getSize()
+  const fontSize = 30
+  page.drawText('PASCAL', {
+    x: 50,
+    y: height - 4 * fontSize,
+    //size: fontSize,
+    //font: timesRomanFont,
+    //color: rgb(0, 0.53, 0.71),
+  })
+
+}
+
 export default {
   getTextfieldAsInt,
 
@@ -151,5 +165,6 @@ export default {
     checks: _checks,
     setTextfield: _setTextfield,
     setTextfields: _setTextfields,
+    addText: addText,
   }
 }
