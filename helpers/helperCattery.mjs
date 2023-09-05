@@ -178,7 +178,6 @@ function getLastContract(dir) {
 }
 
 function getContractName(from, dir) {
-  // TODO: only consider "dd/MM/yyyy" and "MM/yyyy"
   const fromParts = from.split("/");
   const start = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - '
   console.log(from)
@@ -632,11 +631,8 @@ export default {
   helperPdf: {
     currentVersionContrat: 20230826,
     getVersion,
-    pdfExtractInfoDatas,    // TODO: comments
     getEmail,
     postErrorCheck,             // async
-    getCurrentContractDir,
-    getLastContract,
     getPdfDataFromDataCompta,
     },
 

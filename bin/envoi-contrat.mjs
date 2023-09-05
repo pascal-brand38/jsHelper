@@ -134,6 +134,8 @@ async function getYesNo(text) {
 async function sendMail(argsComptaPdf) {
   const email = helperCattery.helperPdf.getEmail(argsComptaPdf.pdfObject)
 
+  // TODO: check there is no 'undefined' in the body or the subject
+
   // TODO: use name in contract - remove ' dit '
   const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
   const catName = argsComptaPdf.options.who.replace(reCatNameExtract, '');
@@ -141,7 +143,7 @@ async function sendMail(argsComptaPdf) {
   let gender = await getGender(argsComptaPdf.pdfObject)
   let vaccin = await getYesNo('Vaccins à refaire')    // TODO automatically
 
-  let subject = `Réservation pour les vacances de ${catName} à ${argsComptaPdf.options.entreprise}`
+  let subject = `Réservation pour les vacances de ${catName} à ${argsComptaPdf.options.enterprise}`
 
   let body = ""
   body += `Bonjour,`
@@ -234,7 +236,6 @@ async function sendMail(argsComptaPdf) {
 // Check the contract is coherent with respect to the previous one
 // - deposit asking, or not
 // - same daily price, not to forget medecine
-// TODO use helperCattery
 async function checkXls(argsComptaPdf) {
   const dFrom = helperJs.date.fromFormatStartOfDay(argsComptaPdf.options.from)
   const serialFrom = helperJs.date.toExcelSerial(dFrom)

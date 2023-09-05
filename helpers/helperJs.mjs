@@ -54,7 +54,24 @@ const question = {
 }
 
 const  thunderbird = {
-  compose: (email, subject, body, attachment = null, exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"') => {
+  compose: (
+    email, 
+    subject,
+    body, 
+    attachment = null, 
+    exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"',
+    forbiddenWords = [ 'undefined' ]) => {
+    
+    // check the email does not contain any fordden words
+    const allWords = email + ' ' + subject + ' ' + body
+    forbiddenWords.forEach(w => {
+      if (allWords.includes(w)) {
+        error(`The email contains the word ${w}: ${allWords}`)
+      }
+    })
+
+    // TODO: check the PDF does not include forbiddenWords
+
     // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird
     const to = `to='${email}'`
     subject = `subject=${encodeURIComponent(subject)}`
