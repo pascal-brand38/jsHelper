@@ -461,7 +461,8 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
   let catNames = pdfObject[helperPdf.pdflib.helperProp]['chat']['noms']
   if ((catNames !== undefined) && (catNames.length !== values.length)) {
     // different number of cats and dates
-    pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
+    pdfObject[helperPdf.pdflib.helperProp].warnings.push(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
+    result[prop] = []
     return
   }
 
@@ -471,7 +472,8 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
       catNames.every((cat, j) => {
         if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
           // different cats order
-          pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with cat order in ${values}`)
+          pdfObject[helperPdf.pdflib.helperProp].warning.push(`setDatesFromSingle: error with cat order in ${values}`)
+          result[prop] = []
           return false
         }
         return true
@@ -479,7 +481,8 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
     }
     let d = getDate(v.split(' '), prop)
     if (d === '') {
-      pdfObject[helperPdf.pdflib.helperProp].errors.push(`setDatesFromSingle: error with ${v}`)
+      pdfObject[helperPdf.pdflib.helperProp].warnings.push(`setDatesFromSingle: error with ${v}`)
+      result[prop] = []
     } else {
       result[prop].push(d)
     }

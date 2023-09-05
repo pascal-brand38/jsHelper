@@ -77,9 +77,13 @@ async function main() {
   helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract[helperPdf.pdflib.helperProp].chat.felvs, fontToUse)
   helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract[helperPdf.pdflib.helperProp].chat.rcps, fontToUse)
   helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[0], fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c2Maladie1', 'c2Maladie2', 'c2Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[1], fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c3Maladie1', 'c3Maladie2', 'c3Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[2], fontToUse)
-
+  if (lastContract[helperPdf.pdflib.helperProp].chat.maladies[1] !== undefined) {
+    helperPdf.pdflib.setTextfields(newContract, ['c2Maladie1', 'c2Maladie2', 'c2Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[1], fontToUse)
+  }
+  if (lastContract[helperPdf.pdflib.helperProp].chat.maladies[2] !== undefined) {
+    helperPdf.pdflib.setTextfields(newContract, ['c3Maladie1', 'c3Maladie2', 'c3Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[2], fontToUse)
+  }
+  
   // male / femelle
   const m = ['c1Male', 'c2Male', 'c3Male']
   const f = ['c1Femelle', 'c2Femelle', 'c3Femelle']
