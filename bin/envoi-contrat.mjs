@@ -190,6 +190,7 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
 
   body += `De plus en plus de chats arrivent avec des puces à la garderie, `
+  body += `malgré un traitement, `
   body += `<span style="color:red; font-weight:700; text-decoration: underline;">JE REFUSE</span> `
   body += `maintenant les produits suivant inefficaces :`
   body += `<br>`
