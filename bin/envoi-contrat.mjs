@@ -230,7 +230,7 @@ async function sendMail(argsComptaPdf) {
 
   let attachment = `file:///${flattenName}`
 
-  helperJs.thunderbird.compose(email, subject, body, attachment)
+  await helperJs.thunderbird.compose(email, subject, body, attachment)
 }
 
 // Check the contract is coherent with respect to the previous one

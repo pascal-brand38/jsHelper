@@ -5,6 +5,7 @@
     "html-entities": "^2.3.3",
     "luxon": "^3.3.0",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^3.10.111",
     "xlsx": "^0.18.5",
     "yargs": "^17.6.2"
   }

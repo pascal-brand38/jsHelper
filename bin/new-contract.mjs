@@ -129,6 +129,9 @@ async function main() {
   ]
   reservations.forEach(resa => helperPdf.pdflib.setTextfield(newContract, resa[0], resa[1], fontToUse))
 
+  // adding cat name on top of page 1
+  // helperPdf.pdflib.addText(newContract, lastContract[helperPdf.pdflib.helperProp].chat.noms.join(', '))
+
   // get new contract name
   const currentContractDir = path.parse(lastContract[helperPdf.pdflib.helperProp].pdfFullName).dir
   const reContractName = /^[0-9]*[a-z]?[\s]*-[\s]*/;    // remove numbers (dates) 4 times
@@ -144,8 +147,6 @@ async function main() {
   // https://github.com/Hopding/pdf-lib/issues/569#issuecomment-1087328416
   // update needappearance field
   //newContract.form.acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
-
-  helperPdf.pdflib.addText(newContract, 'Hello')
 
   child_process.exec('explorer ' + currentContractDir);
   try {

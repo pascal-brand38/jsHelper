@@ -8,6 +8,7 @@ import child_process from 'child_process'
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
 import { stdin as input, stdout as output } from 'process';
+import helperPdf from './helperPdf.mjs';
 const rl = readline.createInterface({ input, output });
 
 function warning(s) {
@@ -54,7 +55,7 @@ const question = {
 }
 
 const  thunderbird = {
-  compose: (
+  compose: async (
     email, 
     subject,
     body, 
@@ -71,6 +72,18 @@ const  thunderbird = {
     })
 
     // TODO: check the PDF does not include forbiddenWords
+    if (attachment != null) {
+      // const doc = helperPdf.pdfjs.load(attachment)
+      // console.log(doc)
+      // const text = await helperPdf.pdfjs.pdfjsGetText(doc)
+
+      // helperPdf.pdfjs.load(attachment)
+      //   .then(doc => helperPdf.pdfjs.pdfjsGetText(doc))
+      //   .then(text => console.log(text))
+
+      const doc = await helperPdf.pdfjs.load(attachment)
+      const text = await helperPdf.pdfjs.pdfjsGetText(doc)
+    }
 
     // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird
     const to = `to='${email}'`

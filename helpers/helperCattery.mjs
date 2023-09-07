@@ -350,7 +350,7 @@ function getEmail(pdfObject) {
 //
 
 function getVersion(pdfObject) {
-  pdfObject[helperPdf.pdflib.helperProp].version = helperPdf.getTextfieldAsInt(pdfObject, 'versionContrat')
+  pdfObject[helperPdf.pdflib.helperProp].version = helperPdf.pdflib.getTextfieldAsInt(pdfObject, 'versionContrat')
 }
 
 function getTextfromCandidates(pdfObject, args) {

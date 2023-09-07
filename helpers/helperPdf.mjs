@@ -2,6 +2,7 @@
 /// MIT License
 
 import { PDFDocument } from 'pdf-lib'
+import pdfjs from 'pdfjs-dist'   // https://github.com/mozilla/pdf.js
 import fs from 'fs'
 
 
@@ -139,21 +140,81 @@ function _checks(pdfObject, checks) {
 function addText(pdfObject, text) {
   const page = pdfObject.pdf.getPage(0)
   const { width, height } = page.getSize()
-  const fontSize = 30
-  page.drawText('PASCAL', {
-    x: 50,
-    y: height - 4 * fontSize,
-    //size: fontSize,
+  const fontSize = 11
+  page.drawText(text, {
+    x: width - (text.length)*fontSize,
+    y: height - 10 * fontSize,
+    size: fontSize,
     //font: timesRomanFont,
     //color: rgb(0, 0.53, 0.71),
   })
-
 }
 
-export default {
-  getTextfieldAsInt,
 
-  pdflib: {
+// async function pdfjsLoad(pdfFullName) {
+//   const doc = await pdfjsLib.getDocument(pdfFullName);
+//   return doc
+// }
+
+// async function pdfjsLoad(pdfFullName) {
+//   const loadingTask = pdfjsLib.getDocument(pdfFullName);
+//   return loadingTask.promise.then(doc => {
+//     const numPages = doc.numPages;
+//     console.log(`PASCAL2 ${numPages}`)
+//     return doc
+//   })
+// }
+
+async function pdfjsLoad(pdfFullName) {
+  const loadingTask = pdfjsLib.getDocument(pdfFullName);
+  return await loadingTask.promise.then(doc => doc)
+}
+
+async function pdfjsGetText(doc) {
+  const numPages = doc.numPages;
+  const nPageArray = Array.from({length: numPages}, (_, i) => i + 1)
+
+  console.log(`nPageArray = ${nPageArray}`)
+  await Promise.all(nPageArray.map(async (num) => { 
+    const page = await doc.getPage(num)
+    const textContent = await page.getTextContent()
+    const text = textContent.items.map(function (item) {
+      return item.str;
+    });
+    console.log(text)
+  }))
+}
+
+
+//   await doc.nu
+// } loadPage = function (pageNum) {
+//   return doc.getPage(pageNum).then(function (page) {
+//     console.log("# Page " + pageNum);
+//     const viewport = page.getViewport({ scale: 1.0 });
+//     console.log("Size: " + viewport.width + "x" + viewport.height);
+//     console.log();
+//     return page
+//       .getTextContent()
+//       .then(function (content) {
+//         // Content contains lots of information about the text layout and
+//         // styles, but we need only strings at the moment
+//         const strings = content.items.map(function (item) {
+//           return item.str;
+//         });
+//         console.log("## Text Content");
+//         console.log(strings.join(" "));
+//         // Release page resources.
+//         page.cleanup();
+//       })
+//       .then(function () {
+//         console.log();
+//       });
+//   });
+// };
+
+
+export default {
+  pdflib: {         // from https://pdf-lib.js.org/ - to get/set forms
     load: _load,    // async
     save: _save,    // async
     flatten: (pdfObject => pdfObject.form.flatten()),
@@ -166,5 +227,12 @@ export default {
     setTextfield: _setTextfield,
     setTextfields: _setTextfields,
     addText: addText,
+    getTextfieldAsInt,
+  },
+
+  pdfjs: {          // from https://github.com/mozilla - to get/set text
+    // check at https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
+    load: pdfjsLoad,    // async
+    pdfjsGetText: pdfjsGetText,
   }
 }

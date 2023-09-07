@@ -34,7 +34,7 @@ async function main() {
   
   body += `En vous remerciant,`
 
-  helperJs.thunderbird.compose(email, subject, body)
+  await helperJs.thunderbird.compose(email, subject, body)
 }
 
 await main();
