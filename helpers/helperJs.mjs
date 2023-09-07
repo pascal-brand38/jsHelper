@@ -81,8 +81,8 @@ const  thunderbird = {
       //   .then(doc => helperPdf.pdfjs.pdfjsGetText(doc))
       //   .then(text => console.log(text))
 
-      const doc = await helperPdf.pdfjs.load(attachment)
-      const text = await helperPdf.pdfjs.pdfjsGetText(doc)
+      // const doc = await helperPdf.pdfjs.load(attachment)
+      // const text = await helperPdf.pdfjs.pdfjsGetText(doc)
     }
 
     // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird

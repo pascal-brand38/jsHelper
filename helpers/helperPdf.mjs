@@ -1,5 +1,21 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
+//
+// Check pdf validity using:
+//    - https://www.pdf-online.com/osa/validate.aspx
+//
+//    - Convert to pdf/A (from https://stackoverflow.com/questions/1659147/how-to-use-ghostscript-to-convert-pdf-to-pdf-a-or-pdf-x)
+//      and then check manually the results, if all fields are correct
+//      /c/Program\ Files/gs/gs10.00.0/bin/gswin64.exe -dPDFA -dBATCH -dNOPAUSE -sProcessColorModel=DeviceRGB -sDEVICE=pdfwrite -sPDFACompatibilityPolicy=1 -sOutputFile=output_filename.pdf input_filename.pdf
+//
+//    - Check ghoscript console to see if there can be errors (like more fonts than expected)
+//        /c/Program\ Files/gs/gs10.00.0/bin/gswin64.exe -r36x36 file.pdf
+//      a single 'Loading font Helvetica' must appear
+//
+//    Do not use the followings which are too simple (look for count page,...):
+//        https://www.npmjs.com/package/is-pdf-valid
+//        https://www.npmjs.com/package/@ninja-labs/verify-pdf
+//        https://www.npmjs.com/package/ghostscript-node
 
 import { PDFDocument } from 'pdf-lib'
 import pdfjs from 'pdfjs-dist'   // https://github.com/mozilla/pdf.js
@@ -215,6 +231,7 @@ async function pdfjsGetText(doc) {
 
 export default {
   pdflib: {         // from https://pdf-lib.js.org/ - to get/set forms
+    // https://pdf-lib.js.org/#fill-form
     load: _load,    // async
     save: _save,    // async
     flatten: (pdfObject => pdfObject.form.flatten()),
@@ -230,7 +247,7 @@ export default {
     getTextfieldAsInt,
   },
 
-  pdfjs: {          // from https://github.com/mozilla - to get/set text
+  pdfjs: {          // from https://github.com/mozilla/pdf.js - to get/set text
     // check at https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
     load: pdfjsLoad,    // async
     pdfjsGetText: pdfjsGetText,

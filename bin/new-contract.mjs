@@ -1,29 +1,6 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
 ///
-// Based on pdf-lib
-//   npm install pdf-lib
-//
-// from https://pdf-lib.js.org/#fill-form
-//
-// Check pdf validity using:
-//    - https://www.pdf-online.com/osa/validate.aspx
-//
-//    - Convert to pdf/A (from https://stackoverflow.com/questions/1659147/how-to-use-ghostscript-to-convert-pdf-to-pdf-a-or-pdf-x)
-//      and then check manually the results, if all fields are correct
-//      /c/Program\ Files/gs/gs10.00.0/bin/gswin64.exe -dPDFA -dBATCH -dNOPAUSE -sProcessColorModel=DeviceRGB -sDEVICE=pdfwrite -sPDFACompatibilityPolicy=1 -sOutputFile=output_filename.pdf input_filename.pdf
-//
-//    - Check ghoscript console to see if there can be errors (like more fonts than expected)
-//        /c/Program\ Files/gs/gs10.00.0/bin/gswin64.exe -r36x36 file.pdf
-//      a single 'Loading font Helvetica' must appear
-//
-//    Do not use the followings which are too simple (look for count page,...):
-//        https://www.npmjs.com/package/is-pdf-valid
-//        https://www.npmjs.com/package/@ninja-labs/verify-pdf
-//        https://www.npmjs.com/package/ghostscript-node
-
-
-
 
 import _yargs from 'yargs'
 import fontkit from '@pdf-lib/fontkit'
