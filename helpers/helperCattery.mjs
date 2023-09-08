@@ -334,7 +334,7 @@ function getEmail(pdfObject) {
   let email = pdfObject[helperPdf.pdflib.helperProp].proprio.email
   if ((email === undefined) || (email === '')) {
     email = ''
-    helperJs.warning(`Impossible de connaitre l'email de ${options.who}`)
+    helperJs.warning(`Impossible de connaitre l'email de ${pdfObject[helperPdf.pdflib.helperProp].proprio.nom}`)
   } else if (os.userInfo().username == 'pasca') {
     helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
     email = 'toto@titi.com'
