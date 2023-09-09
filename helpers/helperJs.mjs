@@ -61,28 +61,30 @@ const  thunderbird = {
     body, 
     attachment = null, 
     exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"',
-    forbiddenWords = [ 'undefined' ]) => {
+    forbiddenWords = [ 'undefined', ],     // must be a lower case list
+  ) => {
     
-    // check the email does not contain any fordden words
-    const allWords = email + ' ' + subject + ' ' + body
+    // check the email does not contain any forbidden words
+    const allWords = (email + ' ' + subject + ' ' + body).toLowerCase()
     forbiddenWords.forEach(w => {
       if (allWords.includes(w)) {
         error(`The email contains the word ${w}: ${allWords}`)
       }
     })
 
-    // TODO: check the PDF does not include forbiddenWords
+    // check the attachement does not contain any forbidden word
     if (attachment != null) {
-      // const doc = helperPdf.pdfjs.load(attachment)
-      // console.log(doc)
-      // const text = await helperPdf.pdfjs.pdfjsGetText(doc)
-
-      // helperPdf.pdfjs.load(attachment)
-      //   .then(doc => helperPdf.pdfjs.pdfjsGetText(doc))
-      //   .then(text => console.log(text))
-
-      // const doc = await helperPdf.pdfjs.load(attachment)
-      // const text = await helperPdf.pdfjs.pdfjsGetText(doc)
+      if (attachment.endsWith('.pdf')) {    // only for pdf
+        const doc = await helperPdf.pdfjs.load(attachment)
+        // await helperPdf.pdfjs.getMetadata(doc)
+        const texts = await helperPdf.pdfjs.getText(doc)
+        const str = texts.join(' ').toLowerCase()
+        forbiddenWords.forEach(w => {
+          if (str.includes(w)) {
+            error(`The pdf ${attachment} contains the word ${w}`)
+          }
+        })
+      }
     }
 
     // http://kb.mozillazine.org/Command_line_arguments_-_Thunderbird

@@ -1,27 +1,9 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
-//
-// Check pdf validity using:
-//    - https://www.pdf-online.com/osa/validate.aspx
-//
-//    - Convert to pdf/A (from https://stackoverflow.com/questions/1659147/how-to-use-ghostscript-to-convert-pdf-to-pdf-a-or-pdf-x)
-//      and then check manually the results, if all fields are correct
-//      /c/Program\ Files/gs/gs10.00.0/bin/gswin64.exe -dPDFA -dBATCH -dNOPAUSE -sProcessColorModel=DeviceRGB -sDEVICE=pdfwrite -sPDFACompatibilityPolicy=1 -sOutputFile=output_filename.pdf input_filename.pdf
-//
-//    - Check ghoscript console to see if there can be errors (like more fonts than expected)
-//        /c/Program\ Files/gs/gs10.00.0/bin/gswin64.exe -r36x36 file.pdf
-//      a single 'Loading font Helvetica' must appear
-//
-//    Do not use the followings which are too simple (look for count page,...):
-//        https://www.npmjs.com/package/is-pdf-valid
-//        https://www.npmjs.com/package/@ninja-labs/verify-pdf
-//        https://www.npmjs.com/package/ghostscript-node
 
 import { PDFDocument } from 'pdf-lib'
 import pdfjs from 'pdfjs-dist'   // https://github.com/mozilla/pdf.js
 import fs from 'fs'
-
-
 
 function getTextfieldAsInt(pdfObject, field) {
   const result = pdfObject.form.getFieldMaybe(field)
@@ -53,7 +35,7 @@ function getRectsFromField(field,doc) {
 		return widgets.map(q=>q.getRectangle());
 }
 
-// load a pdf file, and return a pdf object that contain:
+// load a pdf file, and return a pdf object that contain the following properties:
 // - pdf: the pdf as a pdj-lib.js structure
 // - form: the form
 // - helper: set of extra data obtained from the form
@@ -167,70 +149,44 @@ function addText(pdfObject, text) {
 }
 
 
-// async function pdfjsLoad(pdfFullName) {
-//   const doc = await pdfjsLib.getDocument(pdfFullName);
-//   return doc
-// }
-
-// async function pdfjsLoad(pdfFullName) {
-//   const loadingTask = pdfjsLib.getDocument(pdfFullName);
-//   return loadingTask.promise.then(doc => {
-//     const numPages = doc.numPages;
-//     console.log(`PASCAL2 ${numPages}`)
-//     return doc
-//   })
-// }
-
 async function pdfjsLoad(pdfFullName) {
-  const loadingTask = pdfjsLib.getDocument(pdfFullName);
+  const loadingTask = pdfjs.getDocument(pdfFullName);
   return await loadingTask.promise.then(doc => doc)
+}
+
+async function pdfjsGetMetadata(doc) {
+  const metadata = await doc.getMetadata()
+  console.log("# Metadata Is Loaded");
+  console.log("## Info");
+  console.log(JSON.stringify(metadata.info, null, 2));
+  console.log();
+  if (metadata.metadata) {
+    console.log("## Metadata");
+    console.log(JSON.stringify(metadata.metadata.getAll(), null, 2));
+    console.log();
+  }
 }
 
 async function pdfjsGetText(doc) {
   const numPages = doc.numPages;
-  const nPageArray = Array.from({length: numPages}, (_, i) => i + 1)
+  const nPageArray = Array.from({length: numPages}, (_, i) => i + 1)    // [ 1 ... numPages ]
+  let texts = []
 
   console.log(`nPageArray = ${nPageArray}`)
   await Promise.all(nPageArray.map(async (num) => { 
     const page = await doc.getPage(num)
     const textContent = await page.getTextContent()
-    const text = textContent.items.map(function (item) {
-      return item.str;
-    });
-    console.log(text)
+    textContent.items.forEach(item => texts.push(item.str))
+    await page.cleanup();
   }))
+
+  return texts
 }
 
 
-//   await doc.nu
-// } loadPage = function (pageNum) {
-//   return doc.getPage(pageNum).then(function (page) {
-//     console.log("# Page " + pageNum);
-//     const viewport = page.getViewport({ scale: 1.0 });
-//     console.log("Size: " + viewport.width + "x" + viewport.height);
-//     console.log();
-//     return page
-//       .getTextContent()
-//       .then(function (content) {
-//         // Content contains lots of information about the text layout and
-//         // styles, but we need only strings at the moment
-//         const strings = content.items.map(function (item) {
-//           return item.str;
-//         });
-//         console.log("## Text Content");
-//         console.log(strings.join(" "));
-//         // Release page resources.
-//         page.cleanup();
-//       })
-//       .then(function () {
-//         console.log();
-//       });
-//   });
-// };
-
-
 export default {
-  pdflib: {         // from https://pdf-lib.js.org/ - to get/set forms
+  pdflib: {
+    // from https://pdf-lib.js.org/ - to get/set forms
     // https://pdf-lib.js.org/#fill-form
     load: _load,    // async
     save: _save,    // async
@@ -247,9 +203,12 @@ export default {
     getTextfieldAsInt,
   },
 
-  pdfjs: {          // from https://github.com/mozilla/pdf.js - to get/set text
+  pdfjs: {
+    // from https://github.com/mozilla/pdf.js - to get/set text
     // check at https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
+    // API: https://github.com/mozilla/pdf.js/blob/master/src/display/api.js
     load: pdfjsLoad,    // async
-    pdfjsGetText: pdfjsGetText,
+    getMetadata: pdfjsGetMetadata,
+    getText: pdfjsGetText,
   }
 }
