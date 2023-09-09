@@ -600,7 +600,7 @@ function pdfExtractInfoDatas(version) {
             { prop: 'tel',             method: setPropFromTextfieldCandidates,     args: [ 'pTel' ] },
             { prop: 'email',           method: setPropFromTextfieldCandidates,     args: [ 'pEmail' ] },
             { prop: 'urgenceNom',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence1' ] },
-            { prop: 'urgenceTel',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence1' ] },
+            { prop: 'urgenceTel',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence2' ] },
           ],
         },
         {
