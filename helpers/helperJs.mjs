@@ -4,11 +4,11 @@
 import { DateTime } from 'luxon'
 import { exit } from 'process';
 import child_process from 'child_process'
+import helperPdf from './helperPdf.mjs';
 
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
 import { stdin as input, stdout as output } from 'process';
-import helperPdf from './helperPdf.mjs';
 const rl = readline.createInterface({ input, output });
 
 function warning(s) {
@@ -30,6 +30,7 @@ function error(s) {
 // Extend DateTime from luxon library to deal with excel serial date
 // https://stackoverflow.com/questions/34512832/best-way-to-extend-a-javascript-library 
 // Extend DateTime library from luxon
+// zone 'utc' is used to get real dates at noon, not bothering about timezone
 DateTime.fromNowStartOfDay = () => DateTime.now({zone: 'utc'}).startOf('day') 
 DateTime.fromEpochStartOfDay = (epoch) => DateTime.fromSeconds(epoch, {zone: 'utc'}).startOf('day')
 DateTime.fromFormatStartOfDay = (str, format = 'd/M/y') => DateTime.fromFormat(str, format, {zone: 'utc'}).startOf('day')

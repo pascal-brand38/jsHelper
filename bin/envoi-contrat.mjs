@@ -1,9 +1,5 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
-///
-// Based on pdf-lib
-//   npm install pdf-lib
-//
 
 import path from 'path'
 
