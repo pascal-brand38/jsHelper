@@ -37,7 +37,7 @@ async function main() {
   const __dirname = path.dirname(__filename);
   const fontToUse = await newContract.pdf.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
-  const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(argsComptaPdfLastContract.options.to))
+  const epochDeparture = helperJs.DateTime.fromFormatStartOfDay(argsComptaPdfLastContract.options.to).toEpoch()
 
   helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
   helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
@@ -78,8 +78,8 @@ async function main() {
   const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
   console.log(lastContract[helperPdf.pdflib.helperProp].chat)
   lastContract[helperPdf.pdflib.helperProp].chat.rcps.forEach((date, index) => {
-    const epochRcp = helperJs.date.toEpoch(helperJs.date.fromFormatStartOfDay(date))
-    const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
+    const epochRcp = helperJs.DateTime.fromFormatStartOfDay(date).toEpoch()
+    const epochRcpNext = epochRcp + helperJs.DateTime.epochNDays(365)
     if (epochRcpNext < epochDeparture) {
       helperPdf.pdflib.setTextfield(newContract, remarque[index], 'RAPPEL A REFAIRE', fontToUse)
     }

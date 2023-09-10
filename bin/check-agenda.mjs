@@ -38,7 +38,7 @@ function checkDates(dataCompta, dataAgenda) {
     const compta = dataCompta.filter(e => e[what] === d.date)
     const agenda = dataAgenda.filter(e => e[what] === d.date)
     if (compta.length !== agenda.length) {
-      console.log(`--- ${what} on ${helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(d.date))} ----------------`)
+      console.log(`--- ${what} on ${helperJs.DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} ----------------`)
       console.log('Compta: ')
       compta.forEach(c => console.log(`   ${c.name}`))
       console.log('Agenda: ')
@@ -48,17 +48,17 @@ function checkDates(dataCompta, dataAgenda) {
 }
 
 function checkStatusPay(dataCompta) {
-  const epochToday = helperJs.date.toEpoch(helperJs.date.fromNowStartOfDay());
+  const epochToday = helperJs.DateTime.fromNowStartOfDay().toEpoch();
 
   console.log('-------------------------------------------------')
   console.log('------------------------------------------ COMPTA')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
-    const dArrival = helperJs.date.fromExcelSerialStartOfDay(data.arrival)
-    const arrivalStr = helperJs.date.toFormat(dArrival)
-    const epochArrival = helperJs.date.toEpoch(dArrival)
-    const epochArrival10 = epochArrival + helperJs.date.epochNDays(10)
-    const epochArrival20 = epochArrival + helperJs.date.epochNDays(20)
+    const dArrival = helperJs.DateTime.fromExcelSerialStartOfDay(data.arrival)
+    const arrivalStr = dArrival.toFormat('dd/MM/yyyy')
+    const epochArrival = dArrival.toEpoch()
+    const epochArrival10 = epochArrival + helperJs.DateTime.epochNDays(10)
+    const epochArrival20 = epochArrival + helperJs.DateTime.epochNDays(20)
     if (epochArrival < epochToday) {
       //console.log(data.name)
       data.statusPay.forEach(status => {
@@ -108,7 +108,7 @@ function filterConsecutive(data) {
 
 // check if vaccination rcp is up-to-date
 async function checkVaccination(dataCompta, comptaName, AgendaName) {
-  const epochToday = helperJs.date.toEpoch(helperJs.date.fromNowStartOfDay());
+  const epochToday = helperJs.DateTime.fromNowStartOfDay().toEpoch();
 
   console.log()
   console.log('-------------------------------------------------')
@@ -119,7 +119,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
-    const epochArrival = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.arrival))
+    const epochArrival = helperJs.DateTime.fromExcelSerialStartOfDay(data.arrival).toEpoch()
 
     if (epochToday < epochArrival) {
       const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
@@ -131,35 +131,6 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
       // TODO: check vaccination date
       return
-
-      // // if an rcp date starts with Error, that means something's wrong withe the extraction
-      // let toBeChecked = ((decompose['rcp'] === undefined) || (decompose['rcp'] === []))
-      // if (!toBeChecked) {
-      //   const epochDeparture = helperJs.date.toEpoch(helperJs.date.fromExcelSerialStartOfDay(data.departure))
-    
-      //   decompose['rcp'].every(date => {
-      //     toBeChecked = date.startsWith('Error')
-      //     if (!toBeChecked) {
-      //       const rcpDate = helperJs.date.fromFormatStartOfDay(date)
-      //       const epochRcp = helperJs.date.toEpoch(rcpDate)
-      //       const epochRcpNext = epochRcp + helperJs.date.epochNDays(365)
-      //       toBeChecked = (epochRcpNext < epochDeparture)
-      //     }
-      //     return !toBeChecked
-      //   })
-      // }
-
-      // if (toBeChecked) {
-      //   // console.log('RESULT: ', data['name'], sComptaArrival, ': ', decompose['rcp'], contractName)
-      //   toBeCheckeds.push( {
-      //     name: data['name'],
-      //     sComptaArrival: helperJs.date.toFormat(helperJs.date.fromExcelSerialStartOfDay(data['comptaArrival'])),
-      //     rcp: decompose['rcp'],
-      //     contractName,
-      //     epochArrival,
-      //   })
-      // }
-      // //console.log(decompose.chatNom, ': ', decompose['rcp'])
     }
   }))
 
@@ -169,12 +140,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
 
 async function main() {
-
-  // console.log(helperJs.date.fromNowStartOfDay())
-  // helperJs.error('QUIT')
-
   const argv = process.argv
-  // console.log(argv)
 
   // Reading compta and agenda data
   let dataCompta = helperExcel.readXls(argv[2], helperCattery.helperXls.xlsFormatCompta)

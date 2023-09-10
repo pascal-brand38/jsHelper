@@ -234,8 +234,7 @@ async function sendMail(argsComptaPdf) {
 // - deposit asking, or not
 // - same daily price, not to forget medecine
 async function checkXls(argsComptaPdf) {
-  const dFrom = helperJs.date.fromFormatStartOfDay(argsComptaPdf.options.from)
-  const serialFrom = helperJs.date.toExcelSerial(dFrom)
+  const serialFrom = helperJs.DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).toExcelSerial()
   const rows = argsComptaPdf.dataCompta.filter(row => row.name === argsComptaPdf.options.who)
 
   let rowPrev = null
