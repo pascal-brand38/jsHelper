@@ -15,10 +15,7 @@ async function main() {
   );
 
   const email = helperCattery.helperPdf.getEmail(argsComptaPdf.pdfObject)
-
-  // TODO use the one in the pdf
-  const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
-  const catName = argsComptaPdf.options.who.replace(reCatNameExtract, '');
+  const catNames = await helperCattery.helperPdf.getCatNames(argsComptaPdf.pdfObject)
 
   let subject = 'Merci pour votre acompte'
   let body = ""
@@ -27,7 +24,7 @@ async function main() {
   body += `<br>`
   
   body += `J'ai bien reçu l'acompte de ${argsComptaPdf.rowCompta.accompte}€ `
-  body += `pour les vacances de ${catName} à ${argsComptaPdf.options.enterprise} `
+  body += `pour les vacances de ${catNames} à ${argsComptaPdf.options.enterprise} `
   body += `du ${argsComptaPdf.options.from} au ${argsComptaPdf.options.to}.`
   body += `<br>`
   body += `<br>`

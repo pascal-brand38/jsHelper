@@ -203,6 +203,7 @@ export default {
     getTextfieldAsInt,
   },
 
+  // TODO: object-oriented way
   pdfjs: {
     // from https://github.com/mozilla/pdf.js - to get/set text
     // check at https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js

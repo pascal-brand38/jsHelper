@@ -26,7 +26,7 @@ function error(s) {
   exit(-1)
 }
 
-const date = {
+const date = {      // TODO: object oriented - inherit from DateTime
   fromNowStartOfDay: () => DateTime.now({zone: 'utc'}).startOf('day'),
   fromEpochStartOfDay: (epoch) => DateTime.fromSeconds(epoch, {zone: 'utc'}).startOf('day'),
   fromFormatStartOfDay: (str, format = 'd/M/y') => DateTime.fromFormat(str, format, {zone: 'utc'}).startOf('day'),
@@ -54,7 +54,7 @@ const question = {
   })
 }
 
-const  thunderbird = {
+const thunderbird = {
   compose: async (
     email, 
     subject,
@@ -106,7 +106,7 @@ const  thunderbird = {
 
 
 export default {
-  date,
+  date,   // TODO: object-oriented
   question,
   thunderbird,
   

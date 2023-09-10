@@ -626,6 +626,39 @@ function pdfExtractInfoDatas(version) {
   return undefined
 }
 
+// nom is the cate name in the contract. It can be 'Titou dit Pixel'
+// So allnoms will be [ 'Titou', 'dit', 'Pixel' ]
+// and you have to choose between the 3.
+async function _chooseCatName(nom) {
+  const alphanumeric = /[\p{sc=Latn}\p{Nd}]*/ug;   // https://stackoverflow.com/questions/4434076/best-way-to-alphanumeric-check-in-javascript
+                                                   // https://www.codespeedy.com/separate-characters-special-characters-and-numbers-from-a-string-in-javascript/
+  const allnoms = nom.match(alphanumeric).filter(i => i!=='')
+  const l = allnoms.length
+  if (l === 1) {
+    return allnoms[0]
+  } else {
+    let index = undefined
+    while ((isNaN(index)) || (index<0) || (index>=l)) {
+      const answer = await helperJs.question.question(`Quel nom pour ${allnoms} (de 0 à ${l-1}) ? `)
+      index = parseInt(answer)
+    }
+    return allnoms[index]
+  }
+}
+
+async function getCatNames(pdfObject) {
+  // https://stackoverflow.com/questions/15069587/is-there-a-way-to-join-the-elements-in-an-js-array-but-let-the-last-separator-b
+  const noms = pdfObject[helperPdf.pdflib.helperProp].chat.noms
+  
+  const l = noms.length
+  let newnames = []
+  for (let i=0; i<l; i++) {
+    newnames.push(await _chooseCatName(noms[i]))
+  }
+
+  const formatter = new Intl.ListFormat('fr', { style: 'long', type: 'conjunction' });
+  return formatter.format(newnames)   // something like 'Titou, Pablo et Fifi'
+}
 
 export default {
   getArgsComptaPdf,
@@ -637,6 +670,7 @@ export default {
     getEmail,
     postErrorCheck,             // async
     getPdfDataFromDataCompta,
+    getCatNames,
     },
 
   helperXls: {

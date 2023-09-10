@@ -134,23 +134,19 @@ async function getYesNo(text) {
 async function sendMail(argsComptaPdf) {
   const email = helperCattery.helperPdf.getEmail(argsComptaPdf.pdfObject)
 
-  // TODO: check there is no 'undefined' in the body or the subject
-
-  // TODO: use name in contract - remove ' dit '
-  const reCatNameExtract = /[\s]+[-/].*/;    // look for 1st dash, and remove the remaining
-  const catName = argsComptaPdf.options.who.replace(reCatNameExtract, '');
+  const catNames = await helperCattery.helperPdf.getCatNames(argsComptaPdf.pdfObject)
 
   let gender = await getGender(argsComptaPdf.pdfObject)
   let vaccin = await getYesNo('Vaccins à refaire')    // TODO automatically
 
-  let subject = `Réservation pour les vacances de ${catName} à ${argsComptaPdf.options.enterprise}`
+  let subject = `Réservation pour les vacances de ${catNames} à ${argsComptaPdf.options.enterprise}`
 
   let body = ""
   body += `Bonjour,`
   body += `<br>`
   body += `<br>`
 
-  body += `Je vous envoie le contrat pour les vacances de ${catName} à ${argsComptaPdf.options.enterprise} `
+  body += `Je vous envoie le contrat pour les vacances de ${catNames} à ${argsComptaPdf.options.enterprise} `
   body += `du ${argsComptaPdf.options.from} au ${argsComptaPdf.options.to}. `
   body += `<br>`
   body += `En vous remerciant de finir de le remplir, notamment les anti-parasitaires et de me le retourner signé, `
@@ -159,8 +155,8 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
 
   if (vaccin == 'y') {
-    body += `Les vaccins de ${catName} seront à refaire avant ${getSes(gender)} vacances. `
-    body += `Aurez vous la possibilité de me faire une photo quand ${catName} ${getAura(gender)} refait ${getSes(gender)} vaccins? Merci.`
+    body += `Les vaccins de ${catNames} seront à refaire avant ${getSes(gender)} vacances. `
+    body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins? Merci.`
     body += `<br>`
     body += `<br>`  
   }
@@ -179,11 +175,11 @@ async function sendMail(argsComptaPdf) {
     body += `<br>`
   }
 
-  body += `Pensez à amener l'alimentation ainsi que ${getLeCarnet(gender)} de santé de ${catName} pour toute la durée du séjour.`
+  body += `Pensez à amener l'alimentation ainsi que ${getLeCarnet(gender)} de santé de ${catNames} pour toute la durée du séjour.`
   body += `<br>`
   body += `<br>`
 
-  body += `${catName} ${getDevraEtreVermifuge(gender)} depuis moins de 3 mois, `
+  body += `${catNames} ${getDevraEtreVermifuge(gender)} depuis moins de 3 mois, `
   body += `avec un produit vétérinaire (milbemax ou milbactor) et avoir reçu un traitement anti-puces `
   body += `8 jours avant son arrivée à la garderie.`
   body += `<br>`
@@ -210,11 +206,11 @@ async function sendMail(argsComptaPdf) {
   body += `</div>`
   body += `<br>`
 
-  body += `Merci de votre compréhension afin de protéger ${catName} ainsi que la garderie`
+  body += `Merci de votre compréhension afin de protéger ${catNames} ainsi que la garderie`
   body += `<br>`
   body += `<br>`
 
-  body += `Des bisous à ${catName} de la part de ${getSa(gender)} nounou.`
+  body += `Des bisous à ${catNames} de la part de ${getSa(gender)} nounou.`
   body += `<br>`
   body += `<br>`
 
