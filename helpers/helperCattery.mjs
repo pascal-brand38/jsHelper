@@ -65,7 +65,7 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   // populate other properties in options
   const rootDir = path.parse(options.comptaXls).dir
   options.enterprise = path.parse(rootDir).base
-  options.to = helperJs.DateTime.fromExcelSerialStartOfDay(rowCompta.comptaDeparture).toFormat(d, 'dd/MM/yyyy')
+  options.to = helperJs.DateTime.fromExcelSerialStartOfDay(rowCompta.comptaDeparture).toFormat('dd/MM/yyyy')
 
   // Dump values
   console.log()
