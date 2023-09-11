@@ -2,7 +2,6 @@
 /// MIT License
 
 import { PDFDocument } from 'pdf-lib'
-import pdfjs from 'pdfjs-dist'   // https://github.com/mozilla/pdf.js
 import fs from 'fs'
 
 function getTextfieldAsInt(pdfObject, field) {
@@ -148,42 +147,6 @@ function addText(pdfObject, text) {
   })
 }
 
-
-async function pdfjsLoad(pdfFullName) {
-  const loadingTask = pdfjs.getDocument(pdfFullName);
-  return await loadingTask.promise.then(doc => doc)
-}
-
-async function pdfjsGetMetadata(doc) {
-  const metadata = await doc.getMetadata()
-  console.log("# Metadata Is Loaded");
-  console.log("## Info");
-  console.log(JSON.stringify(metadata.info, null, 2));
-  console.log();
-  if (metadata.metadata) {
-    console.log("## Metadata");
-    console.log(JSON.stringify(metadata.metadata.getAll(), null, 2));
-    console.log();
-  }
-}
-
-async function pdfjsGetText(doc) {
-  const numPages = doc.numPages;
-  const nPageArray = Array.from({length: numPages}, (_, i) => i + 1)    // [ 1 ... numPages ]
-  let texts = []
-
-  console.log(`nPageArray = ${nPageArray}`)
-  await Promise.all(nPageArray.map(async (num) => { 
-    const page = await doc.getPage(num)
-    const textContent = await page.getTextContent()
-    textContent.items.forEach(item => texts.push(item.str))
-    await page.cleanup();
-  }))
-
-  return texts
-}
-
-
 export default {
   pdflib: {
     // from https://pdf-lib.js.org/ - to get/set forms
@@ -203,13 +166,4 @@ export default {
     getTextfieldAsInt,
   },
 
-  // TODO: object-oriented way
-  pdfjs: {
-    // from https://github.com/mozilla/pdf.js - to get/set text
-    // check at https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
-    // API: https://github.com/mozilla/pdf.js/blob/master/src/display/api.js
-    load: pdfjsLoad,    // async
-    getMetadata: pdfjsGetMetadata,
-    getText: pdfjsGetText,
-  }
 }

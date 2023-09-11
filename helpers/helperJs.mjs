@@ -4,7 +4,7 @@
 import { DateTime } from 'luxon'
 import { exit } from 'process';
 import child_process from 'child_process'
-import helperPdf from './helperPdf.mjs';
+import pdfjsdist from '../extend/pdfjs-dist.mjs'
 
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
@@ -78,9 +78,8 @@ const thunderbird = {
     // check the attachement does not contain any forbidden word
     if (attachment != null) {
       if (attachment.endsWith('.pdf')) {    // only for pdf
-        const doc = await helperPdf.pdfjs.load(attachment)
-        // await helperPdf.pdfjs.getMetadata(doc)
-        const texts = await helperPdf.pdfjs.getText(doc)
+        const doc = await pdfjsdist.load(attachment)
+        const texts = await doc.getText()
         const str = texts.join(' ').toLowerCase()
         forbiddenWords.forEach(w => {
           if (str.includes(w)) {
