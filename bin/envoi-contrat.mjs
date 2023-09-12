@@ -6,6 +6,7 @@ import path from 'path'
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 import helperPdf from '../helpers/helperPdf.mjs'
+import { DateTime } from '../extend/luxon.mjs'
 
 function getVotrePtitLoulou(gender) {
   const nChoices = 2
@@ -230,7 +231,7 @@ async function sendMail(argsComptaPdf) {
 // - deposit asking, or not
 // - same daily price, not to forget medecine
 async function checkXls(argsComptaPdf) {
-  const serialFrom = helperJs.DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).toExcelSerial()
+  const serialFrom = DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).toExcelSerial()
   const rows = argsComptaPdf.dataCompta.filter(row => row.name === argsComptaPdf.options.who)
 
   let rowPrev = null

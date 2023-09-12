@@ -5,6 +5,7 @@ import helperExcel from '../helpers/helperExcel.mjs'
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 import helperPdf from '../helpers/helperPdf.mjs'
+import { DateTime } from '../extend/luxon.mjs'
 
 function nameOrEmpty(name, first=false) { 
   const sep = (first ? '' : '\n')
@@ -25,8 +26,8 @@ async function main() {
   // Reading compta and agenda data
   let dataCompta = helperExcel.readXls(comptaName, helperCattery.helperXls.xlsFormatCompta)
 
-  const serialFrom = helperJs.DateTime.fromFormatStartOfDay(from).toExcelSerial()
-  const serialToday = helperJs.DateTime.fromNowStartOfDay().toExcelSerial()
+  const serialFrom = DateTime.fromFormatStartOfDay(from).toExcelSerial()
+  const serialToday = DateTime.fromNowStartOfDay().toExcelSerial()
 
   dataCompta = dataCompta.filter(c => ((serialFrom <= c.arrival) && (c.arrival <= serialToday)))
 
@@ -43,10 +44,10 @@ async function main() {
 
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
-    const arrivalCell = helperJs.DateTime.fromExcelSerialStartOfDay(data.arrival).toFormat('dd/MM/yyyy')
+    const arrivalCell = DateTime.fromExcelSerialStartOfDay(data.arrival).toFormat('dd/MM/yyyy')
     let departureCell
     if (data.departure <= serialToday) {
-      departureCell = helperJs.DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')
+      departureCell = DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')
     } else {
       departureCell = ''
     }

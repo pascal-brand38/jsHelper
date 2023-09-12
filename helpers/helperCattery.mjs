@@ -10,6 +10,7 @@ import path from 'path'
 import helperJs from './helperJs.mjs';
 import helperPdf from './helperPdf.mjs';
 import helperExcel from './helperExcel.mjs'
+import { DateTime } from '../extend/luxon.mjs'
 
 
 async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
@@ -49,7 +50,7 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
 
   // from these options, read the compta.xls, and get the row data used for this request
   let dataCompta = helperExcel.readXls(options.comptaXls, xlsFormatCompta)
-  const serialArrival = helperJs.DateTime.fromFormatStartOfDay(options.from).toExcelSerial()
+  const serialArrival = DateTime.fromFormatStartOfDay(options.from).toExcelSerial()
   const rows = dataCompta.filter(row => (row.name === options.who) && (row.comptaArrival === serialArrival))
   if (rows.length !== 1) {
     helperJs.error(`Cannot find in ${options.comptaXls} name ${options.who} arriving at ${options.from}`)
@@ -65,7 +66,7 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   // populate other properties in options
   const rootDir = path.parse(options.comptaXls).dir
   options.enterprise = path.parse(rootDir).base
-  options.to = helperJs.DateTime.fromExcelSerialStartOfDay(rowCompta.comptaDeparture).toFormat('dd/MM/yyyy')
+  options.to = DateTime.fromExcelSerialStartOfDay(rowCompta.comptaDeparture).toFormat('dd/MM/yyyy')
 
   // Dump values
   console.log()
@@ -227,7 +228,7 @@ function getDate(array, prop) {
   array.every(s => {
     s = s.replace(/[.-]/g, '/')
     dateFormats.every(format => {
-      let date = helperJs.DateTime.fromFormat(s, format)
+      let date = DateTime.fromFormat(s, format)
       if (date.isValid) {
         lastDate = date.toFormat('dd/MM/yyyy')
         found = true    // found
@@ -242,7 +243,7 @@ function getDate(array, prop) {
 
   if (!found && array.length >= 2) {
     const s = `${array[array.length - 2]} ${array[array.length - 1]}`
-    let date = helperJs.DateTime.fromFormat(s, 'MMMM yyyy', { locale: 'fr' })
+    let date = DateTime.fromFormat(s, 'MMMM yyyy', { locale: 'fr' })
     if (date.isValid) {
       lastDate = date.toFormat('dd/MM/yyyy')
       found = true    // found
@@ -305,7 +306,7 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
   if (dataCompta.hasOwnProperty('sComptaArrival')) {
     sComptaArrival = dataCompta['sComptaArrival']
   } else {
-   sComptaArrival = helperJs.DateTime.fromExcelSerialStartOfDay(dataCompta['comptaArrival']).toFormat('dd/MM/yyyy')
+   sComptaArrival = DateTime.fromExcelSerialStartOfDay(dataCompta['comptaArrival']).toFormat('dd/MM/yyyy')
   }
   const currentContractDir = contractRootDir + '\\' + getCurrentContractDir(contractRootDir, dataCompta['name']);
   let contractName = getContractName(sComptaArrival, currentContractDir);

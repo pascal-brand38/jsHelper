@@ -10,6 +10,7 @@ import helperExcel from '../helpers/helperExcel.mjs'
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperPdf from '../helpers/helperPdf.mjs'
 import helperJs from '../helpers/helperJs.mjs'
+import { DateTime } from '../extend/luxon.mjs'
 
 // populates unique arrival and departure dates, from readXls return data
 function populateDates(dates, data) {
@@ -38,7 +39,7 @@ function checkDates(dataCompta, dataAgenda) {
     const compta = dataCompta.filter(e => e[what] === d.date)
     const agenda = dataAgenda.filter(e => e[what] === d.date)
     if (compta.length !== agenda.length) {
-      console.log(`--- ${what} on ${helperJs.DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} ----------------`)
+      console.log(`--- ${what} on ${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} ----------------`)
       console.log('Compta: ')
       compta.forEach(c => console.log(`   ${c.name}`))
       console.log('Agenda: ')
@@ -48,17 +49,17 @@ function checkDates(dataCompta, dataAgenda) {
 }
 
 function checkStatusPay(dataCompta) {
-  const epochToday = helperJs.DateTime.fromNowStartOfDay().toEpoch();
+  const epochToday = DateTime.fromNowStartOfDay().toEpoch();
 
   console.log('-------------------------------------------------')
   console.log('------------------------------------------ COMPTA')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
-    const dArrival = helperJs.DateTime.fromExcelSerialStartOfDay(data.arrival)
+    const dArrival = DateTime.fromExcelSerialStartOfDay(data.arrival)
     const arrivalStr = dArrival.toFormat('dd/MM/yyyy')
     const epochArrival = dArrival.toEpoch()
-    const epochArrival10 = epochArrival + helperJs.DateTime.epochNDays(10)
-    const epochArrival20 = epochArrival + helperJs.DateTime.epochNDays(20)
+    const epochArrival10 = epochArrival + DateTime.epochNDays(10)
+    const epochArrival20 = epochArrival + DateTime.epochNDays(20)
     if (epochArrival < epochToday) {
       //console.log(data.name)
       data.statusPay.forEach(status => {
@@ -108,7 +109,7 @@ function filterConsecutive(data) {
 
 // check if vaccination rcp is up-to-date
 async function checkVaccination(dataCompta, comptaName, AgendaName) {
-  const epochToday = helperJs.DateTime.fromNowStartOfDay().toEpoch();
+  const epochToday = DateTime.fromNowStartOfDay().toEpoch();
 
   console.log()
   console.log('-------------------------------------------------')
@@ -119,7 +120,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
-    const epochArrival = helperJs.DateTime.fromExcelSerialStartOfDay(data.arrival).toEpoch()
+    const epochArrival = DateTime.fromExcelSerialStartOfDay(data.arrival).toEpoch()
 
     if (epochToday < epochArrival) {
       const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
