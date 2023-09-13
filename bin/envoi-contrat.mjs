@@ -5,7 +5,6 @@ import path from 'path'
 
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
-import helperPdf from '../helpers/helperPdf.mjs'
 import { DateTime } from '../extend/luxon.mjs'
 
 function getVotrePtitLoulou(gender) {
@@ -94,7 +93,7 @@ function getDevraEtreVermifuge(gender) {
 
 // TODO: automatically
 async function getGender(pdfObject) {
-  const chat = pdfObject[helperPdf.pdflib.helperProp].chat
+  const chat = pdfObject.getExtend().chat
   const male = chat.males.some(m => m)
   const female = chat.femelles.some(f => f)
 
@@ -182,7 +181,7 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
   body += `<br>`
 
-  body += `De plus en plus de chats arrivent avec des puces à la garderie, `
+  body += `De plus en plus de chats arrivant avec des puces à la garderie, `
   body += `malgré un traitement, `
   body += `<span style="color:red; font-weight:700; text-decoration: underline;">JE REFUSE</span> `
   body += `maintenant les produits suivant inefficaces :`
@@ -214,10 +213,10 @@ async function sendMail(argsComptaPdf) {
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
   
-  helperPdf.pdflib.flatten(argsComptaPdf.pdfObject)
+  argsComptaPdf.pdfObject.flatten()
   const flattenName = path.join('C:', 'tmp', path.basename(argsComptaPdf.contractName))
   try {
-    await helperPdf.pdflib.save(argsComptaPdf.pdfObject, flattenName, { flag: 'w' })
+    await argsComptaPdf.pdfObject.saveWrite(flattenName, { flag: 'w' })
   } catch(e) {
     helperJs.error(`Impossible to write file ${flattenName}`)
   }

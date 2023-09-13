@@ -9,10 +9,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import child_process from 'child_process'
 import helperCattery from '../helpers/helperCattery.mjs';
-import helperPdf from '../helpers/helperPdf.mjs'
 import helperJs from '../helpers/helperJs.mjs';
 import { DateTime } from '../extend/luxon.mjs'
-
+import { PDFDocument } from '../extend/pdf-lib.mjs';
 
 
 async function main() {
@@ -24,65 +23,65 @@ async function main() {
 
   const contratDir =  path.parse(argsComptaPdfLastContract.options.comptaXls).dir + '\\Contrat Clients ' + argsComptaPdfLastContract.options.enterprise
   const lastContract = argsComptaPdfLastContract.pdfObject
-  const newContract = await helperPdf.pdflib.load(contratDir + '\\' + argsComptaPdfLastContract.options.blankContract, helperCattery.helperPdf.getVersion)
+  const newContract = await PDFDocument.loadInit(contratDir + '\\' + argsComptaPdfLastContract.options.blankContract, helperCattery.helperPdf.getVersion)
 
-  if (newContract[helperPdf.pdflib.helperProp].version !== helperCattery.helperPdf.currentVersionContrat) {
-    helperJs.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract[helperPdf.pdflib.helperProp].version}`)
+  if (newContract.getExtend().version !== helperCattery.helperPdf.currentVersionContrat) {
+    helperJs.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract.getExtend().version}`)
   }
 
   // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
-  // const helvetica = await newContract.pdf.embedFont(StandardFonts.Helvetica)
-  newContract.pdf.registerFontkit(fontkit)
-  //const fontToUse = await newContract.pdf.embedFont(fs.readFileSync('C:\\Windows\\Fonts\\ARLRDBD.TTF'))
+  // const helvetica = await newContract.embedFont(StandardFonts.Helvetica)
+  newContract.registerFontkit(fontkit)
+  //const fontToUse = await newContract.embedFont(fs.readFileSync('C:\\Windows\\Fonts\\ARLRDBD.TTF'))
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const fontToUse = await newContract.pdf.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
+  const fontToUse = await newContract.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
   const epochDeparture = DateTime.fromFormatStartOfDay(argsComptaPdfLastContract.options.to).toEpoch()
 
-  helperPdf.pdflib.setTextfield(newContract, 'pNom',       lastContract[helperPdf.pdflib.helperProp].proprio.nom,        fontToUse)
-  helperPdf.pdflib.setTextfield(newContract, 'pAddr1',     lastContract[helperPdf.pdflib.helperProp].proprio.adr1,       fontToUse)
-  helperPdf.pdflib.setTextfield(newContract, 'pAddr2',     lastContract[helperPdf.pdflib.helperProp].proprio.adr2,       fontToUse)
-  helperPdf.pdflib.setTextfield(newContract, 'pTel',       lastContract[helperPdf.pdflib.helperProp].proprio.tel,        fontToUse)
-  helperPdf.pdflib.setTextfield(newContract, 'pEmail',     lastContract[helperPdf.pdflib.helperProp].proprio.email,      fontToUse)
-  helperPdf.pdflib.setTextfield(newContract, 'pUrgence1',  lastContract[helperPdf.pdflib.helperProp].proprio.urgenceNom, fontToUse)
-  helperPdf.pdflib.setTextfield(newContract, 'pUrgence2',  lastContract[helperPdf.pdflib.helperProp].proprio.urgenceTel, fontToUse)
-
-  helperPdf.pdflib.setTextfields(newContract, ['c1Nom', 'c2Nom', 'c3Nom'], lastContract[helperPdf.pdflib.helperProp].chat.noms, fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract[helperPdf.pdflib.helperProp].chat.naissances, fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c1Id', 'c2Id', 'c3Id'], lastContract[helperPdf.pdflib.helperProp].chat.ids, fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c1Race', 'c2Race', 'c3Race'], lastContract[helperPdf.pdflib.helperProp].chat.races, fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract[helperPdf.pdflib.helperProp].chat.felvs, fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract[helperPdf.pdflib.helperProp].chat.rcps, fontToUse)
-  helperPdf.pdflib.setTextfields(newContract, ['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[0], fontToUse)
-  if (lastContract[helperPdf.pdflib.helperProp].chat.maladies[1] !== undefined) {
-    helperPdf.pdflib.setTextfields(newContract, ['c2Maladie1', 'c2Maladie2', 'c2Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[1], fontToUse)
+  newContract.setTextfield('pNom',       lastContract.getExtend().proprio.nom,        fontToUse)
+  newContract.setTextfield('pAddr1',     lastContract.getExtend().proprio.adr1,       fontToUse)
+  newContract.setTextfield('pAddr2',     lastContract.getExtend().proprio.adr2,       fontToUse)
+  newContract.setTextfield('pTel',       lastContract.getExtend().proprio.tel,        fontToUse)
+  newContract.setTextfield('pEmail',     lastContract.getExtend().proprio.email,      fontToUse)
+  newContract.setTextfield('pUrgence1',  lastContract.getExtend().proprio.urgenceNom, fontToUse)
+  newContract.setTextfield('pUrgence2',  lastContract.getExtend().proprio.urgenceTel, fontToUse)
+  
+  newContract.setTextfields(['c1Nom', 'c2Nom', 'c3Nom'], lastContract.getExtend().chat.noms, fontToUse)
+  newContract.setTextfields(['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract.getExtend().chat.naissances, fontToUse)
+  newContract.setTextfields(['c1Id', 'c2Id', 'c3Id'], lastContract.getExtend().chat.ids, fontToUse)
+  newContract.setTextfields(['c1Race', 'c2Race', 'c3Race'], lastContract.getExtend().chat.races, fontToUse)
+  newContract.setTextfields(['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract.getExtend().chat.felvs, fontToUse)
+  newContract.setTextfields(['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract.getExtend().chat.rcps, fontToUse)
+  newContract.setTextfields(['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], lastContract.getExtend().chat.maladies[0], fontToUse)
+  if (lastContract.getExtend().chat.maladies[1] !== undefined) {
+    newContract.setTextfields(['c2Maladie1', 'c2Maladie2', 'c2Maladie3'], lastContract.getExtend().chat.maladies[1], fontToUse)
   }
-  if (lastContract[helperPdf.pdflib.helperProp].chat.maladies[2] !== undefined) {
-    helperPdf.pdflib.setTextfields(newContract, ['c3Maladie1', 'c3Maladie2', 'c3Maladie3'], lastContract[helperPdf.pdflib.helperProp].chat.maladies[2], fontToUse)
+  if (lastContract.getExtend().chat.maladies[2] !== undefined) {
+    newContract.setTextfields(['c3Maladie1', 'c3Maladie2', 'c3Maladie3'], lastContract.getExtend().chat.maladies[2], fontToUse)
   }
   
   // male / femelle
   const m = ['c1Male', 'c2Male', 'c3Male']
   const f = ['c1Femelle', 'c2Femelle', 'c3Femelle']
-  const chat = lastContract[helperPdf.pdflib.helperProp].chat
+  const chat = lastContract.getExtend().chat
   chat.noms.forEach((c, index) => {
     if (chat.males[index]) {
-      helperPdf.pdflib.checks(newContract, [ m[index] ])
+      newContract.checks([ m[index] ])
     }
     if (chat.femelles[index]) {
-      helperPdf.pdflib.checks(newContract, [ f[index] ])
+      newContract.checks([ f[index] ])
     }
   })
 
   // check vaccination date
   const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
-  console.log(lastContract[helperPdf.pdflib.helperProp].chat)
-  lastContract[helperPdf.pdflib.helperProp].chat.rcps.forEach((date, index) => {
+  console.log(lastContract.getExtend().chat)
+  lastContract.getExtend().chat.rcps.forEach((date, index) => {
     const epochRcp = DateTime.fromFormatStartOfDay(date).toEpoch()
     const epochRcpNext = epochRcp + DateTime.epochNDays(365)
     if (epochRcpNext < epochDeparture) {
-      helperPdf.pdflib.setTextfield(newContract, remarque[index], 'RAPPEL A REFAIRE', fontToUse)
+      newContract.setTextfield(remarque[index], 'RAPPEL A REFAIRE', fontToUse)
     }
   })
 
@@ -105,13 +104,13 @@ async function main() {
     [ 'sService2', (services.length >= 2) ? services[1] : '' ],
     [ 'sService3', (services.length >= 3) ? services[2] : '' ],
   ]
-  reservations.forEach(resa => helperPdf.pdflib.setTextfield(newContract, resa[0], resa[1], fontToUse))
+  reservations.forEach(resa => newContract.setTextfield(resa[0], resa[1], fontToUse))
 
   // adding cat name on top of page 1
-  // helperPdf.pdflib.addText(newContract, lastContract[helperPdf.pdflib.helperProp].chat.noms.join(', '))
+  // newContract.addText(lastContract.getExtend().chat.noms.join(', '))
 
   // get new contract name
-  const currentContractDir = path.parse(lastContract[helperPdf.pdflib.helperProp].pdfFullName).dir
+  const currentContractDir = path.parse(lastContract.getFullname()).dir
   const reContractName = /^[0-9]*[a-z]?[\s]*-[\s]*/;    // remove numbers (dates) 4 times
   var newContractName = argsComptaPdfLastContract.contractName;
   newContractName = newContractName.replace(reContractName, '');
@@ -128,14 +127,12 @@ async function main() {
 
   child_process.exec('explorer ' + currentContractDir);
   try {
-    await helperPdf.pdflib.save(newContract, newContractName)
+    await newContract.saveWrite(newContractName)
   } catch(e) {
     console.log(e);
     helperJs.error("Impossible d'écrire le fichier   " + newContractName);
   }
   child_process.exec('explorer ' + newContractName);
 }
-
-
 
 main();

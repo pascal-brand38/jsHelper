@@ -4,7 +4,6 @@
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
-import helperPdf from '../helpers/helperPdf.mjs'
 import { DateTime } from '../extend/luxon.mjs'
 
 function nameOrEmpty(name, first=false) { 
@@ -54,7 +53,7 @@ async function main() {
 
     const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
     if (verboseStr !== '') {
-      console.log('pdfObject: ', pdfObject[helperPdf.pdflib.helperProp])
+      console.log('pdfObject: ', pdfObject.getExtend())
     }
 
     const errorCell = `ERROR in ${contractName} from ${data.name}`
@@ -72,7 +71,7 @@ async function main() {
     // }
 
     // owner: name, address1, address2, phone
-    const proprio = pdfObject[helperPdf.pdflib.helperProp].proprio
+    const proprio = pdfObject.getExtend().proprio
     const ownerCell = `${nameOrEmpty(proprio.nom,true)}${nameOrEmpty(proprio.adr1)}${nameOrEmpty(proprio.adr2)}${nameOrEmpty(proprio.tel)}`
 
     // const error = 
@@ -80,7 +79,7 @@ async function main() {
     //   (decompose.chatNom.length !== decompose.chatNaissance.length) ||
     //   (decompose.chatNom.length !== decompose.id.length)
     //   // do not check the race. Take the same if not same length
-    const chat = pdfObject[helperPdf.pdflib.helperProp].chat
+    const chat = pdfObject.getExtend().chat
     const error = (chat.noms === undefined)
     if (error) {
       rows.push([

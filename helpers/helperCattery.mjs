@@ -8,9 +8,9 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import helperJs from './helperJs.mjs';
-import helperPdf from './helperPdf.mjs';
 import helperExcel from './helperExcel.mjs'
 import { DateTime } from '../extend/luxon.mjs'
+import { PDFDocument, setProplist } from '../extend/pdf-lib.mjs'
 
 
 async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
@@ -71,7 +71,7 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   // Dump values
   console.log()
   console.log(`Properties extracted from ${contractName}:`)
-  console.log(pdfObject[helperPdf.pdflib.helperProp])
+  console.log(pdfObject.getExtend())
   console.log()
 
   if (checkError) {
@@ -319,9 +319,9 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
   }
 
   // load the pdf and extract properties
-  const pdfObject = await helperPdf.pdflib.load(currentContractDir + '\\' + contractName, getVersion)
-  const pdfInfoData = pdfExtractInfoDatas(pdfObject[helperPdf.pdflib.helperProp].version)
-  helperPdf.pdflib.setPropFromFields(pdfObject, pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
+  const pdfObject = await PDFDocument.loadInit(currentContractDir + '\\' + contractName, getVersion)
+  const pdfInfoData = pdfExtractInfoDatas(pdfObject.getExtend().version)
+  pdfObject.setPropFromFields(pdfInfoData.setPropFromFieldsDatas, pdfInfoData.postSetPropFromFields)
   // no postErrorCheck(pdfContract, undefined)
   // as we can have errors with old contracts. To be done manually later in the process when required
 
@@ -329,10 +329,10 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
 }
 
 function getEmail(pdfObject) {
-  let email = pdfObject[helperPdf.pdflib.helperProp].proprio.email
+  let email = pdfObject.getExtend().proprio.email
   if ((email === undefined) || (email === '')) {
     email = ''
-    helperJs.warning(`Impossible de connaitre l'email de ${pdfObject[helperPdf.pdflib.helperProp].proprio.nom}`)
+    helperJs.warning(`Impossible de connaitre l'email de ${pdfObject.getExtend().proprio.nom}`)
   } else if (os.userInfo().username == 'pasca') {
     helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
     email = 'toto@titi.com'
@@ -348,7 +348,7 @@ function getEmail(pdfObject) {
 //
 
 function getVersion(pdfObject) {
-  pdfObject[helperPdf.pdflib.helperProp].version = helperPdf.pdflib.getTextfieldAsInt(pdfObject, 'versionContrat')
+  pdfObject.getExtend().version = pdfObject.getTextfieldAsInt('versionContrat')
 }
 
 function getTextfromCandidates(pdfObject, args) {
@@ -356,7 +356,7 @@ function getTextfromCandidates(pdfObject, args) {
   // args if a list of fields, being candidate to have the info
   args.every(field => {
     try {
-      result = pdfObject.form.getTextField(field).getText();
+      result = pdfObject.getForm().getTextField(field).getText();
       if (result === undefined) {
         result = ''
       }
@@ -380,14 +380,14 @@ function setProplistFromCheckCandidates(pdfObject, prop, args, result) {
   let res = false
   args.every(field => {
     try {
-      res = pdfObject.form.getCheckBox(field).isChecked();
+      res = pdfObject.getForm().getCheckBox(field).isChecked();
       return false    // found - stop the every function
     } catch {
       return true     // not found - continue
     }
   })
 
-  const lNom = pdfObject[helperPdf.pdflib.helperProp].chat.noms.length
+  const lNom = pdfObject.getExtend().chat.noms.length
   result[prop] = Array(lNom).fill(res)
 }
 
@@ -456,10 +456,10 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
   value = normalize(value)
   let values = separate(value)    // get a list of values per cat in this pdf
 
-  let catNames = pdfObject[helperPdf.pdflib.helperProp]['chat']['noms']
+  let catNames = pdfObject.getExtend()['chat']['noms']
   if ((catNames !== undefined) && (catNames.length !== values.length)) {
     // different number of cats and dates
-    pdfObject[helperPdf.pdflib.helperProp].warnings.push(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
+    pdfObject.setWarning(`setDatesFromSingle: error with cats and ${prop} number: ${catNames}  vs  ${values}`)
     result[prop] = []
     return
   }
@@ -470,7 +470,7 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
       catNames.every((cat, j) => {
         if ((i!==j) && (v.toLowerCase().includes(cat.toLowerCase()))) {
           // different cats order
-          pdfObject[helperPdf.pdflib.helperProp].warning.push(`setDatesFromSingle: error with cat order in ${values}`)
+          pdfObject.setWarning(`setDatesFromSingle: error with cat order in ${values}`)
           result[prop] = []
           return false
         }
@@ -479,7 +479,7 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
     }
     let d = getDate(v.split(' '), prop)
     if (d === '') {
-      pdfObject[helperPdf.pdflib.helperProp].warnings.push(`setDatesFromSingle: error with ${v}`)
+      pdfObject.setWarning(`setDatesFromSingle: error with ${v}`)
       result[prop] = []
     } else {
       result[prop].push(d)
@@ -489,14 +489,18 @@ function setDatesFromSingle(pdfObject, prop, args, result) {
 
 
 async function postErrorCheck(pdfObject, result) {
-  if (pdfObject[helperPdf.pdflib.helperProp].errors.length !== 0) {
-    console.log(`List of errors in ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}:`)
-    console.log(pdfObject[helperPdf.pdflib.helperProp].errors)
+  const fullname = pdfObject.getFullname()
+  const errors = pdfObject.getErrors()
+  if (errors.length !== 0) {
+    console.log(`List of errors in ${fullname}:`)
+    console.log(errors)
     helperJs.error('QUIT')
   }
-  if (pdfObject[helperPdf.pdflib.helperProp].warnings.length !== 0) {
-    console.log(`List of warnings in ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}:`)
-    console.log(pdfObject[helperPdf.pdflib.helperProp].warnings)
+
+  const warnings = pdfObject.getWarnings()
+  if (warnings.length !== 0) {
+    console.log(`List of warnings in ${fullname}:`)
+    console.log(warnings)
     await helperJs.question.question('Liste des warnings à manipuler à la main - Appuyer sur entrée')
   }
 }
@@ -507,28 +511,28 @@ function postSetPropFromFieldsV0(pdfObject, result) {
   // check coherency on number of cats and number of ids,...
   const nbChats = chat.noms.length
   if (nbChats == 0) {
-    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'extraire le nom du chat du contrat ${pdfObject[helperPdf.pdflib.helperProp].pdfFullName}`)
+    pdfObject.setError(`Impossible d'extraire le nom du chat du contrat ${pdfObject.getFullName()}`)
   }
   if (nbChats > 3) {
-    pdfObject[helperPdf.pdflib.helperProp].errors.push(`Impossible d'avoir plus de 3 chats dans le contrat`)
+    pdfObject.setError(`Impossible d'avoir plus de 3 chats dans le contrat`)
   }
 
   ['naissances', 'ids', 'races', 'felvs', 'rcps', ].forEach(key => {
     if (chat.hasOwnProperty(key)) {
       const l = chat[key].length
       if ((l !== 0) && (l != nbChats)) {
-        pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Incoherence entre nombre de chats et nombre de ${key}`)
+        pdfObject.setWarning(`Incoherence entre nombre de chats et nombre de ${key}`)
         chat[key] = []
       }
     } else {
-      pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Une des entrées du chat est undefined`)
+      pdfObject.setWarning(`Une des entrées du chat est undefined`)
       chat[key] = []
     }
   })
       
   // check maladies, when several cats, this is not possible to know which on it is
   if ((chat.maladies[0] !== '') && (nbChats > 1)) {
-    pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Maladies et plus de 1 chat`)
+    pdfObject.setWarning(`Maladies et plus de 1 chat`)
     chat.maladies[0] = ''
   }
 
@@ -540,13 +544,13 @@ function postSetPropFromFieldsV0(pdfObject, result) {
   if ((chat.males[0]) && (chat.femelles[0])) {
     chat.males.forEach((v, index) => chat.males[index] = false)
     chat.femelles.forEach((v, index) => chat.femelles[index] = false)
-    pdfObject[helperPdf.pdflib.helperProp].warnings.push(`Male ET femelle`)
+    pdfObject.setWarning(`Male ET femelle`)
   }
 }
 
 function postSetPropFromFieldsV20230826(pdfObject, result) {
   // shrink cats array when less than 3 cats
-  let chat = pdfObject[helperPdf.pdflib.helperProp].chat
+  let chat = pdfObject.getExtend().chat
   chat.noms = chat.noms.filter(n => n !== '')
   const lNom = chat.noms.length
   Object.keys(chat).forEach(key => { chat[key] = chat[key].slice(0, lNom) })
@@ -604,15 +608,15 @@ function pdfExtractInfoDatas(version) {
         {
           prop: 'chat',
           setPropFromFieldsDatas: [
-            { prop: 'noms',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Nom', 'c2Nom', 'c3Nom' ] },
-            { prop: 'naissances',      method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Naissance', 'c2Naissance', 'c3Naissance' ] },
-            { prop: 'ids',             method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Id', 'c2Id', 'c3Id' ] },
-            { prop: 'races',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1Race', 'c2Race', 'c3Race' ] },
-            { prop: 'felvs',           method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV' ] },
-            { prop: 'rcps',            method: helperPdf.pdflib.setProplistFromTextfieldlist,  args: [ 'c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP' ] },
-            { prop: 'maladies',        method: helperPdf.pdflib.setProplistlistFromTextfieldlistlist, args: [ [ 'c1Maladie1', 'c1Maladie2', 'c1Maladie3' ], [ 'c2Maladie1', 'c2Maladie2', 'c2Maladie3' ], [ 'c3Maladie1', 'c3Maladie2', 'c3Maladie3' ] ] },
-            { prop: 'males',           method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Male', 'c2Male', 'c3Male' ] },
-            { prop: 'femelles',        method: helperPdf.pdflib.setProplistFromChecklist,      args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
+            { prop: 'noms',            method: setProplist.fromTextfieldlist,     args: [ 'c1Nom', 'c2Nom', 'c3Nom' ] },
+            { prop: 'naissances',      method: setProplist.fromTextfieldlist,     args: [ 'c1Naissance', 'c2Naissance', 'c3Naissance' ] },
+            { prop: 'ids',             method: setProplist.fromTextfieldlist,     args: [ 'c1Id', 'c2Id', 'c3Id' ] },
+            { prop: 'races',           method: setProplist.fromTextfieldlist,     args: [ 'c1Race', 'c2Race', 'c3Race' ] },
+            { prop: 'felvs',           method: setProplist.fromTextfieldlist,     args: [ 'c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV' ] },
+            { prop: 'rcps',            method: setProplist.fromTextfieldlist,     args: [ 'c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP' ] },
+            { prop: 'maladies',        method: setProplist.fromTextfieldlistlist, args: [ [ 'c1Maladie1', 'c1Maladie2', 'c1Maladie3' ], [ 'c2Maladie1', 'c2Maladie2', 'c2Maladie3' ], [ 'c3Maladie1', 'c3Maladie2', 'c3Maladie3' ] ] },
+            { prop: 'males',           method: setProplist.fromChecklist,         args: [ 'c1Male', 'c2Male', 'c3Male' ] },
+            { prop: 'femelles',        method: setProplist.fromChecklist,         args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
           ],
         },
       ],
@@ -646,7 +650,7 @@ async function _chooseCatName(nom) {
 
 async function getCatNames(pdfObject) {
   // https://stackoverflow.com/questions/15069587/is-there-a-way-to-join-the-elements-in-an-js-array-but-let-the-last-separator-b
-  const noms = pdfObject[helperPdf.pdflib.helperProp].chat.noms
+  const noms = pdfObject.getExtend().chat.noms
   
   const l = noms.length
   let newnames = []

@@ -8,8 +8,6 @@
 
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperCattery from '../helpers/helperCattery.mjs'
-import helperPdf from '../helpers/helperPdf.mjs'
-import helperJs from '../helpers/helperJs.mjs'
 import { DateTime } from '../extend/luxon.mjs'
 
 // populates unique arrival and departure dates, from readXls return data
@@ -124,7 +122,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
     if (epochToday < epochArrival) {
       const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
-      if (pdfObject[helperPdf.pdflib.helperProp].version === undefined) {
+      if (pdfObject.getExtend().version === undefined) {
         // return when version is undefined as the rcp vaccination date is not accurate enough
         return
       }
