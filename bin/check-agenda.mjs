@@ -28,6 +28,11 @@ function populateDates(dates, data) {
 
 // check coherency of arrival and departure number of dates in comta and agenda
 function checkDates(dataCompta, dataAgenda) {
+  console.log()
+  console.log('-------------------------------------------------')
+  console.log('------------------------------ COMPTA  vs  AGENDA')
+  console.log('-------------------------------------------------')
+
   let dates = []
   populateDates(dates, dataCompta)
   populateDates(dates, dataAgenda)
@@ -49,8 +54,9 @@ function checkDates(dataCompta, dataAgenda) {
 function checkStatusPay(dataCompta) {
   const epochToday = DateTime.fromNowStartOfDay().toEpoch();
 
+  console.log()
   console.log('-------------------------------------------------')
-  console.log('------------------------------------------ COMPTA')
+  console.log('--------------------------------------------- PAY')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
     const dArrival = DateTime.fromExcelSerialStartOfDay(data.arrival)
@@ -128,13 +134,18 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       }
       await helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
-      // TODO: check vaccination date
-      return
+      // vaccination date
+      const epochDeparture = DateTime.fromExcelSerialStartOfDay(data.departure).toEpoch()
+      const vaccinUptodate = helperCattery.helperPdf.isVaccinUptodate(pdfObject, epochDeparture)
+      if (!vaccinUptodate) {
+        data.rcps = pdfObject.getExtend().chat.rcps
+        toBeCheckeds.push(data)
+      }
     }
   }))
 
   toBeCheckeds.sort(function(a, b) { return b.epochArrival - a.epochArrival } );    // reverse order
-  console.log(toBeCheckeds)
+  toBeCheckeds.forEach(data => console.log(`${data.name} departure: ${DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')}  rcps: ${data.rcps}`))
 }
 
 

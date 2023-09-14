@@ -75,15 +75,7 @@ async function main() {
   })
 
   // check vaccination date
-  const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
-  console.log(lastContract.getExtend().chat)
-  lastContract.getExtend().chat.rcps.forEach((date, index) => {
-    const epochRcp = DateTime.fromFormatStartOfDay(date).toEpoch()
-    const epochRcpNext = epochRcp + DateTime.epochNDays(365)
-    if (epochRcpNext < epochDeparture) {
-      newContract.setTextfield(remarque[index], 'RAPPEL A REFAIRE', fontToUse)
-    }
-  })
+  isVaccinUptodate(lastContract, epochDeparture, newContract)
 
   let services = []
   if (argsComptaPdfLastContract.options.services==='') {

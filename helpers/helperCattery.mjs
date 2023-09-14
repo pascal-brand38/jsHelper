@@ -178,7 +178,6 @@ function getLastContract(dir) {
 function getContractName(from, dir) {
   const fromParts = from.split("/");
   const start = fromParts[2] + ' - ' + fromParts[1] + ' - ' + fromParts[0] + ' - '
-  console.log(from)
 
   const all_files = fs.readdirSync(dir, { withFileTypes: true })
     .filter((item) => item.isFile() && item.name.startsWith(start))
@@ -551,7 +550,7 @@ function postSetPropFromFieldsV0(pdfObject, result) {
 function postSetPropFromFieldsV20230826(pdfObject, result) {
   // shrink cats array when less than 3 cats
   let chat = pdfObject.getExtend().chat
-  chat.noms = chat.noms.filter(n => n !== '')
+  chat.noms = chat.noms.filter(n => (n !== '') && (n !== undefined))
   const lNom = chat.noms.length
   Object.keys(chat).forEach(key => { chat[key] = chat[key].slice(0, lNom) })
 }
@@ -662,6 +661,30 @@ async function getCatNames(pdfObject) {
   return formatter.format(newnames)   // something like 'Titou, Pablo et Fifi'
 }
 
+function isVaccinUptodate(pdfObject, epochDeparture, newContract = undefined) {
+  const noms = pdfObject.getExtend().chat.noms
+  const rcps = pdfObject.getExtend().chat.rcps
+  if ((rcps===undefined) || (rcps.length != noms.length) || (rcps.some(v => v===undefined))) {
+    return false
+  }
+
+  let result = true
+  const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
+  pdfObject.getExtend().chat.rcps.forEach((date, index) => {
+    const epochRcp = DateTime.fromFormatStartOfDay(date).toEpoch()
+    const epochRcpNext = epochRcp + DateTime.epochNDays(365)
+    if (epochRcpNext < epochDeparture) {
+      result = false
+      if (newContract !== undefined) {
+        newContract.setTextfield(remarque[index], 'RAPPEL A REFAIRE', fontToUse)
+      }
+    }
+  })
+
+  return result
+}
+
+
 export default {
   getArgsComptaPdf,
 
@@ -673,7 +696,8 @@ export default {
     postErrorCheck,             // async
     getPdfDataFromDataCompta,
     getCatNames,
-    },
+    isVaccinUptodate,
+  },
 
   helperXls: {
     xlsFormatCompta,

@@ -152,7 +152,6 @@ async function sendMail(argsComptaPdf) {
   const catNames = await helperCattery.helperPdf.getCatNames(argsComptaPdf.pdfObject)
 
   let gender = await getGender(argsComptaPdf.pdfObject)
-  let vaccin = await getYesNo('Vaccins à refaire')    // TODO automatically
 
   let subject = `Réservation pour les vacances de ${catNames} à ${argsComptaPdf.options.enterprise}`
 
@@ -169,11 +168,16 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
   body += `<br>`
 
-  if (vaccin == 'y') {
-    body += `Les vaccins de ${catNames} seront à refaire avant ${getSes(gender)} vacances. `
-    body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins? Merci.`
-    body += `<br>`
-    body += `<br>`  
+  const epochDeparture = DateTime.fromFormatStartOfDay(argsComptaPdf.options.to).toEpoch()
+  const vaccinUptodate = helperCattery.helperPdf.isVaccinUptodate(argsComptaPdf.pdfObject, epochDeparture)
+  if (!vaccinUptodate) {
+    const vaccin = await getYesNo('Vaccins à refaire')    // ask as they seem not up-to-date
+    if (vaccin == 'y') {
+      body += `Les vaccins de ${catNames} seront à refaire avant ${getSes(gender)} vacances. `
+      body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins? Merci.`
+      body += `<br>`
+      body += `<br>`  
+    }
   }
 
   const accompte = argsComptaPdf.rowCompta.accompte
