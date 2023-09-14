@@ -91,31 +91,50 @@ function getDevraEtreVermifuge(gender) {
   }
 }
 
-// TODO: automatically
 async function getGender(pdfObject) {
-  const chat = pdfObject.getExtend().chat
-  const male = chat.males.some(m => m)
-  const female = chat.femelles.some(f => f)
+  let hasMale = false
+  let hasFemelle = false
+  let hasUndefined = false
 
-  let genderError = true
-  let gender
-  while (genderError) {
-    gender = '0'
-    while ((gender!='1') && (gender!='2') && (gender!='3') && (gender!='4')) {
-      gender = await helperJs.question.question('0- Quit  or  1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ')
-      if (gender == 0) {
-        helperJs.error("Quitting")
-      }
+  const chat = pdfObject.getExtend().chat
+  const nbCats = chat.males.length
+  chat.males.forEach((m, i) => {
+    const f = chat.femelles[i]
+    if (m && f) {
+      hasUndefined = true
+    } else if (m) {
+      hasMale = true
+    } else if (f) {
+      hasFemelle = true
+    } else {
+      hasUndefined = true
     }
-    genderError = 
-      (male && female && gender!=3) ||
-      (male && !female && gender!=1 && gender!=3) ||
-      (!male && female && gender!=2 && gender!=4);
-    if (genderError) {
-      console.log(`Le contrat indique male=${male} et femelle=${female}`)
+  })
+
+  if (!hasUndefined) {
+    if (nbCats === 1) {
+      if (hasMale) {
+        return '1'    // 1 male
+      } else {
+        return '2'    // 1 female
+      }
+    } else {
+      if (!hasMale && hasFemelle) {
+        return '4'    // several females
+      } else {
+        return '3'    // several cats, with at least 1 male
+      }
     }
   }
 
+  // we do not know, so we ask
+  let gender = '0'
+  while ((gender!='1') && (gender!='2') && (gender!='3') && (gender!='4')) {
+    gender = await helperJs.question.question('0- Quit  or  1- Male  or  2- Female  or   3- At least 1 Male   or  4- Only Female?  ')
+    if (gender == 0) {
+      helperJs.error("Quitting")
+    }
+  }
   return gender
 }
 
