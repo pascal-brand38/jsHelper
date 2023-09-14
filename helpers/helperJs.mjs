@@ -49,7 +49,7 @@ const thunderbird = {
       }
     })
 
-    // check the attachement does not contain any forbidden word
+    // check the pdf attachement does not contain any forbidden words
     if (attachment != null) {
       if (attachment.endsWith('.pdf')) {    // only for pdf
         const doc = await pdfjsdist.load(attachment)
