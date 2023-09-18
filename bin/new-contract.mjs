@@ -75,7 +75,7 @@ async function main() {
   })
 
   // check vaccination date
-  isVaccinUptodate(lastContract, epochDeparture, newContract)
+  helperCattery.helperPdf.isVaccinUptodate(lastContract, epochDeparture, newContract)
 
   let services = []
   if (argsComptaPdfLastContract.options.services==='') {
