@@ -59,7 +59,7 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
 
   // get pdf properties
   const {pdfObject, contractName} = await getPdfDataFromDataCompta(
-    rowCompta, 
+    rowCompta,
     options.comptaXls,
     exactPdf)
 
@@ -77,7 +77,7 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   if (checkError) {
     await postErrorCheck(pdfObject, undefined)
   }
-  
+
   return {
     options,
     dataCompta,
@@ -342,7 +342,7 @@ function getEmail(pdfObject) {
 
 
 //
-// Set of function to help getting pdf form fields, setting properties, and setting 
+// Set of function to help getting pdf form fields, setting properties, and setting
 // pdf form fields of contract of the cattery
 //
 
@@ -528,7 +528,7 @@ function postSetPropFromFieldsV0(pdfObject, result) {
       chat[key] = []
     }
   })
-      
+
   // check maladies, when several cats, this is not possible to know which on it is
   if ((chat.maladies[0] !== '') && (nbChats > 1)) {
     pdfObject.setWarning(`Maladies et plus de 1 chat`)
@@ -650,7 +650,7 @@ async function _chooseCatName(nom) {
 async function getCatNames(pdfObject) {
   // https://stackoverflow.com/questions/15069587/is-there-a-way-to-join-the-elements-in-an-js-array-but-let-the-last-separator-b
   const noms = pdfObject.getExtend().chat.noms
-  
+
   const l = noms.length
   let newnames = []
   for (let i=0; i<l; i++) {
@@ -661,7 +661,7 @@ async function getCatNames(pdfObject) {
   return formatter.format(newnames)   // something like 'Titou, Pablo et Fifi'
 }
 
-function isVaccinUptodate(pdfObject, epochDeparture, newContract = undefined) {
+function isVaccinUptodate(pdfObject, epochDeparture, newContract = undefined, fontToUse=undefined) {
   const noms = pdfObject.getExtend().chat.noms
   const rcps = pdfObject.getExtend().chat.rcps
   if ((rcps===undefined) || (rcps.length != noms.length) || (rcps.some(v => v===undefined))) {
@@ -701,6 +701,6 @@ export default {
 
   helperXls: {
     xlsFormatCompta,
-    xlsFormatAgenda,  
+    xlsFormatAgenda,
   }
 }

@@ -46,7 +46,7 @@ async function main() {
   newContract.setTextfield('pEmail',     lastContract.getExtend().proprio.email,      fontToUse)
   newContract.setTextfield('pUrgence1',  lastContract.getExtend().proprio.urgenceNom, fontToUse)
   newContract.setTextfield('pUrgence2',  lastContract.getExtend().proprio.urgenceTel, fontToUse)
-  
+
   newContract.setTextfields(['c1Nom', 'c2Nom', 'c3Nom'], lastContract.getExtend().chat.noms, fontToUse)
   newContract.setTextfields(['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract.getExtend().chat.naissances, fontToUse)
   newContract.setTextfields(['c1Id', 'c2Id', 'c3Id'], lastContract.getExtend().chat.ids, fontToUse)
@@ -60,7 +60,7 @@ async function main() {
   if (lastContract.getExtend().chat.maladies[2] !== undefined) {
     newContract.setTextfields(['c3Maladie1', 'c3Maladie2', 'c3Maladie3'], lastContract.getExtend().chat.maladies[2], fontToUse)
   }
-  
+
   // male / femelle
   const m = ['c1Male', 'c2Male', 'c3Male']
   const f = ['c1Femelle', 'c2Femelle', 'c3Femelle']
@@ -75,7 +75,7 @@ async function main() {
   })
 
   // check vaccination date
-  helperCattery.helperPdf.isVaccinUptodate(lastContract, epochDeparture, newContract)
+  helperCattery.helperPdf.isVaccinUptodate(lastContract, epochDeparture, newContract, fontToUse)
 
   let services = []
   if (argsComptaPdfLastContract.options.services==='') {
