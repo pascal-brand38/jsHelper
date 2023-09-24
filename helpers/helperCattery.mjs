@@ -364,6 +364,9 @@ function getTextfromCandidates(pdfObject, args) {
       return true     // not found - continue
     }
   })
+  if (result === undefined) {
+    helperJs.warning(`getTextfromCandidates: undefined on ${pdfObject.getExtend().fullname} with args=${args}`)
+  }
   return result
 }
 
