@@ -58,7 +58,7 @@ function _addText(text) {
 // check to true all fields of checks list
 function _checks(checks) {
   const form = this.getForm()
-  checks.forEach(f => form.getCheckBox(f).check())  
+  checks.forEach(f => form.getCheckBox(f).check())
 }
 
 function _setPropFromFields(setPropFromFieldsDatas, postproc, result=undefined) {
@@ -105,7 +105,11 @@ function _getTextfieldAsInt(field) {
 function _setProplistFromTextfieldlist(pdfObject, prop, args, result) {
   result[prop] = []
   args.forEach(arg => {
-    result[prop].push(pdfObject.getForm().getTextField(arg).getText())
+    let r = pdfObject.getForm().getTextField(arg).getText()
+    if (r === undefined) {
+      r = ''
+    }
+    result[prop].push(r)
   })
 }
 
@@ -114,7 +118,11 @@ function _setProplistlistFromTextfieldlistlist(pdfObject, prop, args, result) {
   args.forEach(arg => {
     let n = []
     arg.forEach(a => {
-      n.push(pdfObject.getForm().getTextField(a).getText())
+      let r = pdfObject.getForm().getTextField(a).getText()
+      if (r === undefined) {
+        r = ''
+      }
+      n.push(r)
     })
     result[prop].push(n)
   })
@@ -151,7 +159,7 @@ const setProplist = {
   fromChecklist: _setProplistFromChecklist,
 
 }
-export { 
+export {
   PDFDocument,
   setProplist,
 }

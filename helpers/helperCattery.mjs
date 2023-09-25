@@ -507,6 +507,59 @@ async function postErrorCheck(pdfObject, result) {
   }
 }
 
+
+function postSetPropNoUndefined(pdfObject, result) {
+  let toBeChecked = []
+
+  const proprio = result.proprio
+  const l1 = [ 'nom', 'adr1', 'adr2', 'tel', 'email', 'urgenceNom', 'urgenceTel' ]
+  l1.forEach(key => {
+    if (!proprio.hasOwnProperty(key)) {
+      toBeChecked.push(key)
+    }
+  })
+
+  const chat = result.chat
+  const l2 = [ 'noms', 'naissances', 'ids', 'races', 'felvs', 'rcps', 'males', 'femelles' ]
+  l2.forEach(key => {
+    if (!chat.hasOwnProperty(key)) {
+      toBeChecked.push(key)
+    } else {
+      const l = chat[key]
+      l.forEach((i, index) => {
+        if (i === undefined) {
+          toBeChecked.push(key )
+        }
+      })
+    }
+  })
+
+  const l3 = [ 'maladies' ]
+  l3.forEach(key => {
+    if (!chat.hasOwnProperty(key)) {
+      toBeChecked.push(key)
+    } else {
+      const l = chat[key]
+      l.forEach(i => {
+        if (i === undefined) {
+          toBeChecked.push(key )
+        } else {
+          i.forEach(j => {
+            if (j === undefined) {
+              toBeChecked.push(key )
+            }
+          })
+        }
+      })
+    }
+  })
+
+  if (toBeChecked.length !== 0) {
+    helperJs.warning(`Check these that are undefined in ${pdfObject.getExtend().fullname}: `)
+    console.log(toBeChecked)
+  }
+}
+
 function postSetPropFromFieldsV0(pdfObject, result) {
   const chat = result.chat
 
@@ -548,9 +601,15 @@ function postSetPropFromFieldsV0(pdfObject, result) {
     chat.femelles.forEach((v, index) => chat.femelles[index] = false)
     pdfObject.setWarning(`Male ET femelle`)
   }
+
+  // check none is undefined
+  postSetPropNoUndefined(pdfObject, result)
 }
 
 function postSetPropFromFieldsV20230826(pdfObject, result) {
+  // check none is undefined
+  postSetPropNoUndefined(pdfObject, result)
+
   // shrink cats array when less than 3 cats
   let chat = pdfObject.getExtend().chat
   chat.noms = chat.noms.filter(n => (n !== '') && (n !== undefined))
