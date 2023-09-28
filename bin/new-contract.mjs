@@ -79,6 +79,17 @@ async function main() {
   // check vaccination date
   helperCattery.helperPdf.isVaccinUptodate(lastContract, epochDeparture, newContract, fontToUse)
 
+  // check daily tarif
+  const noms = lastContract.getExtend().chat.noms
+  const daily = argsComptaPdfLastContract.rowCompta.prixJour
+  if (
+    ((noms.length === 1) && (daily < 14)) ||
+    ((noms.length === 2) && (daily < 24)) ||
+    ((noms.length === 3) && (daily < 36)) ||
+    ((noms.length === 4) && (daily < 44))) {
+    await helperJs.question.question(`${daily}€ pour ${noms} ???? - Appuyer sur entrée`)
+  }
+
   let services = []
   if (argsComptaPdfLastContract.options.services==='') {
     services.push('0€')
