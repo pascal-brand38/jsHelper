@@ -147,6 +147,8 @@ async function getYesNo(text) {
 }
 
 async function sendMail(argsComptaPdf) {
+  await helperCattery.checkInFuture(argsComptaPdf.options.from)
+
   const email = helperCattery.helperPdf.getEmail(argsComptaPdf.pdfObject)
 
   const catNames = await helperCattery.helperPdf.getCatNames(argsComptaPdf.pdfObject)
@@ -176,7 +178,7 @@ async function sendMail(argsComptaPdf) {
       body += `Les vaccins de ${catNames} seront à refaire avant ${getSes(gender)} vacances. `
       body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins? Merci.`
       body += `<br>`
-      body += `<br>`  
+      body += `<br>`
     }
   }
 
@@ -235,7 +237,7 @@ async function sendMail(argsComptaPdf) {
 
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
-  
+
   argsComptaPdf.pdfObject.flatten()
   const flattenName = path.join('C:', 'tmp', path.basename(argsComptaPdf.contractName))
   try {

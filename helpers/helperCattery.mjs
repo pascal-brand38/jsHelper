@@ -746,9 +746,17 @@ function isVaccinUptodate(pdfObject, epochDeparture, newContract = undefined, fo
   return result
 }
 
+async function checkInFuture(fromStr) {
+  const epochArrival = DateTime.fromFormatStartOfDay(fromStr).toEpoch()
+  const now = DateTime.fromNowStartOfDay().toEpoch()
+  if (epochArrival < now) {
+    await helperJs.question.question('Contrat dans le passé - Appuyer sur entrée')
+  }
+}
 
 export default {
   getArgsComptaPdf,
+  checkInFuture,
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {

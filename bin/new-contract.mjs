@@ -25,6 +25,8 @@ async function main() {
   const lastContract = argsComptaPdfLastContract.pdfObject
   const newContract = await PDFDocument.loadInit(contratDir + '\\' + argsComptaPdfLastContract.options.blankContract, helperCattery.helperPdf.getVersion)
 
+  await helperCattery.checkInFuture(argsComptaPdfLastContract.options.from)
+
   if (newContract.getExtend().version !== helperCattery.helperPdf.currentVersionContrat) {
     helperJs.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract.getExtend().version}`)
   }
