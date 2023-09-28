@@ -85,12 +85,27 @@ async function main() {
   } else {
     services = argsComptaPdfLastContract.options.services.split(' + ')
   }
+
+  let sTotal = `${argsComptaPdfLastContract.rowCompta.total}€`
+  sTotal += ` (`
+  sTotal += `${argsComptaPdfLastContract.rowCompta.nbJours.toString()}j x ${argsComptaPdfLastContract.rowCompta.prixJour}€`
+  if (services[0] !== '0€') {
+    const s = services[0].split('(')
+    const value = s[0].trim()
+    sTotal += ` + ${value}`
+  }
+  if (services.length >= 2) {
+    const s = services[1].split('(')
+    const value = s[0].trim()
+    sTotal += ` + ${value}`
+  }
+  sTotal += `)`
   const reservations = [
     [ 'sArriveeDate', argsComptaPdfLastContract.options.from ],
     [ 'sDepartDate', argsComptaPdfLastContract.options.to ],
     [ 'sNbJours', argsComptaPdfLastContract.rowCompta.nbJours.toString() ],
     [ 'sTarifJour', argsComptaPdfLastContract.rowCompta.prixJour + '€' ],
-    [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
+    [ 'sTotal', sTotal ],
     [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.accompte===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.accompte + '€') ],
     [ 'sAcompteDate', argsComptaPdfLastContract.rowCompta.dateAccompte ],
     [ 'sSolde', argsComptaPdfLastContract.rowCompta.solde + '€' ],
