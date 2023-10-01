@@ -733,12 +733,16 @@ function isVaccinUptodate(pdfObject, epochDeparture, newContract = undefined, fo
   let result = true
   const remarque = ['c1VaccinRemarque', 'c2VaccinRemarque', 'c3VaccinRemarque']
   pdfObject.getExtend().chat.rcps.forEach((date, index) => {
-    const epochRcp = DateTime.fromFormatStartOfDay(date).toEpoch()
-    const epochRcpNext = epochRcp + DateTime.epochNDays(365)
-    if (epochRcpNext < epochDeparture) {
+    if ((date === undefined) || (date === '')) {
       result = false
-      if (newContract !== undefined) {
-        newContract.setTextfield(remarque[index], 'RAPPEL A REFAIRE', fontToUse)
+    } else {
+      const epochRcp = DateTime.fromFormatStartOfDay(date).toEpoch()
+      const epochRcpNext = epochRcp + DateTime.epochNDays(365)
+      if (epochRcpNext < epochDeparture) {
+        result = false
+        if (newContract !== undefined) {
+          newContract.setTextfield(remarque[index], 'RAPPEL A REFAIRE', fontToUse)
+        }
       }
     }
   })
