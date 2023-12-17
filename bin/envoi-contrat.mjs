@@ -209,7 +209,7 @@ async function sendMail(argsComptaPdf) {
   body += `De plus en plus de chats arrivant avec des puces à la garderie, `
   body += `malgré un traitement, `
   body += `<span style="color:red; font-weight:700; text-decoration: underline;">JE REFUSE</span> `
-  body += `maintenant les produits suivant inefficaces :`
+  body += `maintenant les produits suivant inefficaces:`
   body += `<br>`
   body += `<br>`
   body += `<div style="color:red; font-weight:700; text-decoration: underline;">`
@@ -227,13 +227,11 @@ async function sendMail(argsComptaPdf) {
   body += `</div>`
   body += `<br>`
 
-  body += `Merci de votre compréhension afin de protéger ${catNames} ainsi que la garderie`
+  body += `Merci de votre compréhension afin de protéger ${catNames} ainsi que la garderie.`
   body += `<br>`
   body += `<br>`
 
   body += `Des bisous à ${catNames} de la part de ${getSa(gender)} nounou.`
-  body += `<br>`
-  body += `<br>`
 
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
@@ -325,4 +323,5 @@ async function main() {
 }
 
 
-main();
+await main();
+console.log('Done')
