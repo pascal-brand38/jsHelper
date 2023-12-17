@@ -194,6 +194,15 @@ async function sendMail(argsComptaPdf) {
     body += `En vous remerciant. `
     body += `<br>`
     body += `<br>`
+  } else {
+    // pas de demande d'acompte. solde en espèce?
+    let espece = await getYesNo(`Solde en espèce?`)
+    console.log()
+    if (espece == 'y') {
+      body += `Le solde de la garderie sera à régler en espèce à l'arrivée de ${catNames} pour le début de ses vacances.`
+      body += `<br>`
+      body += `<br>`
+    }
   }
 
   body += `Pensez à amener l'alimentation ainsi que ${getLeCarnet(gender)} de santé de ${catNames} pour toute la durée du séjour.`
