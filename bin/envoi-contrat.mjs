@@ -163,7 +163,8 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
 
   body += `Je vous envoie le contrat pour les vacances de ${catNames} à ${argsComptaPdf.options.enterprise} `
-  body += `du ${argsComptaPdf.options.from} au ${argsComptaPdf.options.to}. `
+  body += `du ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).weekdayStr()} ${argsComptaPdf.options.from} `
+  body += `au ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.to).weekdayStr()} ${argsComptaPdf.options.to}. `
   body += `<br>`
   body += `En vous remerciant de finir de le remplir, notamment les anti-parasitaires et de me le retourner signé, `
   body += `à l'arrivée de ${getVotrePtitLoulou(gender)} pour le début des vacances le ${argsComptaPdf.options.from}.`

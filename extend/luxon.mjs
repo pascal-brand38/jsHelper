@@ -2,13 +2,13 @@
 // MIT License
 //
 // Extend DateTime from luxon library to deal with excel serial date
-// https://stackoverflow.com/questions/34512832/best-way-to-extend-a-javascript-library 
+// https://stackoverflow.com/questions/34512832/best-way-to-extend-a-javascript-library
 
-import { DateTime } from 'luxon'
+import { DateTime, Info } from 'luxon'
 
 // Extend DateTime library from luxon
 // zone 'utc' is used to get real dates at noon, not bothering about timezone
-DateTime.fromNowStartOfDay = () => DateTime.now({zone: 'utc'}).startOf('day') 
+DateTime.fromNowStartOfDay = () => DateTime.now({zone: 'utc'}).startOf('day')
 DateTime.fromEpochStartOfDay = (epoch) => DateTime.fromSeconds(epoch, {zone: 'utc'}).startOf('day')
 DateTime.fromFormatStartOfDay = (str, format = 'd/M/y') => DateTime.fromFormat(str, format, {zone: 'utc'}).startOf('day')
 
@@ -23,8 +23,13 @@ DateTime.fromExcelSerialStartOfDay = (serial) => DateTime.fromEpochStartOfDay(se
 
 DateTime.prototype.toEpoch = function () { return this.toSeconds() }
 DateTime.prototype.toExcelSerial = function () { return (this.toEpoch() + (2208988800 + 60*60*24 *2)) / (60*60*24) }
+DateTime.prototype.weekdayStr = function (length='long', opts={ locale: 'fr' }) {
+  const weekdays = Info.weekdays('long', { locale: 'fr' })    // arrays of day strings, [0] being lundi
+  return weekdays[this.weekday-1]   // this.weekday from 1 to 7, 1 is Monday and 7 is Sunday
+}
 
 DateTime.epochNDays = (nDays)  => 60 * 60 * 24 * nDays
+
 
 
 export { DateTime }
