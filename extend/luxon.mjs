@@ -24,12 +24,10 @@ DateTime.fromExcelSerialStartOfDay = (serial) => DateTime.fromEpochStartOfDay(se
 DateTime.prototype.toEpoch = function () { return this.toSeconds() }
 DateTime.prototype.toExcelSerial = function () { return (this.toEpoch() + (2208988800 + 60*60*24 *2)) / (60*60*24) }
 DateTime.prototype.weekdayStr = function (length='long', opts={ locale: 'fr' }) {
-  const weekdays = Info.weekdays('long', { locale: 'fr' })    // arrays of day strings, [0] being lundi
+  const weekdays = Info.weekdays(length, opts)    // arrays of day strings, [0] being lundi
   return weekdays[this.weekday-1]   // this.weekday from 1 to 7, 1 is Monday and 7 is Sunday
 }
 
 DateTime.epochNDays = (nDays)  => 60 * 60 * 24 * nDays
-
-
 
 export { DateTime }

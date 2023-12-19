@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /// Copyright (c) Pascal Brand
 /// MIT License
 ///

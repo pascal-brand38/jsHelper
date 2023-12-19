@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /// Copyright (c) Pascal Brand
 /// MIT License
 ///
@@ -12,7 +14,7 @@ import { DateTime } from '../extend/luxon.mjs'
 
 // populates unique arrival and departure dates, from readXls return data
 function populateDates(dates, data) {
-  data.forEach(e => { 
+  data.forEach(e => {
     if (!dates.some(d => d.what === 'arrival' && d.date === e.arrival)) {
       dates.push( { what: 'arrival', date: e.arrival })
     }
@@ -96,7 +98,7 @@ function filterConsecutive(data) {
       data.forEach(e => {
         if (
               (e !== d)      // do not remove the one we are checking, in case (e.departure===e.arrival)
-          && (!e.remove) 
+          && (!e.remove)
           && ((e.arrival === d.departure) || (e.arrival-1 === d.departure))
           && (e.name === d.name)
         ) {

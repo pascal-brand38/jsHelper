@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /// Copyright (c) Pascal Brand
 /// MIT License
 ///
@@ -110,7 +112,7 @@ function main() {
 }
 
 if (process.argv.length !== 4) {
-  console.log(`"${process.argv[0]}" "${process.argv[1]}" /c/Users/pasca/Desktop/save-on-cloud "/c/Users/pasca/Mon Drive/tmp/save-on-cloud"`)
+  console.log(`save-on-cloud /c/Users/pasca/Desktop/save-on-cloud "/c/Users/pasca/Mon Drive/tmp/save-on-cloud"`)
 } else {
   main();
   console.log('-------------------------------')

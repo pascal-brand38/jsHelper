@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /// Copyright (c) Pascal Brand
 /// MIT License
 
@@ -6,7 +8,7 @@ import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 import { DateTime } from '../extend/luxon.mjs'
 
-function nameOrEmpty(name, first=false) { 
+function nameOrEmpty(name, first=false) {
   const sep = (first ? '' : '\n')
   return (name!==undefined && name!=='') ? sep + name : ''
 }
@@ -74,7 +76,7 @@ async function main() {
     const proprio = pdfObject.getExtend().proprio
     const ownerCell = `${nameOrEmpty(proprio.nom,true)}${nameOrEmpty(proprio.adr1)}${nameOrEmpty(proprio.adr2)}${nameOrEmpty(proprio.tel)}`
 
-    // const error = 
+    // const error =
     //   (decompose.error !== undefined) ||
     //   (decompose.chatNom.length !== decompose.chatNaissance.length) ||
     //   (decompose.chatNom.length !== decompose.id.length)
@@ -117,14 +119,14 @@ async function main() {
           `${nameOrEmpty(chat.noms[index], true)}${nameOrEmpty(chat.naissances[index])}\n${chat.ids[index]}${nameOrEmpty(chat.races[index])}${nameOrEmpty(sexe)}`,
           ownerCell,
           departureCell,
-          '',  
+          '',
         ])
       })
     }
   }))
 
   rows.sort(function(a, b) {
-    if (a[0] === b[0]) { 
+    if (a[0] === b[0]) {
       return a[1] - b[1]    // sort on departure if same arrival
     }
     return a[0] - b[0]      // sort on arrival
