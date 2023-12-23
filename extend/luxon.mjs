@@ -8,7 +8,7 @@ import { DateTime, Info } from 'luxon'
 
 // Extend DateTime library from luxon
 // zone 'utc' is used to get real dates at noon, not bothering about timezone
-DateTime.fromNowStartOfDay = () => DateTime.now({zone: 'utc'}).startOf('day')
+DateTime.fromNowStartOfDay = () => DateTime.now().setZone('utc').startOf('day')
 DateTime.fromEpochStartOfDay = (epoch) => DateTime.fromSeconds(epoch, {zone: 'utc'}).startOf('day')
 DateTime.fromFormatStartOfDay = (str, format = 'd/M/y') => DateTime.fromFormat(str, format, {zone: 'utc'}).startOf('day')
 

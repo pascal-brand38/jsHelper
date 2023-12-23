@@ -66,7 +66,7 @@ function checkStatusPay(dataCompta) {
     const epochArrival = dArrival.toEpoch()
     const epochArrival10 = epochArrival + DateTime.epochNDays(10)
     const epochArrival20 = epochArrival + DateTime.epochNDays(20)
-    if (epochArrival < epochToday) {
+    if (epochArrival <= epochToday) {
       //console.log(data.name)
       data.statusPay.forEach(status => {
         switch (status) {
