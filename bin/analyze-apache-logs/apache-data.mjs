@@ -5,7 +5,7 @@ import Alpine from 'alpine'
 import { createReadStream } from 'fs'
 import { createInterface } from 'readline'
 
-async function readLines(filename) {
+async function _readLines(filename) {
   const fileStream = createReadStream(filename);
 
   const rl = createInterface({
@@ -22,7 +22,7 @@ async function readLines(filename) {
   return lines
 }
 
-async function readApacheData(options) {
+async function read(options) {
   // Apache logs: https://httpd.apache.org/docs/current/mod/mod_log_config.html
   // On
   //    '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"'
@@ -44,7 +44,7 @@ async function readApacheData(options) {
   // var data = alpine.parseLine('78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"');
   // console.log(data);
 
-  const lines = await readLines(options.logFile)
+  const lines = await _readLines(options.logFile)
   let data = []
   for (const line of lines) {
     data.push(alpine.parseLine(line))
@@ -52,6 +52,6 @@ async function readApacheData(options) {
   return data
 }
 
-export {
-  readApacheData,
+export default {
+  read,
 }
