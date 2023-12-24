@@ -54,8 +54,10 @@ async function main() {
   const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
   // console.log(stopforumspamDatas)
 
-  dbIp.populate(stopforumspamDatas, 'stopforumspam')
+  dbIp.populate(stopforumspamDatas, 'stopforumspam', stopforumspam.ipStatus)
   console.log(dbIp.db)
+
+  dbIp.status(apacheData.uniqueIps)
 
   console.log('Done')
 }
