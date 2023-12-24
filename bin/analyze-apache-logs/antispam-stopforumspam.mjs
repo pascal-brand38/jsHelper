@@ -7,51 +7,32 @@ import fetch from 'node-fetch'
 // db is the ip database - see db-ip.mjs
 
 // return stopforumspam data related to ips in data
-async function _read(data) {
-  let uniqueIps = new Set(data.map(function(a) {return a.remoteHost;}));
+async function get(uniqueIps) {
   if (uniqueIps.size === 0) {
-    return undefined
-  }
-  if (uniqueIps.size === 1) {
-    uniqueIps.push('0.0.0.0')   // to have a list of results
+    return {}
   }
 
-  const url = 'https://api.stopforumspam.org/api?json&ip=' + [...uniqueIps].join('&ip=')
+  // always add ip=0.0.0.0 so that there are at least 2 ips to find, and so result is a list
+  const url = 'https://api.stopforumspam.org/api?json&ip=0.0.0.0&ip=' + uniqueIps.join('&ip=')
   try {
     const response = await fetch(url);
-    return await response.json();
-  } catch {
-    return undefined
-  }
-}
-
-// return updated db with data from stopforumspam.org
-async function populateDbIp(data, db) {
-  if (db === undefined) {
-    return db
-  }
-  const spamdata = await _read(data)
-  if (spamdata === undefined) {
-    return db
-  }
-
-  spamdata.ip.forEach(element => {
-    let dbIpItem = db[element.value]
-    if (dbIpItem === undefined) {
-      // create the entry for this ip
-      db[element.value] = {
-        epoch: 0,
-      }
-      console.log(`${element.value} NOT FOUND`)
-    } else {
-      console.log(`${element.value} FOUND`)
+    const rawDatas = await response.json();
+    if (rawDatas.success != 1) {
+      return {}
     }
-  });
+    let result = {}
+    rawDatas.ip.forEach(element => {
+      result[element.value] = element
+    });
 
-  return db
+    return result
+  } catch {
+    return { }
+  }
 }
+
 // https://api.stopforumspam.org/api?json&ip=0.0.0.0&ip=85.68.121.4
 
 export default {
-  populateDbIp
+  get
 }
