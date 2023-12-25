@@ -18,7 +18,7 @@ function setDbIpFilename(options) {
   // get dir where analyze-apache-logs.mjs is stored
   const __filename = url.fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  options.dbIpFilename = path.join(__dirname, 'analyze-apache-logs', 'dbip.json')
+  options.dbIpFilename = path.join(__dirname, 'analyze-apache-logs', 'db-ip.json')
 }
 
 function getArgs(argv) {
@@ -64,7 +64,7 @@ async function main() {
   dbIp.populate(abuseipdbBlacklist, 'abuseipdb', abuseipdb.ipStatus)
   // fs.writeFileSync('C:\\tmp\\blacklist.txt', JSON.stringify(abuseipdbBlacklist))
 
-  // dbIp.status(apacheData.uniqueIps)
+  dbIp.status(apacheData.uniqueIps)
 
   dbIp.save(options.dbIpFilename)
 

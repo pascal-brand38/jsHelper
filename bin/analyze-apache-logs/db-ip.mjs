@@ -34,12 +34,27 @@ class DbIp {
   }
 
   status(uniqueIps) {
+    let nTrue = 0
+    let nFalse = 0
     uniqueIps.forEach(ip => {
+      let thisOne = true  // default is: ip is correct
       this.providers.forEach(provider => {
         // console.log(`${ip} ${this.db[ip]}`)
-        console.log(`${ip} ${provider.ipStatus(this.db[ip][provider.provider])}`)
+        if (this.db[ip]) {
+          // console.log(`${ip} ${provider.ipStatus(this.db[ip][provider.provider])}`)
+          if (thisOne) {
+            thisOne = provider.ipStatus(this.db[ip][provider.provider])
+          }
+        }
       })
+      if (thisOne) {
+        nTrue++
+      } else {
+        nFalse++
+      }
     })
+    console.log(`Correct Ips: ${nTrue}`)
+    console.log(`Spams: ${nFalse}`)
   }
 }
 

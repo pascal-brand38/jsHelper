@@ -60,7 +60,6 @@ async function get(uniqueIps) {
 // TODO: return a status about unknown, crawler, spam...
 function ipStatus(jsonObject) {
   if (jsonObject === undefined) {
-    console.log(jsonObject)
     return true
   }
   if ((jsonObject.appears > 0) && (jsonObject.confidence > 0)) {
