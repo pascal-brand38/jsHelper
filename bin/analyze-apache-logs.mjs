@@ -8,6 +8,19 @@ import { hideBin } from 'yargs/helpers'
 import ApacheData  from './analyze-apache-logs/apache-data.mjs'
 import DbIp  from './analyze-apache-logs/db-ip.mjs'
 import stopforumspam  from './analyze-apache-logs/antispam-stopforumspam.mjs'
+import path from 'path'
+import url from 'url';
+
+// import abuseipdb  from './analyze-apache-logs/antispam-abuseipdb.mjs'
+// import fs from 'fs'
+
+function setDbIpFilename(options) {
+  // https://stackoverflow.com/questions/8817423/why-is-dirname-not-defined-in-node-repl
+  // get dir where analyze-apache-logs.mjs is stored
+  const __filename = url.fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  options.dbIpFilename = path.join(__dirname, 'analyze-apache-logs', 'dbip.json')
+}
 
 function getArgs(argv) {
   console.log(argv)
@@ -22,22 +35,13 @@ function getArgs(argv) {
         requiresArg: true,
         required: true,
       },
-      "db-ip": {
-        description: "private db filename, containing info about ips: spam, crawler,...",
-        default: '',
-        requiresArg: true,
-        required: false,
-      },
     })
     .argv;
 
+  setDbIpFilename(options)
+
   return options;
 }
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////////////
 
 async function main() {
   const options = getArgs(process.argv)
@@ -48,16 +52,21 @@ async function main() {
   // console.log(apacheData.uniqueIps)
 
   const dbIp = new DbIp()
-  dbIp.read(options.dbIp)
+  dbIp.read(options.dbIpFilename)
   // console.log(dbIp.db)
 
   const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
   // console.log(stopforumspamDatas)
-
   dbIp.populate(stopforumspamDatas, 'stopforumspam', stopforumspam.ipStatus)
-  console.log(dbIp.db)
+  // console.log(dbIp.db)
 
-  dbIp.status(apacheData.uniqueIps)
+  // const abuseipdbBlacklist = await abuseipdb.getBlacklist()
+  // console.log(abuseipdbBlacklist)
+  // fs.writeFileSync('C:\\tmp\\blacklist.txt', JSON.stringify(abuseipdbBlacklist))
+
+  // dbIp.status(apacheData.uniqueIps)
+
+  dbIp.save(options.dbIpFilename)
 
   console.log('Done')
 }
