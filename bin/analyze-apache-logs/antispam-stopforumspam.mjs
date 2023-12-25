@@ -14,33 +14,33 @@ async function get(uniqueIps) {
 
   let result = {}
   const chunkSize = 15;   // stopforumspam sends 15 ip information at a time
+
+  // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
+  let urls = []
   for (let i = 0; i < uniqueIps.length; i += chunkSize) {
     let chunk = uniqueIps.slice(i, i + chunkSize);
     if (chunk.size === 1) {
       chunk.push('0.0.0.0')   // add an extra one to ensure the result is a list
     }
-
-    const url = 'https://api.stopforumspam.org/api?json&ip=' + chunk.join('&ip=')
-    try {
-      const response = await fetch(url);
-      const rawDatas = await response.json();
-      if (rawDatas.success != 1) {
-        return {}
-      }
-      rawDatas.ip.forEach(element => {
-        result[element.value] = element
-      });
-    } catch {
-      return { }
-    }
+    urls.push('https://api.stopforumspam.org/api?json&ip=' + chunk.join('&ip='))
   }
 
-  // filters only the ones that show a spam
-  Object.keys(result).forEach(key => {
-    if (result[key].appears != 1) {
-      delete result[key];
-    }
-  })
+  try {
+    await Promise.all(urls.map(async (url) => {
+      await fetch(url)
+        .then(response =>response.json())
+        .then(rawDatas => {
+          if (rawDatas.success === 1) {
+            rawDatas.ip.forEach(element => {
+              if (result[element.value].appears === 1) {  // only the ones that show a spam
+                result[element.value] = element
+              }
+            })
+          }
+        })
+    }))
+  } catch {
+  }
 
   return result
 }

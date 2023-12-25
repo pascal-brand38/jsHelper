@@ -27,12 +27,12 @@
     "stopforumspam": {
       "value": "185.220.101.50",
       "appears": 1,
-      "frequency": 333,
+      "frequency": 332,
       "lastseen": "2023-12-14 09:43:30",
       "torexit": 1,
       "asn": 60729,
       "country": "de",
-      "confidence": 92.41
+      "confidence": 92.39
     }
   },
   "3.224.220.101": {
