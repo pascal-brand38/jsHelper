@@ -34,6 +34,14 @@ async function get(uniqueIps) {
       return { }
     }
   }
+
+  // filters only the ones that show a spam
+  Object.keys(result).forEach(key => {
+    if (result[key].appears != 1) {
+      delete result[key];
+    }
+  })
+
   return result
 }
 

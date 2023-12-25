@@ -10,6 +10,7 @@ async function _read(dbIpFilename) {
     }
     return JSON.parse(fs.readFileSync(dbIpFilename, 'utf8'))
   } catch {
+    console.log(`CANNOT READ ${dbIpFilename}`)
     return {}
   }
 }
@@ -17,7 +18,8 @@ async function _read(dbIpFilename) {
 class DbIp {
   constructor() { this.db = undefined; this.providers = [] }
 
-  async read(dbIpFilename) { this.db = _read(dbIpFilename) }
+  // async read(dbIpFilename) { this.db = await _read(dbIpFilename); }
+  async read(dbIpFilename) { _read(dbIpFilename).then(result => this.db = result) }
   async save(dbIpFilename) { fs.writeFileSync(dbIpFilename, JSON.stringify(this.db, null, 2)), 'utf8' }
 
   populate(antispamDatas, spamProvider, ipStatus) {

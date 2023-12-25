@@ -52,8 +52,8 @@ async function main() {
   // console.log(apacheData.uniqueIps)
 
   const dbIp = new DbIp()
-  dbIp.read(options.dbIpFilename)
-  // console.log(dbIp.db)
+  await dbIp.read(options.dbIpFilename)
+  console.log(dbIp.db)
 
   const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
   // console.log(stopforumspamDatas)
