@@ -8,10 +8,9 @@ import { hideBin } from 'yargs/helpers'
 import ApacheData  from './analyze-apache-logs/apache-data.mjs'
 import DbIp  from './analyze-apache-logs/db-ip.mjs'
 import stopforumspam  from './analyze-apache-logs/antispam-stopforumspam.mjs'
+import abuseipdb  from './analyze-apache-logs/antispam-abuseipdb.mjs'
 import path from 'path'
 import url from 'url';
-
-// import abuseipdb  from './analyze-apache-logs/antispam-abuseipdb.mjs'
 // import fs from 'fs'
 
 function setDbIpFilename(options) {
@@ -53,15 +52,16 @@ async function main() {
 
   const dbIp = new DbIp()
   await dbIp.read(options.dbIpFilename)
-  console.log(dbIp.db)
+  // console.log(dbIp.db)
 
   const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
   // console.log(stopforumspamDatas)
   dbIp.populate(stopforumspamDatas, 'stopforumspam', stopforumspam.ipStatus)
   // console.log(dbIp.db)
 
-  // const abuseipdbBlacklist = await abuseipdb.getBlacklist()
+  const abuseipdbBlacklist = await abuseipdb.getBlacklist()
   // console.log(abuseipdbBlacklist)
+  dbIp.populate(abuseipdbBlacklist, 'abuseipdb', abuseipdb.ipStatus)
   // fs.writeFileSync('C:\\tmp\\blacklist.txt', JSON.stringify(abuseipdbBlacklist))
 
   // dbIp.status(apacheData.uniqueIps)
