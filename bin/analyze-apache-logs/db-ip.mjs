@@ -29,25 +29,27 @@ class DbIp {
       if (this.db[ip] === undefined) {
         this.db[ip] = {}
       }
-      this.db[ip][spamProvider] = antispamDatas[ip]
+      if (this.db[ip][spamProvider] === undefined) {
+        this.db[ip][spamProvider] = {}
+      }
+      Object.assign(this.db[ip][spamProvider], antispamDatas[ip]);
     })
   }
 
-  status(uniqueIps) {
+  status(apacheData) {
     let nTrue = 0
     let nFalse = 0
-    uniqueIps.forEach(ip => {
+    apacheData.uniqueIps.forEach(ip => {
       let thisOne = true  // default is: ip is correct
       this.providers.forEach(provider => {
         // console.log(`${ip} ${this.db[ip]}`)
-        if (this.db[ip]) {
+        if (thisOne && this.db[ip]) {
           // console.log(`${ip} ${provider.ipStatus(this.db[ip][provider.provider])}`)
-          if (thisOne) {
-            thisOne = provider.ipStatus(this.db[ip][provider.provider])
-          }
+          thisOne = provider.ipStatus(this.db[ip][provider.provider])
         }
       })
       if (thisOne) {
+        // ip is correct... but?
         nTrue++
       } else {
         nFalse++
