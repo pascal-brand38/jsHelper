@@ -51,6 +51,7 @@ class DbIp {
       if (thisOne) {
         // ip is correct... but?
         nTrue++
+        console.log(`Correct IP?  ${ip}`)
       } else {
         nFalse++
       }

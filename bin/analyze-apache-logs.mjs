@@ -58,13 +58,13 @@ async function main() {
   const localDatas = await local.get(apacheData)
   dbIp.populate(localDatas, 'local', local.ipStatus)
 
-  // const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
+  // const stopforumspamDatas = {}
+  const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
   dbIp.populate(stopforumspamDatas, 'stopforumspam', stopforumspam.ipStatus)
-  //dbIp.populate({}, 'stopforumspam', stopforumspam.ipStatus)
 
+  // const abuseipdbBlacklist = {}
   const abuseipdbBlacklist = await abuseipdb.getBlacklist()
   dbIp.populate(abuseipdbBlacklist, 'abuseipdb', abuseipdb.ipStatus)
-  // dbIp.populate({}, 'abuseipdb', abuseipdb.ipStatus)
 
   dbIp.status(apacheData)
 
@@ -84,4 +84,10 @@ node.exe  ../../pascal-brand38/jsHelper/bin/analyze-apache-logs.mjs --log-file l
 npm install -g .
 analyze-apache-logs --log-file ../../other/web-design/logs/2023/12/20231214-* --db-ip ../../other/web-design/bin/log-statistics-ip-info.json
 analyze-apache-logs --log-file ../../other/web-design/logs/2023/12/20231214-*
+*/
+
+
+/* Localisation
+http://ip-api.com/json/104.168.145.159
+https://ip-api.com/docs/api:json
 */
