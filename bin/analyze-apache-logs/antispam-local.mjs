@@ -4,6 +4,24 @@
 // data is the apache data from logs - see apache-data.mjs
 // db is the ip database - see db-ip.mjs
 
+import dns from 'dns'
+
+function dnsReverseAsync(ipAddress) {
+  return new Promise(resolve => {
+    dns.reverse(ipAddress, (err, hostnames) => {
+      console.log(err)
+      resolve({ err: err, hostnames: hostnames })
+    })
+  })
+}
+
+
+// return nb of secs from a time which is typically '26/Dec/2023:07:58:22 +0100'
+function _getNbSecs(time) {
+  const fields = time.split(/[ :]/) // fields = [ '26/Dec/2023', '07', '58', '22', '+0100']
+  return (parseInt(fields[1])*60 + parseInt(fields[2])) * 60 + parseInt(fields[3])
+}
+
 function _setValue(local, key, value) {
   if (local === undefined) {
     local = {}
@@ -11,9 +29,11 @@ function _setValue(local, key, value) {
   local[key] = value
   return local
 }
+
 async function get(apacheData) {
   let result = {}
-  apacheData.uniqueIps.forEach(ip => {
+
+  await Promise.all(apacheData.uniqueIps.map(async ip => {
     let local = undefined
     const requests = apacheData.logs.filter((l) => (l.remoteHost === ip))
 
@@ -32,14 +52,27 @@ async function get(apacheData) {
     }
 
     // single request to '/' which is odd
-    if ((requests.length === 1) && (requests[0].request === 'GET / HTTP/1.1')) {
-      local = _setValue(local, 'singleRequestToSlash', 'TODO')
+    const slashRequest = 'GET / HTTP/1.1'
+    if (requests.length === 1) {
+      if ((requests[0].status === '200') && (requests[0].request === slashRequest)) {
+        local = _setValue(local, 'singleRequestToSlash', 'TODO')
+      }
+    } else if (requests.length === 2) {
+      if ((requests[0].status === '301') && (requests[0].request === slashRequest) &&
+          (requests[1].status === '200') && (requests[1].request === slashRequest)) {
+        local = _setValue(local, 'singleRequestToSlash', 'TODO')
+      }
     }
 
     requests.forEach((r, index) => {
       if (r.status === '404') {
         if (['GET /wp-', 'GET /wordpress'].some(wp => r.request.startsWith(wp))) {
           local = _setValue(local, 'wordpress', 'TODO')
+        }
+        // check forbidden pages
+        // ads.txt: who is able to sell my ads. Only spammers/crawler looks at it!
+        if (['GET /ads.txt'].some(wp => r.request.startsWith(wp))) {
+          local = _setValue(local, 'forbiddenPage', 'TODO')
         }
       }
       if (r.request.startsWith('GET /robots.txt ')) {
@@ -51,20 +84,51 @@ async function get(apacheData) {
 
       // immediate post
       if (r.request.startsWith('POST ') && (index >= 1)) {
-        const prev = requests[index-1]
-        if (r.time === prev.time) {
+        const secsPrev = _getNbSecs(requests[index-1].time)
+        const secs = _getNbSecs(r.time)
+
+        if (secs - secsPrev < 10) {   // less than 10secs between the page arrives, and the post
           local = _setValue(local, 'immediatePost', 'TODO')
         }
       }
     })
-    if (local !== undefined) {
-      result[ip] = local
-      if (local.uaContainBot !== undefined) {
-        console.log(`${local.robots}  -  ${local.uaContainBot}`)
-      }
+    if (local === undefined) {
+      await dnsReverseAsync(ip).then(res => console.log(res))
+      //dnsReverseAsync(ip)
     }
+    //if (local = == undefined) {
+  // const res = await Promise.all(promises);
+  // res.forEach(r => {
+  //   console.log(r)
+  //   // if (r.err) {
+  //   //   console.log(`err: ${r.err}`)
+  //   // } else {
+  //   //   console.log(`hostnames: ${r.hostnames}`)
+  //   // }
+  //})
+
+        // dns.reverse(ip, (err, hostnames) => {
+        //   if (err) {
+        //     console.log(`err: ${ip} ${err}`)
+        //   } else {
+        //     console.log(`hostnames: ${ip} ${hostnames}`)
+        //   }
+        // })
   })
 
+  // const promises = apacheData.uniqueIps.map(ip => dnsReverseAsync(ip));
+  // const res = await Promise.all(promises);
+  // res.forEach(r => {
+  //   console.log(r)
+  //   // if (r.err) {
+  //   //   console.log(`err: ${r.err}`)
+  //   // } else {
+  //   //   console.log(`hostnames: ${r.hostnames}`)
+  //   // }
+  //})
+  )
+
+  console.log('RETURN')
   return result
 }
 
@@ -79,6 +143,7 @@ function ipStatus(jsonObject) {
       (jsonObject.immediatePost !== undefined) ||
       (jsonObject.noGetHtmlSuccess !== undefined) ||
       (jsonObject.singleRequestToSlash !== undefined) ||
+      (jsonObject.forbiddenPage !== undefined) ||
       false) {
     return false
   } else {

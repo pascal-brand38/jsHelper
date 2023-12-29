@@ -58,12 +58,12 @@ async function main() {
   const localDatas = await local.get(apacheData)
   dbIp.populate(localDatas, 'local', local.ipStatus)
 
-  // const stopforumspamDatas = {}
-  const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
+  const stopforumspamDatas = {}
+  //const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
   dbIp.populate(stopforumspamDatas, 'stopforumspam', stopforumspam.ipStatus)
 
-  // const abuseipdbBlacklist = {}
-  const abuseipdbBlacklist = await abuseipdb.getBlacklist()
+  const abuseipdbBlacklist = {}
+  //const abuseipdbBlacklist = await abuseipdb.getBlacklist()
   dbIp.populate(abuseipdbBlacklist, 'abuseipdb', abuseipdb.ipStatus)
 
   dbIp.status(apacheData)
@@ -88,6 +88,6 @@ analyze-apache-logs --log-file ../../other/web-design/logs/2023/12/20231214-*
 
 
 /* Localisation
-http://ip-api.com/json/104.168.145.159
+http://ip-api.com/json/35.180.22.238
 https://ip-api.com/docs/api:json
 */
