@@ -56,13 +56,38 @@ async function _read(logFilename) {
 class ApacheData {
   constructor() {
     this.logs = undefined
-    this.uniqueIps = undefined
+    this.uniqueIps = undefined    // list of IPs considered as OK
+    this.spamIps = []             // list of IPs considered as spams
   }
 
   async read(logFilename) {
     this.logs = await _read(logFilename)
     this._setUniqueIps()
   }
+
+  spamDetected(ip, reason, antispam) {
+    return { ip: ip, isSpam: true, reason: `From ${antispam}: ${reason}` }
+  }
+
+  noSpam(ip, antispam) {
+    return { ip: ip, isSpam: false }
+  }
+
+  print() {
+    console.log(this.spamIps)
+    console.log(this.uniqueIps)
+    console.log(`Nb unique IPS not being spams: ${this.uniqueIps.length}`)
+    console.log(`Nb spams: ${this.spamIps.length}`)
+  }
+
+  filter(spamIps) {
+    // this.uniqueIps = spamIps.filter(ip => ip.isSpam === false).map(ip => ip.ip)
+    this.uniqueIps = this.uniqueIps.filter(ip =>
+      (ip !== '0.0.0.0') && (!spamIps.some(spam => (ip === spam.ip)  && (spam.isSpam)))
+    )
+    this.spamIps = [ ...this.spamIps, ...spamIps.filter(ip => ip.isSpam) ]
+  }
+
 
   // private methods
   _setUniqueIps() {

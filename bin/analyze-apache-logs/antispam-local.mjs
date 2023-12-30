@@ -6,12 +6,17 @@
 
 import dns from 'dns'
 
-function dnsReverseAsync(ipAddress) {
+const antispam = 'local'
+
+function _dnsReverseAsync(ipAddress) {
   return new Promise(resolve => {
-    dns.reverse(ipAddress, (err, hostnames) => {
-      console.log(err)
-      resolve({ err: err, hostnames: hostnames })
-    })
+    try {
+      dns.reverse(ipAddress, (err, hostnames) => {
+        resolve({ err: err, hostnames: hostnames })
+      })
+    } catch {
+      resolve({ err: 'Exception' })
+    }
   })
 }
 
@@ -22,22 +27,12 @@ function _getNbSecs(time) {
   return (parseInt(fields[1])*60 + parseInt(fields[2])) * 60 + parseInt(fields[3])
 }
 
-function _setValue(local, key, value) {
-  if (local === undefined) {
-    local = {}
-  }
-  local[key] = value
-  return local
-}
-
-async function get(apacheData) {
-  let result = {}
-
-  await Promise.all(apacheData.uniqueIps.map(async ip => {
-    let local = undefined
+async function spamDetection(apacheData) {
+  const results = await Promise.all(apacheData.uniqueIps.map(async ip => {
     const requests = apacheData.logs.filter((l) => (l.remoteHost === ip))
+    let reason = 'strange'
 
-    // check a html request succeeded
+    // spam no request to a html file succeeds
     if (requests.every(r => {
       if ((r.status === '200') && (r.request.startsWith('GET '))) {
         const v = r.request.split(' ')
@@ -48,38 +43,27 @@ async function get(apacheData) {
       }
       return true
     })) {
-      local = _setValue(local, 'noGetHtmlSuccess', 'TODO')
+      return apacheData.spamDetected(ip, 'no html requests succeed', antispam)
     }
 
-    // single request to '/' which is odd
-    const slashRequest = 'GET / HTTP/1.1'
-    if (requests.length === 1) {
-      if ((requests[0].status === '200') && (requests[0].request === slashRequest)) {
-        local = _setValue(local, 'singleRequestToSlash', 'TODO')
-      }
-    } else if (requests.length === 2) {
-      if ((requests[0].status === '301') && (requests[0].request === slashRequest) &&
-          (requests[1].status === '200') && (requests[1].request === slashRequest)) {
-        local = _setValue(local, 'singleRequestToSlash', 'TODO')
-      }
-    }
-
-    requests.forEach((r, index) => {
+    // spam when requesting a wrong page, or robots,...
+    if (requests.some((r, index) => {
       if (r.status === '404') {
         if (['GET /wp-', 'GET /wordpress'].some(wp => r.request.startsWith(wp))) {
-          local = _setValue(local, 'wordpress', 'TODO')
+          reason = 'accessing wordpress files'
+          return true
         }
+
         // check forbidden pages
         // ads.txt: who is able to sell my ads. Only spammers/crawler looks at it!
         if (['GET /ads.txt'].some(wp => r.request.startsWith(wp))) {
-          local = _setValue(local, 'forbiddenPage', 'TODO')
+          reason = 'accessing wrong files'
+          return true
         }
       }
       if (r.request.startsWith('GET /robots.txt ')) {
-        local = _setValue(local, 'robots', 'TODO')
-      }
-      if (r['RequestHeader User-Agent'].toLowerCase().includes('bot')) {    // TODO: not relialable
-        local = _setValue(local, 'uaContainsBot', r['RequestHeader User-Agent'])
+        reason = 'accessing robots.txt'
+        return true
       }
 
       // immediate post
@@ -88,72 +72,46 @@ async function get(apacheData) {
         const secs = _getNbSecs(r.time)
 
         if (secs - secsPrev < 10) {   // less than 10secs between the page arrives, and the post
-          local = _setValue(local, 'immediatePost', 'TODO')
+          reason = 'immediate post contact form'
+          return true
         }
       }
-    })
-    if (local === undefined) {
-      await dnsReverseAsync(ip).then(res => console.log(res))
-      //dnsReverseAsync(ip)
+
+      if (r['RequestHeader User-Agent'].toLowerCase().includes('bot')) {    // TODO: not relialable
+        reason = `user-agent contains bot word: ${r['RequestHeader User-Agent']}`
+        return true
+      }
+      return false
+    })) {
+      return apacheData.spamDetected(ip, reason, antispam)
     }
-    //if (local = == undefined) {
-  // const res = await Promise.all(promises);
-  // res.forEach(r => {
-  //   console.log(r)
-  //   // if (r.err) {
-  //   //   console.log(`err: ${r.err}`)
-  //   // } else {
-  //   //   console.log(`hostnames: ${r.hostnames}`)
-  //   // }
-  //})
 
-        // dns.reverse(ip, (err, hostnames) => {
-        //   if (err) {
-        //     console.log(`err: ${ip} ${err}`)
-        //   } else {
-        //     console.log(`hostnames: ${ip} ${hostnames}`)
-        //   }
-        // })
-  })
+    const detected = await _dnsReverseAsync(ip).then(res => {
+      if (!res.err) {
+        if (res.hostnames.some(h => {
+          if (h.endsWith('googlezip.net')) {
+            reason = `hostname contains 'googlezip.net': ${h}`
+            return true
+          }
+          return false
+        })) {
+          return apacheData.spamDetected(ip, reason, antispam)
+        }
+      }
+      return undefined
+    })
+    if (detected) {
+      return detected
+    }
 
-  // const promises = apacheData.uniqueIps.map(ip => dnsReverseAsync(ip));
-  // const res = await Promise.all(promises);
-  // res.forEach(r => {
-  //   console.log(r)
-  //   // if (r.err) {
-  //   //   console.log(`err: ${r.err}`)
-  //   // } else {
-  //   //   console.log(`hostnames: ${r.hostnames}`)
-  //   // }
-  //})
-  )
+    return apacheData.noSpam(ip, antispam)
+  }))
 
-  console.log('RETURN')
-  return result
-}
-
-
-function ipStatus(jsonObject) {
-  if (jsonObject === undefined) {
-    return true
-  }
-  if ((jsonObject.wordpress !== undefined) ||
-      (jsonObject.robots !== undefined) ||
-      (jsonObject.uaContainsBot !== undefined) ||
-      (jsonObject.immediatePost !== undefined) ||
-      (jsonObject.noGetHtmlSuccess !== undefined) ||
-      (jsonObject.singleRequestToSlash !== undefined) ||
-      (jsonObject.forbiddenPage !== undefined) ||
-      false) {
-    return false
-  } else {
-    return true
-  }
+  apacheData.filter(results)
 }
 
 // https://api.stopforumspam.org/api?json&ip=0.0.0.0&ip=85.68.121.4
 
 export default {
-  get,
-  ipStatus,
+  spamDetection,
 }
