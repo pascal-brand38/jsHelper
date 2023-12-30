@@ -57,6 +57,7 @@ async function main() {
 
   await local.spamDetection(apacheData)
   await stopforumspam.spamDetection(apacheData)
+  await abuseipdb.spamDetection(apacheData)
 
 
   // const stopforumspamDatas = {}

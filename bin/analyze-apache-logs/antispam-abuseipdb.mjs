@@ -55,7 +55,45 @@ function ipStatus(jsonObject) {
   return !((jsonObject) && (jsonObject.abuseConfidenceScore !== undefined) && (jsonObject.abuseConfidenceScore>=30))
 }
 
+async function spamDetection(apacheData) {
+  if (apacheData.uniqueIps.length === 0) {
+    return []
+  }
+
+  const headers = {
+    'Accept': 'application/json',
+    'Key': '21157626c3e8a195c3747de65569463c12421d9d825673aa41e77a525fe44bc995cdb5d5e552de84',   // remove this hardcoded value
+  }
+  const url = 'https://api.abuseipdb.com/api/v2/check?'
+
+  let spamIps = []
+  await Promise.all(apacheData.uniqueIps.map(async (ip) => {
+    try {
+      const params = new URLSearchParams({
+        ipAddress: ip,
+        maxAgeInDays: '183',
+      })
+
+      await fetch(url + params, { headers: headers })
+        .then(response =>response.json())
+        .then(rawDatas => {
+          console.log(rawDatas)
+              if (rawDatas.data.abuseConfidenceScore > 0) {  // only the ones that show a spam
+                spamIps.push(apacheData.spamDetected(ip, 'detected', 'abuseipdb'))
+              } else {
+                spamIps.push(apacheData.noSpam(ip, 'abuseipdb'))
+              }
+        })
+      } catch {
+      }
+  }))
+
+  console.log(spamIps)
+  apacheData.filter(spamIps)
+}
+
 export default {
   getBlacklist,
   ipStatus,
+  spamDetection,
 }
