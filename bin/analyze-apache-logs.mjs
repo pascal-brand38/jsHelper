@@ -48,11 +48,11 @@ async function main() {
   // console.log(options)
 
   const apacheData = new ApacheData(options)
-  await apacheData.read(options.logFile)
+  await apacheData.read(options.logFile, options.dbIpFilename)
   // console.log(apacheData.uniqueIps)
 
-  const dbIp = new DbIp()
-  await dbIp.read(options.dbIpFilename)
+  // const dbIp = new DbIp()
+  // await dbIp.read(options.dbIpFilename)
   // console.log(dbIp.db)
 
   await local.spamDetection(apacheData)
@@ -71,6 +71,7 @@ async function main() {
   // dbIp.status(apacheData)
 
   apacheData.print()
+  apacheData.saveDbip(options.dbIpFilename)
   // dbIp.save(options.dbIpFilename)
 
   console.log('Done')

@@ -2,8 +2,11 @@
 // MIT License
 
 import Alpine from 'alpine'
+import fs from 'fs'
 import { createReadStream } from 'fs'
 import { createInterface } from 'readline'
+import { DateTime } from '../../extend/luxon.mjs';
+import assert from 'node:assert';
 
 async function _readLines(filename) {
   const fileStream = createReadStream(filename);
@@ -52,25 +55,81 @@ async function _read(logFilename) {
   return logs
 }
 
+async function _readDbip(dbIpFilename) {
+  try {
+    if (dbIpFilename === undefined) {
+      return {}
+    }
+    return JSON.parse(fs.readFileSync(dbIpFilename, 'utf8'))
+  } catch (e) {
+    console.log(e)
+    console.log(`CANNOT READ ${dbIpFilename}`)
+    return {}
+  }
+}
 
 class ApacheData {
   constructor() {
     this.logs = undefined
     this.uniqueIps = undefined    // list of IPs considered as OK
     this.spamIps = []             // list of IPs considered as spams
+    this.dbip = undefined
+    this.todayStr = DateTime.fromNowStartOfDay().toFormat('d/M/y')
   }
 
-  async read(logFilename) {
+  async read(logFilename, dbIpFilename) {
     this.logs = await _read(logFilename)
+    this.dbip = await _readDbip(dbIpFilename)
     this._setUniqueIps()
+
+    // check spams in db
+    let spamIps = []
+    this.uniqueIps.forEach(ip => {
+      if (this.dbip[ip]) {
+        const antispams =  Object.keys(this.dbip[ip])
+        if (antispams.some(s => this.dbip[ip][s].isSpam)) {
+          spamIps.push({ ip: ip, isSpam: true })
+        }
+      }
+    });
+
+    this.filter(spamIps)
+  }
+
+  async saveDbip(dbIpFilename) {
+    fs.writeFileSync(dbIpFilename, JSON.stringify(this.dbip, null, 2), 'utf8')
+  }
+
+  _addToDb(ip, isSpam, antispam, reason) {
+    const value = { isSpam: isSpam, reason: reason, date: this.todayStr }
+    if (this.dbip[ip] === undefined) {
+      this.dbip[ip] = {}
+    }
+    if (this.dbip[ip][antispam] === undefined) {
+      this.dbip[ip][antispam] = value
+    } else {
+      assert.equal(this.dbip[ip][antispam].isSpam, false)   // we add to db only the ones that are not already detected as spam
+      if (isSpam) {
+        this.dbip[ip][antispam] = value
+      } else {
+        this.dbip[ip][antispam].date = this.todayStr
+      }
+    }
+  }
+
+  _spamInformation(ip, isSpam, antispam, reason) {
+    this._addToDb(ip, isSpam, antispam, reason)
+
+    const spam = { ip: ip, isSpam: isSpam, antispam: antispam, date: this.todayStr, reason: reason }
+    return spam
   }
 
   spamDetected(ip, reason, antispam) {
-    return { ip: ip, isSpam: true, reason: `From ${antispam}: ${reason}` }
+    return this._spamInformation(ip, true, antispam, reason)
   }
 
   noSpam(ip, antispam) {
-    return { ip: ip, isSpam: false }
+    return this._spamInformation(ip, false, antispam, undefined)
   }
 
   print() {

@@ -1,4986 +1,789 @@
 {
-  "104.168.145.159": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "104.28.198.243": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "114.119.129.171": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.137.8": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.146.114": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.153.158": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.153.38": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.155.233": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.158.6": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "134.209.188.136": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "15.235.15.135": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "157.55.39.10": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "157.55.39.11": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.55.39.14": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "157.55.39.48": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "157.55.39.55": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "159.65.37.175": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "17.241.219.236": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "185.190.42.200": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "193.186.4.101": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "193.186.4.55": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "194.187.171.152": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "194.187.171.155": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "195.154.122.60": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "207.46.13.107": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "207.46.13.154": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "207.46.13.64": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "37.19.223.113": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "40.77.167.2": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.167.26": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "40.77.167.41": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.50": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.120": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.188.200": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.188.83": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.189.238": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.13": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.193": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "51.222.253.2": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.13.63.143": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "52.167.144.145": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.238": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.65": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.20": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.203": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.5": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.26": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "64.124.8.53": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "66.249.66.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "robots": "TODO"
-    }
-  },
-  "66.249.66.17": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/120.0.6099.71 Safari/537.36"
-    }
-  },
-  "66.249.66.18": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/120.0.6099.71 Safari/537.36",
-      "robots": "TODO"
-    }
-  },
-  "66.249.66.19": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/120.0.6099.71 Safari/537.36",
-      "robots": "TODO"
-    }
-  },
-  "66.249.66.20": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "66.249.66.21": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "66.249.66.4": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "robots": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "66.249.66.5": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "66.249.66.6": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "robots": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "66.249.66.8": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "66.249.66.9": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-    }
-  },
-  "66.249.81.232": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "66.249.93.167": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "66.249.93.168": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "75.119.150.136": {
-    "local": {
-      "wordpress": "TODO"
-    }
-  },
-  "82.156.116.176": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "98.70.50.23": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "114.119.134.212": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.136.143": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.137.28": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.147.87": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.149.43": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "157.55.39.59": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "17.241.219.169": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.75.212": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "175.44.42.137": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "185.191.171.17": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "191.101.157.212": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "195.201.245.95": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-    }
-  },
-  "198.98.54.38": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "20.120.74.197": {
-    "local": {
-      "robots": "TODO",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "207.46.13.141": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "207.46.13.31": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "213.202.233.34": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "31.13.103.4": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.115.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "5.254.23.79": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "52.167.144.166": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "57.128.140.139": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "66.249.93.169": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "69.167.8.230": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "72.14.201.54": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "85.208.96.193": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "89.32.45.46": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "91.92.253.85": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "114.119.135.193": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.135.98": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.148.242": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.150.120": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.156.182": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "146.190.244.163": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.55.39.202": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "157.55.39.51": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "17.241.219.216": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "173.252.87.118": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "185.191.171.2": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "185.191.171.9": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "2.6.84.98": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "20.150.223.83": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "immediatePost": "TODO"
-    }
-  },
-  "20.169.49.172": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "3.133.159.152": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "34.215.36.58": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.167.126": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.24": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.149": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "78.153.140.218": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "84.38.188.191": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "85.208.96.197": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "85.208.96.202": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "98.70.49.85": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "114.119.128.58": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.130.60": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.133.98": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.138.48": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.138.77": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.143.119": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.143.135": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.145.102": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.155.54": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.158.227": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "138.246.253.24": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "149.28.147.176": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "157.55.39.49": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "17.241.227.90": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "172.187.136.26": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "172.232.11.32": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "173.252.127.1": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.79.118": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.83.5": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "173.252.83.6": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.87.10": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.87.4": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "185.182.56.65": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "199.244.88.227": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "199.244.88.231": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "207.46.13.92": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "212.227.216.60": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "212.227.216.76": {
-    "local": {
-      "robots": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "23.22.35.162": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5 (Amazonbot/0.1; +https://developer.amazon.com/support/amazonbot)"
-    }
-  },
-  "3.224.220.101": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5 (Amazonbot/0.1; +https://developer.amazon.com/support/amazonbot)"
-    }
-  },
-  "31.13.115.1": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.115.7": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.127.111": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.127.120": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.127.15": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.127.26": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.127.7": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.127.8": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "34.240.33.205": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "35.162.108.194": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.167.52": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.189.122": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.190.211": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/112.0.0.0 Safari/537.36"
-    }
-  },
-  "45.77.38.44": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "45.79.164.219": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "47.128.21.60": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "51.222.253.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.167.144.203": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.210": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.205.142.92": {
-    "local": {
-      "robots": "TODO",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "54.36.148.80": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.25": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "64.124.8.77": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "64.176.84.89": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "66.220.149.120": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "66.220.149.17": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "67.222.147.67": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "69.171.249.113": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "69.63.184.113": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "69.63.189.116": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "69.63.189.9": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "114.119.130.231": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.138.107": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.155.217": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "136.243.228.180": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; DataForSeoBot/1.0; +https://dataforseo.com/dataforseo-bot)"
-    }
-  },
-  "149.56.160.233": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "161.35.46.70": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "17.241.219.52": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "172.225.120.99": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "173.252.111.117": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "173.252.111.8": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.127.20": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.87.15": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.95.21": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "173.252.95.23": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "176.172.110.79": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "20.243.140.55": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "20.246.96.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.115.116": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.127.1": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.127.116": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.127.12": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.127.18": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.127.19": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.127.25": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.13.127.27": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.94.14.103": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "34.220.141.37": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "37.187.94.3": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)"
-    }
-  },
-  "40.77.167.235": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.167.241": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.247": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.73": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.63": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "47.128.26.189": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "49.235.74.169": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "51.107.5.161": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "51.222.253.11": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "51.222.253.16": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "51.222.253.20": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.167.144.211": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.215": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.226": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "52.167.144.235": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.25": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.221.62.139": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "54.245.189.210": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "60.210.40.190": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "65.108.66.11": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SeekportBot; +https://bot.seekport.com)"
-    }
-  },
-  "66.102.9.199": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "69.171.231.1": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "69.171.231.9": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "69.171.251.14": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "69.63.184.10": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "69.63.189.120": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "69.63.189.5": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "69.63.189.7": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "8.219.76.7": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "92.184.108.229": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "95.214.230.247": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4 facebookexternalhit/1.1 Facebot Twitterbot/1.0"
-    }
-  },
-  "114.119.131.14": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.132.238": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.153.215": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.154.89": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.158.18": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "165.227.121.164": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "167.172.186.115": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "17.241.227.29": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "173.252.111.6": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "191.101.130.53": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.36.71.133": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.42.116.175": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "192.71.10.105": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.71.12.140": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.71.224.240": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.71.225.127": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "192.71.42.108": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "194.38.22.71": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "20.230.93.67": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "209.141.39.157": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "3.88.43.153": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "34.213.41.32": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "51.222.253.13": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.167.144.180": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "52.167.144.197": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.232.31.64": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "54.160.249.30": {
-    "local": {
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "54.36.148.118": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.151": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.184": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "66.249.66.11": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-    }
-  },
-  "85.215.160.188": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "114.119.129.74": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.140.66": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.141.18": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.142.232": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.146.141": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.152.221": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "114.119.156.188": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.157.3": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "157.55.39.222": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "163.116.163.116": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "17.22.237.159": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.245.49": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.253.132": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.253.212": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.253.4": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.219.173": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.219.64": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.227.145": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "173.252.127.7": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "190.92.135.246": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "20.106.77.244": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "20.65.145.154": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "207.46.13.156": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "3.110.236.102": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "34.145.182.115": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Orbbot/1.1;)"
-    }
-  },
-  "34.85.180.57": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Orbbot/1.1;)"
-    }
-  },
-  "34.86.218.94": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Orbbot/1.1;)"
-    }
-  },
-  "34.86.28.46": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Orbbot/1.1;)"
-    }
-  },
-  "35.186.190.124": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Orbbot/1.1;)"
-    }
-  },
-  "35.199.1.30": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; Orbbot/1.1;)",
-      "robots": "TODO"
-    }
-  },
-  "35.245.10.218": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Orbbot/1.1;)"
-    }
-  },
-  "37.169.89.31": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "4.242.2.195": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.167.108": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.136": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "51.222.253.3": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.167.144.199": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.59": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.112": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.48": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "66.249.66.7": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-    }
-  },
-  "85.209.11.117": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "100.27.43.240": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "103.102.228.170": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "104.248.87.228": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "114.119.131.105": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.144.85": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.150.68": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.151.83": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.156.165": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "146.66.177.93": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.245.220.87": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "157.55.39.52": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.55.39.6": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "17.241.219.240": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.227.179": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "17.241.227.95": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.75.204": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.246.15.112": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.246.15.185": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.246.19.67": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "172.234.192.48": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "185.191.171.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "185.191.171.13": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
-      "robots": "TODO"
-    }
-  },
-  "207.46.13.128": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "207.46.13.130": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "208.109.227.120": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "3.101.12.230": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "31.220.0.86": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "35.89.9.62": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.167.14": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.143": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.20": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.30": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.33": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.73": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/112.0.0.0 Safari/537.36"
-    }
-  },
-  "40.77.189.255": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/112.0.0.0 Safari/537.36"
-    }
-  },
-  "40.77.190.173": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.190.249": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "44.195.46.73": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "51.144.78.0": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "52.167.144.12": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.171": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.182": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.19": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.194": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.20": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.205": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.21": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.228": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.193.165.186": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "54.215.83.81": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "54.221.122.122": {
-    "local": {
-      "robots": "TODO",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "54.36.148.128": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.254": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.74": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.64": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "64.124.8.89": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "69.167.38.108": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "85.208.96.195": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "85.208.96.198": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "85.208.96.200": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "86.213.21.47": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "86.49.237.204": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "91.162.218.75": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "114.119.128.5": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.131.123": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.145.66": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.149.252": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.157.33": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.159.216": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "13.70.204.77": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "13.76.46.136": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "151.106.11.189": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "157.55.39.57": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "162.55.85.224": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; BLEXBot/1.0; +http://webmeup-crawler.com/)"
-    }
-  },
-  "165.227.102.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "17.241.227.64": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "173.239.211.105": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "173.239.211.108": {
-    "local": {
-      "wordpress": "TODO"
-    }
-  },
-  "18.210.24.117": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "185.162.130.23": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "194.26.192.116": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "204.93.197.150": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "3.227.253.138": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "31.13.127.28": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "35.177.232.162": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "40.77.167.15": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.254": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.40": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.63": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.70": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.13": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.188.238": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.188.56": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.189.47": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "44.197.101.251": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "CCBot/2.0 (https://commoncrawl.org/faq/)"
-    }
-  },
-  "44.200.86.35": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "46.4.120.165": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AwarioBot/1.0; +https://awario.com/bots.html)"
-    }
-  },
-  "52.167.144.174": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.175": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "52.167.144.176": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.179": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.212": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.220": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.3.232.39": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "54.167.101.113": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "64.124.8.55": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "114.119.130.109": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.130.210": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.133.69": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.142.140": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.142.97": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.143.130": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.146.220": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "13.89.243.115": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "130.255.166.120": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "130.255.166.121": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "130.255.166.24": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "130.255.166.26": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "130.255.166.51": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "130.255.166.97": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "162.19.101.44": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Qwantify-prod604/1.0; +https://help.qwant.com/bot/)"
-    }
-  },
-  "17.22.253.171": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.253.180": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.253.36": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.219.58": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.75.253": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.75.93": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.246.15.22": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.246.23.64": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "195.191.219.132": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; MJ12bot/v1.4.8; http://mj12bot.com/)"
-    }
-  },
-  "199.244.88.223": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "207.46.13.126": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "212.227.216.14": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "212.227.216.62": {
-    "local": {
-      "wordpress": "TODO"
-    }
-  },
-  "212.227.216.94": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "34.203.215.66": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "4.236.178.186": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "40.77.189.84": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "45.55.199.66": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "45.88.97.45": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "51.222.253.15": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.167.144.16": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "52.167.144.184": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.218": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.229": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.70.240.171": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/600.2.5 (KHTML, like Gecko) Version/8.0.2 Safari/600.2.5 (Amazonbot/0.1; +https://developer.amazon.com/support/amazonbot)"
-    }
-  },
-  "54.173.74.216": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ClaudeBot"
-    }
-  },
-  "54.36.148.14": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.48": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.80": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "107.173.84.163": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "114.119.129.33": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.133.250": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.138.250": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.150.166": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.153.137": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.159.101": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "128.90.43.156": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "139.180.215.127": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "142.250.32.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.55.39.53": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "17.22.245.56": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.253.24": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.22.253.74": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.219.243": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.227.134": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.241.227.232": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
-      "robots": "TODO"
-    }
-  },
-  "17.241.227.34": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.246.19.25": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "17.246.23.231": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "172.206.35.144": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "173.239.211.205": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "173.239.211.224": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "173.239.211.237": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.239.211.242": {
-    "local": {
-      "wordpress": "TODO"
-    }
-  },
-  "173.252.95.14": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "191.101.41.174": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "207.46.13.125": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "212.118.40.21": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "213.180.203.178": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.27": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.52": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.57": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.6": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "216.24.213.216": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "216.73.161.102": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "216.73.161.104": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "216.73.161.107": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "216.73.161.130": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "216.73.161.95": {
-    "local": {
-      "wordpress": "TODO"
-    }
-  },
-  "34.148.250.158": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.173.250.14": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; DotBot/1.1; http://www.opensiteexplorer.org/dotbot, help@moz.com)"
-    }
-  },
-  "40.77.167.64": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.189.116": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/112.0.0.0 Safari/537.36"
-    }
-  },
-  "40.77.190.143": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/112.0.0.0 Safari/537.36"
-    }
-  },
-  "44.201.70.77": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "45.92.229.11": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "45.92.229.9": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "46.161.108.124": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "47.128.54.175": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "5.255.231.123": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "5.255.231.145": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.170": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.52": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.64": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
-      "robots": "TODO"
-    }
-  },
-  "52.167.144.17": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.139": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.224": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.240": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.35": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "64.124.8.23": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "78.1.71.166": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "84.17.52.165": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "87.250.224.240": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.77": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "91.92.246.203": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "95.108.213.108": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.117": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.121": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "114.119.129.22": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.135.233": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.159.145": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.132.250.235": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "13.76.192.92": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "144.76.28.177": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-    }
-  },
-  "156.59.198.136": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.55.39.13": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "157.55.39.54": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "162.19.100.210": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; Qwantify-prod604/1.0; +https://help.qwant.com/bot/)"
-    }
-  },
-  "167.71.12.214": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "17.241.219.66": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "172.98.33.129": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "172.98.33.130": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "172.98.33.69": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "172.98.33.70": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "172.98.33.73": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "172.98.33.74": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "173.252.95.11": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "180.251.239.252": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "207.46.13.127": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "207.46.13.151": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "207.46.13.153": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "207.46.13.63": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "213.180.203.108": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.13": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.153": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.159": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.163": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.194": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.251": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "34.148.49.12": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.196.35.93": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.231.188.84": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.237.67.174": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.243.225.75": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "37.174.120.142": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "38.121.43.104": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "40.77.167.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.143": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.188.210": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.188.40": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.189.14": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.189.171": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.114": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.195": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.201": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.226": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "44.200.161.82": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "47.128.55.238": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "5.255.231.113": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.129": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.171": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.188": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.49": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.94": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.78.98.91": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "51.222.253.12": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.165.174.78": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "52.167.144.142": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.18": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.191": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.221": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.230": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.16": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.27": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.78.97.54": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "64.124.8.60": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "87.250.224.204": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.229": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.83": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.128": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.175": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.201": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.214": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.229": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.230": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "95.108.213.241": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.252": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.86": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "104.196.194.226": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "114.119.130.152": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.131.235": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.133.35": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.149.222": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.151.172": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.153.208": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.156.55": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "156.59.198.135": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.55.39.61": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "176.128.77.164": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "181.214.218.188": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "185.191.171.15": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "185.191.171.3": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "185.191.171.6": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "185.191.171.7": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "188.166.254.163": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "207.46.13.17": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "213.180.203.12": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.134": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "213.180.203.173": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.199": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.24": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.28": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.35": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.58": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "34.73.158.219": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.217.51.60": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "35.237.44.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "40.77.167.132": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.17": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.22": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.55": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.154": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.188.96": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/112.0.0.0 Safari/537.36"
-    }
-  },
-  "45.152.114.235": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "46.185.114.118": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "47.128.61.20": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "5.255.231.20": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.69": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.96": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "51.107.15.38": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "immediatePost": "TODO"
-    }
-  },
-  "51.178.211.183": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "52.167.144.216": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.131": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.222": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.47": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "66.102.9.203": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "78.2.191.200": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "80.82.78.133": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "85.208.96.194": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "85.208.96.199": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "87.250.224.13": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.14": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.16": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.23": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.236": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.241": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.40": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "87.250.224.42": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.116": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.118": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.148": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.158": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.223": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "104.219.239.235": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "114.119.128.203": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.129.237": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.130.14": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.132.11": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.133.116": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.135.245": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.139.181": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.140.79": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.143.50": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.154.41": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.155.149": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "163.116.163.114": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "20.191.44.22": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "209.59.229.74": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "213.180.203.135": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.238": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.96": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "216.24.212.237": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.13.127.21": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "34.73.170.191": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.196.106.115": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.212.181.64": {
-    "local": {
-      "robots": "TODO"
-    }
-  },
-  "36.68.100.27": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.167.255": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.28": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.79": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.131": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.189.76": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.189.96": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "45.90.105.198": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "5.255.231.120": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.21": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.42": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.80": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.97": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "52.167.144.168": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.204": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.54.72.12": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "54.36.148.79": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.5": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "64.124.8.46": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "64.227.150.124": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "84.247.115.19": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "87.250.224.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "89.165.9.117": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "92.158.211.189": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "95.108.213.172": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.218": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "114.119.138.202": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.140.4": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.153.50": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "162.223.122.98": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "175.44.42.202": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "176.169.242.138": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "185.223.152.219": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "192.36.109.115": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.36.109.116": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.36.109.117": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.36.109.128": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "192.36.109.75": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "192.36.109.94": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "192.36.109.96": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO"
-    }
-  },
-  "213.180.203.140": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.167": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.247": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.50": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "213.180.203.72": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "31.13.115.4": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "34.23.243.206": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.196.21.185": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "5.255.231.13": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "5.255.231.4": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "54.36.148.142": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.234": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.65": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "66.42.62.245": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "68.178.149.3": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "77.141.56.43": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "8.219.160.186": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "87.250.224.38": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "91.166.60.230": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "95.108.213.163": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.196": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "95.108.213.228": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)"
-    }
-  },
-  "103.197.170.33": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "114.119.131.68": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.134.10": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.134.121": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.135.78": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.141.52": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.144.11": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.145.188": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.151.208": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.153.132": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "114.119.155.122": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
-    }
-  },
-  "116.62.155.4": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "144.76.68.88": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "serpstatbot/2.1 (advanced backlink tracking bot; https://serpstatbot.com/; abuse@serpstatbot.com)"
-    }
-  },
-  "156.146.41.221": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "157.55.39.205": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "17.241.219.46": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "191.101.126.209": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "20.125.131.26": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "207.46.13.155": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "207.46.13.54": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "207.46.13.78": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "31.13.115.3": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "31.177.95.56": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "34.75.63.186": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "35.185.106.59": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "ZoominfoBot (zoominfobot at zoominfo dot com)"
-    }
-  },
-  "40.77.167.19": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.167.45": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.188.114": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.188.224": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.188.252": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "45.33.127.178": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "51.222.253.4": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.167.144.167": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "52.167.144.187": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.238": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "65.108.99.43": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SeekportBot; +https://bot.seekport.com)"
-    }
-  },
-  "79.120.76.144": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "85.208.96.203": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)"
-    }
-  },
-  "88.171.85.92": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/601.2.4 (KHTML, like Gecko) Version/9.0.1 Safari/601.2.4 facebookexternalhit/1.1 Facebot Twitterbot/1.0"
-    }
-  },
   "114.119.130.96": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "114.119.133.76": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.135.193": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "114.119.136.92": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "114.119.140.190": {
     "local": {
-      "uaContainsBot": "Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+      "date": "31/12/2023"
     }
   },
   "114.119.141.217": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "114.119.155.185": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "114.119.156.133": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "114.119.159.177": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible;PetalBot;+https://webmaster.petalsearch.com/site/petalbot)"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "157.55.39.204": {
     "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "157.55.39.49": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "157.55.39.53": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
     }
   },
   "157.55.39.62": {
     "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "17.241.219.70": {
-    "local": {
-      "singleRequestToSlash": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)"
-    }
-  },
-  "193.186.4.41": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "193.186.4.54": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "197.242.151.159": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "199.244.88.220": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "199.244.88.221": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "37.19.223.121": {
-    "local": {
-      "immediatePost": "TODO"
-    }
-  },
-  "40.77.167.44": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "40.77.188.100": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.188.65": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
-    }
-  },
-  "40.77.189.2": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.189.67": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.116": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/112.0.0.0 Safari/537.36"
-    }
-  },
-  "40.77.190.207": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.240": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "40.77.190.41": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/100.0.4896.127 Safari/537.36"
-    }
-  },
-  "51.15.253.1": {
-    "local": {
-      "singleRequestToSlash": "TODO"
-    }
-  },
-  "51.222.253.6": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "52.167.144.185": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36"
-    }
-  },
-  "54.36.148.121": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.148.186": {
-    "local": {
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "54.36.149.15": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"
-    }
-  },
-  "64.124.8.68": {
-    "local": {
-      "robots": "TODO",
-      "uaContainsBot": "Mozilla/5.0 (compatible; ImagesiftBot; +imagesift.com)"
-    }
-  },
-  "67.223.118.151": {
-    "local": {
-      "noGetHtmlSuccess": "TODO",
-      "wordpress": "TODO"
-    }
-  },
-  "69.167.38.168": {
-    "local": {
-      "noGetHtmlSuccess": "TODO"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "159.224.217.252": {
     "local": {
-      "immediatePost": "TODO"
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "31/12/2023"
+    }
+  },
+  "17.241.219.70": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
+      "date": "31/12/2023"
     }
   },
   "172.81.58.196": {
     "local": {
-      "immediatePost": "TODO"
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "31/12/2023"
+    }
+  },
+  "188.166.254.163": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "195.191.219.132": {
+    "local": {
+      "isSpam": true,
+      "reason": "accessing robots.txt",
+      "date": "31/12/2023"
     }
   },
   "196.242.178.80": {
     "local": {
-      "immediatePost": "TODO"
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "31/12/2023"
     }
   },
-  "178.254.12.183": {
+  "197.242.151.159": {
     "local": {
-      "singleRequestToSlash": "TODO"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
-  "184.94.240.88": {
+  "199.244.88.220": {
     "local": {
-      "singleRequestToSlash": "TODO"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
-  "91.92.246.227": {
+  "207.46.13.126": {
     "local": {
-      "singleRequestToSlash": "TODO"
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "207.46.13.128": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "207.46.13.141": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "31.13.127.21": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "37.19.223.121": {
+    "local": {
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.2": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.235": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.255": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.28": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.44": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.45": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.79": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.188.100": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.188.65": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.189.2": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.189.67": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.190.116": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.190.207": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.190.240": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.190.41": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "51.222.253.6": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.166": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.18": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.180": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.185": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.194": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.212": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.228": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.235": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.238": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.25": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.65": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "54.36.148.121": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "54.36.148.16": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+      "date": "31/12/2023"
+    }
+  },
+  "54.36.148.186": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+      "date": "31/12/2023"
+    }
+  },
+  "54.36.148.234": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+      "date": "31/12/2023"
+    }
+  },
+  "54.36.149.15": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
     }
   },
   "57.128.29.253": {
     "local": {
-      "forbiddenPage": "TODO"
+      "isSpam": true,
+      "reason": "accessing wrong files",
+      "date": "31/12/2023"
+    }
+  },
+  "64.124.8.68": {
+    "local": {
+      "isSpam": true,
+      "reason": "accessing robots.txt",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.10": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.17": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/120.0.6099.71 Safari/537.36",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.18": {
+    "local": {
+      "isSpam": true,
+      "reason": "accessing robots.txt",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.19": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.20": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.21": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.4": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.5": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.6": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.8": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.66.9": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.93.167": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.93.169": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "67.223.118.151": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "69.167.38.168": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "91.92.253.85": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "193.186.4.41": {
+    "local": {
+      "isSpam": true,
+      "reason": "hostname contains 'googlezip.net': 193-186-4-41.v4.fetch.tunnel.googlezip.net",
+      "date": "31/12/2023"
+    }
+  },
+  "193.186.4.54": {
+    "local": {
+      "isSpam": true,
+      "reason": "hostname contains 'googlezip.net': 193-186-4-54.v4.fetch.tunnel.googlezip.net",
+      "date": "31/12/2023"
+    }
+  },
+  "178.254.12.183": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": true,
+      "reason": "detected",
+      "date": "31/12/2023"
+    }
+  },
+  "217.109.102.219": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "31.34.189.196": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "37.66.21.18": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "51.15.233.178": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "51.15.253.1": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": true,
+      "reason": "detected",
+      "date": "31/12/2023"
+    }
+  },
+  "72.14.201.54": {
+    "local": {
+      "isSpam": true,
+      "reason": "hostname contains 'googlezip.net': 72-14-201-54.v4.fetch.tunnel.googlezip.net",
+      "date": "31/12/2023"
+    }
+  },
+  "72.14.201.55": {
+    "local": {
+      "isSpam": true,
+      "reason": "hostname contains 'googlezip.net': 72-14-201-55.v4.fetch.tunnel.googlezip.net",
+      "date": "31/12/2023"
+    }
+  },
+  "77.205.153.110": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "82.126.157.81": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "85.72.172.63": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "87.88.163.189": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "91.166.60.230": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "92.184.98.103": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "92.184.98.148": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "184.94.240.88": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": true,
+      "reason": "detected",
+      "date": "31/12/2023"
+    }
+  },
+  "199.244.88.221": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": true,
+      "reason": "detected",
+      "date": "31/12/2023"
+    }
+  },
+  "91.92.246.227": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": true,
+      "reason": "detected",
+      "date": "31/12/2023"
+    }
+  },
+  "0.0.0.0": {
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
     }
   }
 }
