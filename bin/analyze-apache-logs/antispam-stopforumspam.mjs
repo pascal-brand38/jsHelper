@@ -17,16 +17,13 @@ import fetch from 'node-fetch'
 // }
 
 async function spamDetection(apacheData) {
-  if (apacheData.uniqueIps.length === 0) {
-    return []
-  }
-
+  const ipsToCheck = apacheData.uniqueIps.filter(ip => !apacheData.spamCheckToday(ip, 'stopforumspam'))
   const chunkSize = 15;   // stopforumspam sends 15 ip information at a time
 
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   let urls = []
-  for (let i = 0; i < apacheData.uniqueIps.length; i += chunkSize) {
-    let chunk = apacheData.uniqueIps.slice(i, i + chunkSize);
+  for (let i = 0; i < ipsToCheck.length; i += chunkSize) {
+    let chunk = ipsToCheck.slice(i, i + chunkSize);
     if (chunk.length === 1) {
       chunk.push('0.0.0.0')   // add an extra one to ensure the result is a list
     }

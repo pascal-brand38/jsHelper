@@ -56,9 +56,7 @@ function ipStatus(jsonObject) {
 }
 
 async function spamDetection(apacheData) {
-  if (apacheData.uniqueIps.length === 0) {
-    return []
-  }
+  const ipsToCheck = apacheData.uniqueIps.filter(ip => !apacheData.spamCheckToday(ip, 'abuseipdb'))
 
   const headers = {
     'Accept': 'application/json',
@@ -67,7 +65,7 @@ async function spamDetection(apacheData) {
   const url = 'https://api.abuseipdb.com/api/v2/check?'
 
   let spamIps = []
-  await Promise.all(apacheData.uniqueIps.map(async (ip) => {
+  await Promise.all(ipsToCheck.map(async (ip) => {
     try {
       const params = new URLSearchParams({
         ipAddress: ip,

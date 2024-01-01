@@ -124,6 +124,16 @@ class ApacheData {
     return spam
   }
 
+  spamCheckToday(ip, antispam) {
+    if (!this.dbip[ip]) {
+      return false
+    } else if (!this.dbip[ip][antispam]) {
+      return false
+    } else {
+      return this.dbip[ip][antispam].date === this.todayStr
+    }
+  }
+
   spamDetected(ip, reason, antispam) {
     return this._spamInformation(ip, true, antispam, reason)
   }
