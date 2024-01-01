@@ -3,7 +3,6 @@
 
 import fetch from 'node-fetch'
 
-
 // jsonObject is the returned info from stopforumspam.org, typically
 // {
 //   value: '104.168.153.70',

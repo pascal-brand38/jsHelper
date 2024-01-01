@@ -87,6 +87,7 @@ async function spamDetection(apacheData) {
     }
 
     const detected = await _dnsReverseAsync(ip).then(res => {
+      console.log(`${ip} ${res.hostnames} ${res.err}`)
       if (!res.err) {
         if (res.hostnames.some(h => {
           if (h.endsWith('googlezip.net')) {

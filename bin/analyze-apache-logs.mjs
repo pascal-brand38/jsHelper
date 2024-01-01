@@ -10,6 +10,7 @@ import DbIp  from './analyze-apache-logs/db-ip.mjs'
 import local  from './analyze-apache-logs/antispam-local.mjs'
 import stopforumspam  from './analyze-apache-logs/antispam-stopforumspam.mjs'
 import abuseipdb  from './analyze-apache-logs/antispam-abuseipdb.mjs'
+import ipqualityscore  from './analyze-apache-logs/antispam-ipqualityscore.mjs'
 import path from 'path'
 import url from 'url';
 // import fs from 'fs'
@@ -58,6 +59,8 @@ async function main() {
   await local.spamDetection(apacheData)
   await stopforumspam.spamDetection(apacheData)
   await abuseipdb.spamDetection(apacheData)
+  // await ipqualityscore.spamDetection(apacheData)   NOT ACCURATE because of 37.66.21.18
+
 
 
   // const stopforumspamDatas = {}
