@@ -785,5 +785,423 @@
       "isSpam": false,
       "date": "31/12/2023"
     }
+  },
+  "114.119.132.202": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.132.36": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.132.59": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.137.153": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.151.81": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.153.118": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.154.81": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "114.119.156.33": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+      "date": "31/12/2023"
+    }
+  },
+  "134.122.54.80": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "135.125.96.3": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "139.162.19.224": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "140.83.61.51": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "157.55.39.10": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "157.55.39.222": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "157.55.39.54": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "157.55.39.8": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "17.241.227.40": {
+    "local": {
+      "isSpam": true,
+      "reason": "accessing robots.txt",
+      "date": "31/12/2023"
+    }
+  },
+  "184.168.108.253": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "184.168.96.201": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "185.191.171.11": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "203.146.170.155": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "207.46.13.64": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "216.244.66.197": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "23.239.9.87": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "31.13.103.6": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "31.13.127.119": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.15": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.247": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.7": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "40.77.167.71": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "51.222.253.18": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.198": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "52.167.144.211": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "54.36.148.173": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "54.36.148.236": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "64.124.8.34": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "66.249.93.168": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "85.208.96.194": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "85.208.96.198": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "85.208.96.202": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)",
+      "date": "31/12/2023"
+    }
+  },
+  "85.208.96.203": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "91.92.251.220": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "31/12/2023"
+    }
+  },
+  "176.133.173.210": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "31.13.103.113": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "66.220.149.20": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "86.234.80.68": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "57.128.97.68": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": true,
+      "reason": "detected",
+      "date": "31/12/2023"
+    }
+  },
+  "90.120.157.101": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "37.66.21.32": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "91.170.39.193": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    }
+  },
+  "93.159.230.87": {
+    "local": {
+      "isSpam": false,
+      "date": "31/12/2023"
+    },
+    "stopforumspam": {
+      "isSpam": true,
+      "reason": "detected",
+      "date": "31/12/2023"
+    }
   }
 }
