@@ -143,10 +143,13 @@ class ApacheData {
   }
 
   print() {
-    console.log(this.spamIps)
-    console.log(this.uniqueIps)
-    console.log(`Nb unique IPS not being spams: ${this.uniqueIps.length}`)
-    console.log(`Nb spams: ${this.spamIps.length}`)
+    console.log('')
+    const nUniqueIps = this.uniqueIps.length
+    const nTotalIps = nUniqueIps + this.spamIps.length
+    const percentage = Math.round(100 * nUniqueIps / nTotalIps)
+    console.log(`${nUniqueIps} unique users on ${nTotalIps} unique connection (${percentage}%)`)
+
+    const userlogs = this.XXXXXXXXXXXXXXXXXXXXXXXXx
   }
 
   filter(spamIps) {

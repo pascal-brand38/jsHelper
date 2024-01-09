@@ -1203,5 +1203,439 @@
       "reason": "detected",
       "date": "31/12/2023"
     }
+  },
+  "104.168.145.159": {
+    "local": {
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "1/1/2024"
+    }
+  },
+  "104.28.198.243": {
+    "local": {
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "1/1/2024"
+    }
+  },
+  "114.119.129.171": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "114.119.137.8": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "114.119.146.114": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "114.119.153.158": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "114.119.153.38": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+      "date": "1/1/2024"
+    }
+  },
+  "114.119.155.233": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "114.119.158.6": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+      "date": "1/1/2024"
+    }
+  },
+  "134.209.188.136": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "15.235.15.135": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "157.55.39.11": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm) Chrome/116.0.1938.76 Safari/537.36",
+      "date": "1/1/2024"
+    }
+  },
+  "157.55.39.14": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "157.55.39.48": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "157.55.39.55": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "159.65.37.175": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "17.241.219.236": {
+    "local": {
+      "isSpam": true,
+      "reason": "accessing robots.txt",
+      "date": "1/1/2024"
+    }
+  },
+  "185.190.42.200": {
+    "local": {
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "1/1/2024"
+    }
+  },
+  "194.187.171.152": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "194.187.171.155": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "195.154.122.60": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "207.46.13.107": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "207.46.13.154": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "23.82.111.4": {
+    "local": {
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "1/1/2024"
+    }
+  },
+  "37.19.223.113": {
+    "local": {
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.167.26": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.167.41": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.167.50": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.188.120": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.188.200": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.188.83": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.189.238": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.190.13": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "40.77.190.193": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "51.222.253.2": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "52.13.63.143": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "52.167.144.145": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "54.36.148.20": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+      "date": "1/1/2024"
+    }
+  },
+  "54.36.148.203": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "54.36.148.5": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+      "date": "1/1/2024"
+    }
+  },
+  "54.36.149.26": {
+    "local": {
+      "isSpam": true,
+      "reason": "user-agent contains bot word: Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+      "date": "1/1/2024"
+    }
+  },
+  "64.124.8.53": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "66.249.81.232": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "75.119.150.136": {
+    "local": {
+      "isSpam": true,
+      "reason": "accessing wordpress files",
+      "date": "1/1/2024"
+    }
+  },
+  "82.156.116.176": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "98.70.50.23": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "1/1/2024"
+    }
+  },
+  "193.186.4.101": {
+    "local": {
+      "isSpam": true,
+      "reason": "hostname contains 'googlezip.net': 193-186-4-101.v4.fetch.tunnel.googlezip.net",
+      "date": "1/1/2024"
+    }
+  },
+  "31.36.68.42": {
+    "local": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    }
+  },
+  "89.84.223.196": {
+    "local": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    }
+  },
+  "193.186.4.55": {
+    "local": {
+      "isSpam": true,
+      "reason": "hostname contains 'googlezip.net': 193-186-4-55.v4.fetch.tunnel.googlezip.net",
+      "date": "1/1/2024"
+    }
+  },
+  "90.50.50.68": {
+    "local": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    }
+  },
+  "79.81.89.113": {
+    "local": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    }
+  },
+  "92.184.98.198": {
+    "local": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    }
+  },
+  "92.184.104.215": {
+    "local": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    }
+  },
+  "95.10.111.151": {
+    "local": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "stopforumspam": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    },
+    "abuseipdb": {
+      "isSpam": false,
+      "date": "1/1/2024"
+    }
   }
 }

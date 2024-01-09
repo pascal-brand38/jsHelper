@@ -50,32 +50,14 @@ async function main() {
 
   const apacheData = new ApacheData(options)
   await apacheData.read(options.logFile, options.dbIpFilename)
-  // console.log(apacheData.uniqueIps)
-
-  // const dbIp = new DbIp()
-  // await dbIp.read(options.dbIpFilename)
-  // console.log(dbIp.db)
 
   await local.spamDetection(apacheData)
   await stopforumspam.spamDetection(apacheData)
   await abuseipdb.spamDetection(apacheData)
   // await ipqualityscore.spamDetection(apacheData)   NOT ACCURATE because of 37.66.21.18
 
-
-
-  // const stopforumspamDatas = {}
-  // //const stopforumspamDatas = await stopforumspam.get(apacheData.uniqueIps)
-  // dbIp.populate(stopforumspamDatas, 'stopforumspam', stopforumspam.ipStatus)
-
-  // const abuseipdbBlacklist = {}
-  // //const abuseipdbBlacklist = await abuseipdb.getBlacklist()
-  // dbIp.populate(abuseipdbBlacklist, 'abuseipdb', abuseipdb.ipStatus)
-
-  // dbIp.status(apacheData)
-
   apacheData.print()
   apacheData.saveDbip(options.dbIpFilename)
-  // dbIp.save(options.dbIpFilename)
 
   console.log('Done')
 }
