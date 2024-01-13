@@ -98,6 +98,12 @@ async function main() {
   } else {
     services = argsComptaPdfLastContract.options.services.split(' + ')
   }
+
+  let sAcompteDate = argsComptaPdfLastContract.rowCompta.dateAccompte
+  if (sAcompteDate) {
+    sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('d/M/y')
+  }
+  console.log(argsComptaPdfLastContract.rowCompta.dateAccompte)
   const reservations = [
     [ 'sArriveeDate', argsComptaPdfLastContract.options.from ],
     [ 'sDepartDate', argsComptaPdfLastContract.options.to ],
@@ -105,13 +111,16 @@ async function main() {
     [ 'sTarifJour', argsComptaPdfLastContract.rowCompta.prixJour + '€' ],
     [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
     [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.accompte===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.accompte + '€') ],
-    [ 'sAcompteDate', argsComptaPdfLastContract.rowCompta.dateAccompte ],
+    [ 'sAcompteDate', sAcompteDate ],
     [ 'sSolde', argsComptaPdfLastContract.rowCompta.solde + '€' ],
     [ 'sService1', services[0] ],
     [ 'sService2', (services.length >= 2) ? services[1] : '' ],
     [ 'sService3', (services.length >= 3) ? services[2] : '' ],
   ]
-  reservations.forEach(resa => newContract.setTextfield(resa[0], resa[1], fontToUse))
+  reservations.forEach(resa => {
+    console.log(`${resa[0]} ${resa[1]}`)
+    newContract.setTextfield(resa[0], resa[1], fontToUse)
+  })
 
   // adding cat name on top of page 1
   // newContract.addText(lastContract.getExtend().chat.noms.join(', '))
