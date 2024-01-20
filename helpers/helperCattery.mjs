@@ -332,10 +332,11 @@ function getEmail(pdfObject) {
   if ((email === undefined) || (email === '')) {
     email = ''
     helperJs.warning(`Impossible de connaitre l'email de ${pdfObject.getExtend().proprio.nom}`)
-  } else if (os.userInfo().username == 'pasca') {
-    helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
-    email = 'toto@titi.com'
   }
+  // else if (os.userInfo().username == 'pasca') {
+  //   helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
+  //   email = 'toto@titi.com'
+  // }
 
   return email
 }
