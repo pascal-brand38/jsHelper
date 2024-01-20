@@ -25,7 +25,6 @@ function getVotrePtitLoulou(gender) {
       }
     case '3':
       switch (r) {
-        case 0: return 'vos ptits bonhommes'
         default: return 'vos ptits loulous'
       }
     case '4':
@@ -52,6 +51,17 @@ function getSa(gender) {
     case '1':
     case '2':
       return 'sa'
+    case '3':
+    case '4':
+      return 'leur'
+  }
+}
+
+function getSon(gender) {
+  switch (gender) {
+    case '1':
+    case '2':
+      return 'son'
     case '3':
     case '4':
       return 'leur'
@@ -169,7 +179,7 @@ async function sendMail(argsComptaPdf) {
   body += `au ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.to).weekdayStr()} ${argsComptaPdf.options.to}. `
   body += `<br>`
   body += `En vous remerciant de finir de le remplir, notamment les anti-parasitaires et de me le retourner signé, `
-  body += `à l'arrivée de ${getVotrePtitLoulou(gender)} pour le début des vacances le ${argsComptaPdf.options.from}.`
+  body += `à l'arrivée de ${getVotrePtitLoulou(gender)} pour le début de ${getSes(gender)} vacances le ${argsComptaPdf.options.from}.`
   body += `<br>`
   body += `<br>`
 
@@ -214,7 +224,7 @@ async function sendMail(argsComptaPdf) {
 
   body += `${catNames} ${getDevraEtreVermifuge(gender)} depuis moins de 3 mois, `
   body += `avec un produit vétérinaire (milbemax ou milbactor) et avoir reçu un traitement anti-puces `
-  body += `8 jours avant son arrivée à la garderie.`
+  body += `8 jours avant ${getSon(gender)} arrivée à la garderie.`
   body += `<br>`
   body += `<br>`
 
