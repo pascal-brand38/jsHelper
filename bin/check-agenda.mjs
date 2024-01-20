@@ -153,6 +153,7 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 
 async function main() {
   const argv = process.argv
+  console.log(argv)
 
   // Reading compta and agenda data
   let dataCompta = helperExcel.readXls(argv[2], helperCattery.helperXls.xlsFormatCompta)
@@ -169,4 +170,8 @@ async function main() {
   checkStatusPay(dataCompta)
 }
 
-await main();
+try {
+  await main();
+} catch (e) {
+  console.log(e)
+}
