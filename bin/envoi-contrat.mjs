@@ -344,6 +344,10 @@ async function main() {
   await sendMail(argsComptaPdf)
 }
 
-
-await main();
-console.log('Done')
+try {
+  await main();
+  console.log('DONE')
+} catch (e) {
+  console.log(e)
+  console.log('Error is catched')
+}

@@ -38,4 +38,10 @@ async function main() {
   await helperJs.thunderbird.compose(email, subject, body)
 }
 
-await main();
+try {
+  await main();
+  console.log('DONE')
+} catch (e) {
+  console.log(e)
+  console.log('Error is catched')
+}

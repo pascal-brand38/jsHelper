@@ -148,7 +148,14 @@ async function main() {
     console.log(e);
     helperJs.error("Impossible d'écrire le fichier   " + newContractName);
   }
-  child_process.exec('explorer ' + newContractName);
+  console.log('explorer ' + newContractName)
+  child_process.exec('explorer "' + newContractName + '"');
 }
 
-main();
+try {
+  await main();
+  console.log('DONE')
+} catch (e) {
+  console.log(e)
+  console.log('Error is catched')
+}

@@ -4,6 +4,7 @@
     "alpine": "^0.2.1",
     "file-sync-cmp": "^0.1.1",
     "html-entities": "^2.3.3",
+    "lodash": "^4.17.21",
     "luxon": "^3.3.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.10.111",
@@ -23,7 +24,6 @@
     "save-on-cloud": "bin/save-on-cloud.mjs",
     "thanks": "bin/thanks.mjs"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

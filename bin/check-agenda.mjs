@@ -165,13 +165,14 @@ async function main() {
   dataCompta = dataCompta.filter(e => e.arrival >= firstDate)
 
   // check coherency
-  await checkVaccination(dataCompta, argv[2], argv[3])
+  // await checkVaccination(dataCompta, argv[2], argv[3])
   checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
 }
 
 try {
   await main();
+  console.log('DONE')
 } catch (e) {
   console.log(e)
 }

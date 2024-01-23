@@ -22,7 +22,8 @@ function error(s) {
   console.log('*** ', s);
   console.log('***');
 
-  exit(-1)
+  throw('ERROR')    // throw so that when called from excel, it does not kill the window
+                    // TODO: exit, without throw, but without killing the window
 }
 
 const question = {
@@ -33,14 +34,14 @@ const question = {
 
 const thunderbird = {
   compose: async (
-    email, 
+    email,
     subject,
-    body, 
-    attachment = null, 
+    body,
+    attachment = null,
     exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"',
     forbiddenWords = [ 'undefined', ],     // must be a lower case list
   ) => {
-    
+
     // check the email does not contain any forbidden words
     const allWords = (email + ' ' + subject + ' ' + body).toLowerCase()
     forbiddenWords.forEach(w => {
@@ -84,7 +85,7 @@ const thunderbird = {
 export default {
   question,
   thunderbird,
-  
+
   warning,
   error,
 }

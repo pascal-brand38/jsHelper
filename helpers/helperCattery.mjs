@@ -33,9 +33,10 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
         required: true
       },
       "from": {
-        description: "Starting date, format dd/mm/yyyy. This is the one in the contract",
+        description: "Starting date, format dd/mm/yyyy or serial excel. This is the one in the contract",
         requiresArg: true,
-        required: true
+        required: true,
+        string: true
       },
       "services": {
         description: "Services string to be included in new contract",
@@ -43,10 +44,20 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
         required: true
       },
     })
+    .fail((msg, err, yargs) => {
+      if (err) throw err // preserve stack
+      console.error('You broke it!')
+      console.error(msg)
+      console.error('You should be doing', yargs.help())
+      throw 'YARGS ERROR'
+    })
     .argv;
 
   options.who = decode(options.who)
   options.services = decode(options.services)
+  if (!options.from.includes('/')) {
+    options.from = DateTime.fromExcelSerialStartOfDay(parseInt(options.from)).toFormat('dd/MM/yyyy')
+  }
 
   // from these options, read the compta.xls, and get the row data used for this request
   let dataCompta = helperExcel.readXls(options.comptaXls, xlsFormatCompta)
