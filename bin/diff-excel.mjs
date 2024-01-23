@@ -88,8 +88,9 @@ function translateValue(value) {
 }
 
 async function main() {
-  const excel = xlsx.readFile('C:\\Users\\pasca\\Desktop\\compta.xls');
-  const ods = xlsx.readFile('C:\\Users\\pasca\\Desktop\\compta.ods');
+  console.log(process.argv)
+  const excel = xlsx.readFile(process.argv[2]);
+  const ods = xlsx.readFile(process.argv[3]);
 
   if (! await checkSheetNames(excel, ods)) {
     return false
