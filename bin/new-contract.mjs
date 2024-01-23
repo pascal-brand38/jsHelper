@@ -141,7 +141,7 @@ async function main() {
   // update needappearance field
   //newContract.form.acroForm.dict.set(PDFName.of('NeedAppearances'), PDFBool.True)
 
-  child_process.exec('explorer ' + currentContractDir);
+  child_process.exec('explorer ' + currentContractDir.replace(/\//g, '\\'));
   try {
     await newContract.saveWrite(newContractName)
   } catch(e) {
@@ -149,7 +149,7 @@ async function main() {
     helperJs.error("Impossible d'écrire le fichier   " + newContractName);
   }
   console.log('explorer ' + newContractName)
-  child_process.exec('explorer "' + newContractName + '"');
+  child_process.exec('explorer "' + newContractName.replace(/\//g, '\\') + '"');
 }
 
 try {
