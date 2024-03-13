@@ -27,7 +27,7 @@ async function main() {
   body += `<br>`
   body += `<br>`
 
-  body += `J'ai bien reçu l'acompte de ${argsComptaPdf.rowCompta.accompte}€ `
+  body += `J'ai bien reçu l'acompte de ${argsComptaPdf.rowCompta.acompteAmount}€ `
   body += `pour les vacances de ${catNames} à ${argsComptaPdf.options.enterprise} `
   body += `du ${argsComptaPdf.options.from} au ${argsComptaPdf.options.to}.`
   body += `<br>`

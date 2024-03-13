@@ -89,6 +89,117 @@ function checkStatusPay(dataCompta) {
   })
 }
 
+function _newFromCompta(dataFilled, excelStart, name, amount, date, type, status) {
+  let doNotAdd = false
+  doNotAdd |= (name===undefined)
+  doNotAdd |= (amount==undefined)
+  doNotAdd |= (type==='Espèce')
+  doNotAdd |= (status!=='Encaissé')
+
+  if (doNotAdd) {
+    return
+  }
+  dataFilled.push({name, amount, date, type, status})
+}
+
+function checkBank(dataCompta, dataBank) {
+  console.log()
+  console.log('-------------------------------------------------')
+  console.log('-------------------------------------------- BANK')
+  console.log('-------------------------------------------------')
+  const epochStart = DateTime.fromNowStartOfDay().toEpoch() - DateTime.epochNDays(60)
+  const excelStart = DateTime.fromEpochStartOfDay(epochStart).toExcelSerial()
+
+  let dataFilled = []
+  dataCompta.forEach(data => {
+    _newFromCompta(dataFilled, excelStart, data.name, data.acompteAmount, data.acompteDate, data.acompteType, data.acompteStatus)
+    _newFromCompta(dataFilled, excelStart, data.name, data.soldeAmount, data.soldeDate, data.soldeType, data.soldeStatus)
+    _newFromCompta(dataFilled, excelStart, data.name, data.extraAmount, data.extraDate, data.extraType, data.extraStatus)
+  })
+
+  let dataBankToCheck = dataBank.filter(bank => {
+    const epochDate = DateTime.fromExcelSerialStartOfDay(bank.date).toEpoch()
+    return (epochDate >= epochStart) && (bank.credit !== undefined)
+  })
+
+  // look for same name / date / amount
+  dataBankToCheck = dataBankToCheck.filter(bank => {
+    const index = dataFilled.findIndex(data => (bank.name===data.name && bank.date===data.date && bank.credit===data.amount))
+    if (index === -1) {
+      return true   // keep it as not found
+    } else {
+      dataFilled.splice(index, 1)    // remove 1 element at index 'index'
+      return false  // found, so remove from dataBankToCheck
+    }
+  })
+
+  // look for same name / date, and amount spread amoung different lines
+  // used for transfers, that includes several acomptes
+  dataBankToCheck = dataBankToCheck.filter(bank => {
+    let sum = 0
+    let indexArray = []
+    dataFilled.forEach((data, index) => {
+      if ((data.name===bank.name) && (data.date === bank.date)) {
+        indexArray.unshift(index)   // this is a push in front
+        sum += data.amount
+      }
+    })
+    if (sum !== bank.credit) {
+      return true
+    } else {
+      indexArray.forEach(i => dataFilled.splice(i, 1))
+      return false
+    }
+  })
+
+  // look for same name / amount, and date bank greater
+  // used for checks, that are in bank account after we received the check
+  dataBankToCheck = dataBankToCheck.filter(bank => {
+    const index = dataFilled.findIndex(data => (bank.name===data.name && bank.date>data.date && bank.credit===data.amount))
+    if (index === -1) {
+      return true   // keep it as not found
+    } else {
+      dataFilled.splice(index, 1)    // remove 1 element at index 'index'
+      return false  // found, so remove from dataBankToCheck
+    }
+  })
+
+    // look for same name / date, and amount spread amoung different lines
+  // used for transfers, that includes several acomptes
+  dataBankToCheck = dataBankToCheck.filter(bank => {
+    let values = {}
+    dataFilled.forEach((data, index) => {
+      if (data.name===bank.name) {
+        if (values[data.date.toString()] === undefined) {
+          values[data.date.toString()] = { sum: 0, indexArray: []}
+        }
+        // indexArray.unshift(index)   // this is a push in front
+        values[data.date.toString()].sum += data.amount
+        values[data.date.toString()].indexArray.unshift(index)   // this is a push in front
+      }
+    })
+    console.log(values)
+    return true   // TODO
+    if (0 !== bank.credit) {
+      return true
+    } else {
+      // indexArray.forEach(i => dataFilled.splice(i, 1))
+      return false
+    }
+  })
+
+
+  console.log(dataBankToCheck)
+
+  dataFilled = dataFilled.filter(data => (data.date >= excelStart))
+  console.log(dataFilled)
+  // dataFilled.forEach(data => {
+  //   if (data.name === 'Grisette / Denois Josette') {
+  //     console.log(data)
+  //   }
+  // })
+}
+
 // filter consecutive periods in the agenda, which may be
 // there when the room is changed during vacation
 function filterConsecutive(data) {
@@ -154,9 +265,11 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
 async function main() {
   const argv = process.argv
   console.log(argv)
+  console.log(`node bin/check-agenda.mjs "${argv[2]}" "${argv[3]}"`)
 
   // Reading compta and agenda data
   let dataCompta = helperExcel.readXls(argv[2], helperCattery.helperXls.xlsFormatCompta)
+  let dataBank   = helperExcel.readXls(argv[2], helperCattery.helperXls.xlsFormatBank)
   let dataAgenda = helperExcel.readXls(argv[3], helperCattery.helperXls.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
@@ -166,6 +279,7 @@ async function main() {
 
   // check coherency
   // await checkVaccination(dataCompta, argv[2], argv[3])
+  checkBank(dataCompta, dataBank)
   checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
 }

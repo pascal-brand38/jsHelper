@@ -270,6 +270,12 @@ function postComputationSheet(rows) {
   return rows
 }
 
+function postComputationBank(rows) {
+  rows = rows.filter(e => (e.name !== undefined) && !isNaN(e.date))
+  rows.sort(function (a, b) { return a.date - b.date });
+  return rows
+}
+
 const xlsFormatCompta = {
   sheetName: 'Compta',
   cols: [
@@ -278,19 +284,27 @@ const xlsFormatCompta = {
     { col: 'X', prop: 'departure',          postComputation: Math.floor,    },
     { col: 'C', prop: 'comptaArrival',      postComputation: Math.floor,    },    // arrival on the contract
     { col: 'D', prop: 'comptaDeparture',    postComputation: Math.floor,    },
-    { col: 'E', prop: 'prixJour'                                            },
-    { col: 'F', prop: 'nbJours'                                             },
-    { col: 'G', prop: 'total'                                               },
-    { col: 'H', prop: 'accompte'                                            },
-    { col: 'I', prop: 'dateAccompte'                                        },
-    { col: 'L', prop: 'solde'                                               },
-    { col: 'I', prop: 'dateAccompte'                                        },
-    { col: 'K', prop: 'statusPayAcompte',                                   },
-    { col: 'O', prop: 'statusPaySolde',                                     },
-    { col: 'S', prop: 'statusPayExtra',                                     },
+    { col: 'E', prop: 'prixJour',                                           },
+    { col: 'F', prop: 'nbJours',                                            },
+    { col: 'G', prop: 'total',                                              },
+
+    { col: 'H', prop: 'acompteAmount',                                      },
+    { col: 'I', prop: 'acompteDate',        postComputation: Math.floor,    },
+    { col: 'J', prop: 'acompteType'                                         },
+    { col: 'K', prop: 'acompteStatus',                                      },
+
+    { col: 'L', prop: 'soldeAmount',                                        },
+    { col: 'M', prop: 'soldeDate',        postComputation: Math.floor,      },
+    { col: 'N', prop: 'soldeType',                                          },
+    { col: 'O', prop: 'soldeStatus',                                        },
+
+    { col: 'P', prop: 'extraAmount',                                        },
+    { col: 'Q', prop: 'extraDate',        postComputation: Math.floor,      },
+    { col: 'R', prop: 'extraType',                                          },
+    { col: 'S', prop: 'extraStatus',                                        },
   ],
   postComputationRow: (row => {
-    row['statusPay'] = [ row['statusPayAcompte'], row['statusPaySolde'], row['statusPayExtra'] ]
+    row['statusPay'] = [ row['acompteStatus'], row['soldeStatus'], row['extraStatus'] ]
     return row
   }),
   postComputationSheet: postComputationSheet,
@@ -304,6 +318,17 @@ const xlsFormatAgenda = {
     { col: 'K', prop: 'departure',          postComputation: Math.floor,    },
   ],
   postComputationSheet: postComputationSheet,
+}
+
+const xlsFormatBank = {
+  sheetName: 'BForBank',
+  cols: [
+    { col: 'B', prop: 'date',               postComputation: Math.floor,    },
+    { col: 'C', prop: 'name',                                               },
+    { col: 'D', prop: 'debit',                                              },
+    { col: 'E', prop: 'credit',                                             },
+  ],
+  postComputationSheet: postComputationBank,
 }
 
 async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
@@ -787,6 +812,7 @@ export default {
 
   helperXls: {
     xlsFormatCompta,
+    xlsFormatBank,
     xlsFormatAgenda,
   }
 }

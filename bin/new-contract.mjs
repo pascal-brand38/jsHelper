@@ -99,18 +99,18 @@ async function main() {
     services = argsComptaPdfLastContract.options.services.split(' + ')
   }
 
-  let sAcompteDate = argsComptaPdfLastContract.rowCompta.dateAccompte
+  let sAcompteDate = argsComptaPdfLastContract.rowCompta.acompteDate
   if (sAcompteDate) {
     sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('d/M/y')
   }
-  console.log(argsComptaPdfLastContract.rowCompta.dateAccompte)
+  console.log(argsComptaPdfLastContract.rowCompta.acompteDate)
   const reservations = [
     [ 'sArriveeDate', argsComptaPdfLastContract.options.from ],
     [ 'sDepartDate', argsComptaPdfLastContract.options.to ],
     [ 'sNbJours', argsComptaPdfLastContract.rowCompta.nbJours.toString() ],
     [ 'sTarifJour', argsComptaPdfLastContract.rowCompta.prixJour + '€' ],
     [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
-    [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.accompte===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.accompte + '€') ],
+    [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.acompteAmount===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.acompteAmount + '€') ],
     [ 'sAcompteDate', sAcompteDate ],
     [ 'sSolde', argsComptaPdfLastContract.rowCompta.solde + '€' ],
     [ 'sService1', services[0] ],

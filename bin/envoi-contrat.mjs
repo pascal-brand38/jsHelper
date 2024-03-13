@@ -189,17 +189,18 @@ async function sendMail(argsComptaPdf) {
     const vaccin = await getYesNo('Vaccins à refaire')    // ask as they seem not up-to-date
     if (vaccin == 'y') {
       body += `Les vaccins de ${catNames} seront à refaire avant ${getSes(gender)} vacances. `
-      body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins? Merci.`
+      body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins`
+      body += `afin que je mette le contrat à jour? Merci.`
       body += `<br>`
       body += `<br>`
     }
   }
 
-  const accompte = argsComptaPdf.rowCompta.accompte
-  const dateAccompte = argsComptaPdf.rowCompta.dateAccompte
-  if (((accompte !== undefined) && (accompte !== '0')) && ((dateAccompte === '') || (dateAccompte === undefined))) {
+  const acompteAmount = argsComptaPdf.rowCompta.acompteAmount
+  const acompteDate = argsComptaPdf.rowCompta.acompteDate
+  if (((acompteAmount !== undefined) && (acompteAmount !== '0')) && ((acompteDate === '') || (acompteDate === undefined))) {
     body += `Afin de valider la réservation de ${getVotrePtitLoulou(gender)}, un acompte de 30% du montant total `
-    body += `vous est demandé, soit ${accompte}€. `
+    body += `vous est demandé, soit ${acompteAmount}€. `
     body += `<br>`
     body += `Vous pouvez régler soit par virement (coordonnées bancaires dans le contrat) soit par `
     body += `chèque à l'ordre de Virginie Roux, car je suis auto-entrepreneur. `
@@ -290,15 +291,15 @@ async function checkXls(argsComptaPdf) {
     }
   })
 
-  const askedDepositCurrent = (rowCurrent.accompte != undefined)
+  const askedDepositCurrent = (rowCurrent.acompteAmount != undefined)
   if (rowPrev && rowCurrent) {
     // check a deposit asking is the same (always ask, or never ask)
-    const askedDepositPrev = (rowPrev.accompte != undefined)
+    const askedDepositPrev = (rowPrev.acompteAmount != undefined)
     if (askedDepositPrev != askedDepositCurrent) {
       if (!askedDepositCurrent) {
-        console.log(`Pas de demande d'accompte, alors que demande la fois précédente`)
+        console.log(`Pas de demande d'acompteAmount, alors que demande la fois précédente`)
       } else {
-        console.log(`Demande d'accompte, alors que pas de demande la fois précédente`)
+        console.log(`Demande d'acompteAmount, alors que pas de demande la fois précédente`)
       }
       let cont = await getYesNo(`On continue`)
       console.log()
