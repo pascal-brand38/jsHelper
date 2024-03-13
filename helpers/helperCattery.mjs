@@ -276,30 +276,37 @@ function postComputationBank(rows) {
   return rows
 }
 
+function postComputationDate(date) {
+  if (date) {
+    return Math.floor(date)
+  }
+  return date
+}
+
 const xlsFormatCompta = {
   sheetName: 'Compta',
   cols: [
     { col: 'B', prop: 'name',                                               },
-    { col: 'W', prop: 'arrival',            postComputation: Math.floor,    },    // real arrival
-    { col: 'X', prop: 'departure',          postComputation: Math.floor,    },
-    { col: 'C', prop: 'comptaArrival',      postComputation: Math.floor,    },    // arrival on the contract
-    { col: 'D', prop: 'comptaDeparture',    postComputation: Math.floor,    },
+    { col: 'W', prop: 'arrival',            postComputation: postComputationDate,    },    // real arrival
+    { col: 'X', prop: 'departure',          postComputation: postComputationDate,    },
+    { col: 'C', prop: 'comptaArrival',      postComputation: postComputationDate,    },    // arrival on the contract
+    { col: 'D', prop: 'comptaDeparture',    postComputation: postComputationDate,    },
     { col: 'E', prop: 'prixJour',                                           },
     { col: 'F', prop: 'nbJours',                                            },
     { col: 'G', prop: 'total',                                              },
 
     { col: 'H', prop: 'acompteAmount',                                      },
-    { col: 'I', prop: 'acompteDate',        postComputation: Math.floor,    },
+    { col: 'I', prop: 'acompteDate',        postComputation: postComputationDate,    },
     { col: 'J', prop: 'acompteType'                                         },
     { col: 'K', prop: 'acompteStatus',                                      },
 
     { col: 'L', prop: 'soldeAmount',                                        },
-    { col: 'M', prop: 'soldeDate',        postComputation: Math.floor,      },
+    { col: 'M', prop: 'soldeDate',        postComputation: postComputationDate,      },
     { col: 'N', prop: 'soldeType',                                          },
     { col: 'O', prop: 'soldeStatus',                                        },
 
     { col: 'P', prop: 'extraAmount',                                        },
-    { col: 'Q', prop: 'extraDate',        postComputation: Math.floor,      },
+    { col: 'Q', prop: 'extraDate',        postComputation: postComputationDate,      },
     { col: 'R', prop: 'extraType',                                          },
     { col: 'S', prop: 'extraStatus',                                        },
   ],
@@ -314,8 +321,8 @@ const xlsFormatAgenda = {
   sheetName: 'Résa',
   cols: [
     { col: 'A', prop: 'name',                                               },
-    { col: 'I', prop: 'arrival',            postComputation: Math.floor,    },
-    { col: 'K', prop: 'departure',          postComputation: Math.floor,    },
+    { col: 'I', prop: 'arrival',            postComputation: postComputationDate,    },
+    { col: 'K', prop: 'departure',          postComputation: postComputationDate,    },
   ],
   postComputationSheet: postComputationSheet,
 }
@@ -323,7 +330,7 @@ const xlsFormatAgenda = {
 const xlsFormatBank = {
   sheetName: 'BForBank',
   cols: [
-    { col: 'B', prop: 'date',               postComputation: Math.floor,    },
+    { col: 'B', prop: 'date',               postComputation: postComputationDate,    },
     { col: 'C', prop: 'name',                                               },
     { col: 'D', prop: 'debit',                                              },
     { col: 'E', prop: 'credit',                                             },
