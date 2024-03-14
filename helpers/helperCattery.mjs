@@ -264,7 +264,13 @@ function getDate(array, prop) {
 }
 
 
-function postComputationSheet(rows) {
+function postComputationSheetCompta(rows) {
+  rows = rows.filter(e => (e.name !== undefined) && !isNaN(e.comptaArrival) && !isNaN(e.comptaDeparture))
+  rows.sort(function (a, b) { return a.comptaArrival - b.comptaArrival });
+  return rows
+}
+
+function postComputationSheetAgenda(rows) {
   rows = rows.filter(e => (e.name !== undefined) && !isNaN(e.arrival) && !isNaN(e.departure))
   rows.sort(function (a, b) { return a.arrival - b.arrival });
   return rows
@@ -314,7 +320,7 @@ const xlsFormatCompta = {
     row['statusPay'] = [ row['acompteStatus'], row['soldeStatus'], row['extraStatus'] ]
     return row
   }),
-  postComputationSheet: postComputationSheet,
+  postComputationSheet: postComputationSheetCompta,
 }
 
 const xlsFormatAgenda = {
@@ -324,7 +330,7 @@ const xlsFormatAgenda = {
     { col: 'I', prop: 'arrival',            postComputation: postComputationDate,    },
     { col: 'K', prop: 'departure',          postComputation: postComputationDate,    },
   ],
-  postComputationSheet: postComputationSheet,
+  postComputationSheet: postComputationSheetAgenda,
 }
 
 const xlsFormatBank = {

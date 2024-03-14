@@ -155,7 +155,7 @@ function checkBank(dataCompta, dataBank) {
   // look for same name / amount, and date bank greater
   // used for checks, that are in bank account after we received the check
   dataBankToCheck = dataBankToCheck.filter(bank => {
-    const index = dataFilled.findIndex(data => (bank.name===data.name && bank.date>data.date && bank.credit===data.amount))
+    const index = dataFilled.findLastIndex(data => (bank.name===data.name && bank.date>data.date && bank.credit===data.amount))
     if (index === -1) {
       return true   // keep it as not found
     } else {
@@ -164,7 +164,7 @@ function checkBank(dataCompta, dataBank) {
     }
   })
 
-    // look for same name / date, and amount spread amoung different lines
+  // look for same name / date, and amount spread amoung different lines
   // used for transfers, that includes several acomptes
   dataBankToCheck = dataBankToCheck.filter(bank => {
     let values = {}
@@ -178,26 +178,28 @@ function checkBank(dataCompta, dataBank) {
         values[data.date.toString()].indexArray.unshift(index)   // this is a push in front
       }
     })
-    console.log(values)
-    return true   // TODO
-    if (0 !== bank.credit) {
-      return true
-    } else {
-      // indexArray.forEach(i => dataFilled.splice(i, 1))
-      return false
-    }
+
+    let result = true   // not found
+    Object.keys(values).forEach(key => {
+      if (values[key].sum === bank.credit) {
+        result = false
+        values[key].indexArray.forEach(i => dataFilled.splice(i, 1))
+        Object.keys(values).forEach(key => values[key].sum = 0)
+      }
+    })
+    return result
   })
 
 
-  console.log(dataBankToCheck)
+  dataBankToCheck.forEach(bank => {
+    console.log(`BForBank: ${DateTime.fromExcelSerialStartOfDay(bank.date).toFormat('dd/MM/yyyy')} - ${bank.name} ${bank.credit}`)
+  })
 
   dataFilled = dataFilled.filter(data => (data.date >= excelStart))
-  console.log(dataFilled)
-  // dataFilled.forEach(data => {
-  //   if (data.name === 'Grisette / Denois Josette') {
-  //     console.log(data)
-  //   }
-  // })
+  dataFilled.forEach(data => {
+    console.log(`Compta: ${DateTime.fromExcelSerialStartOfDay(data.date).toFormat('dd/MM/yyyy')} - ${data.name} ${data.amount}`)
+  })
+
 }
 
 // filter consecutive periods in the agenda, which may be
@@ -273,13 +275,14 @@ async function main() {
   let dataAgenda = helperExcel.readXls(argv[3], helperCattery.helperXls.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
+  checkBank(dataCompta, dataBank)
+
   // filter the dates from the compta that are prior the 1st arrival in the agenda
   const firstDate = dataAgenda[0].arrival
   dataCompta = dataCompta.filter(e => e.arrival >= firstDate)
 
   // check coherency
   // await checkVaccination(dataCompta, argv[2], argv[3])
-  checkBank(dataCompta, dataBank)
   checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
 }
