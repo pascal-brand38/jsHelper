@@ -39,7 +39,7 @@ const thunderbird = {
     body,
     attachment = null,
     exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"',
-    forbiddenWords = [ 'undefined', ],     // must be a lower case list
+    forbiddenWords = [ 'undefined', 'infinity', ' nan€', ' nan ', ],     // must be a lower case list
   ) => {
 
     // check the email does not contain any forbidden words

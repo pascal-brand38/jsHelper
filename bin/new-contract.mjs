@@ -102,6 +102,8 @@ async function main() {
   let sAcompteDate = argsComptaPdfLastContract.rowCompta.acompteDate
   if (sAcompteDate) {
     sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('d/M/y')
+  } else {
+    sAcompteDate = ''
   }
   console.log(argsComptaPdfLastContract.rowCompta.acompteDate)
   const reservations = [
@@ -117,8 +119,14 @@ async function main() {
     [ 'sService2', (services.length >= 2) ? services[1] : '' ],
     [ 'sService3', (services.length >= 3) ? services[2] : '' ],
   ]
+  const forbiddenWords = [ 'undefined', 'nan', ]    // must be a lower case list
   reservations.forEach(resa => {
     console.log(`${resa[0]} ${resa[1]}`)
+    forbiddenWords.forEach(w => {
+      if (resa[1].toLowerCase().includes(w)) {
+        throw(`${w.toUpperCase()}: ${resa[0]} ${resa[1]}`)
+      }
+    })
     newContract.setTextfield(resa[0], resa[1], fontToUse)
   })
 
