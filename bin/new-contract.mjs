@@ -114,7 +114,7 @@ async function main() {
     [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
     [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.acompteAmount===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.acompteAmount + '€') ],
     [ 'sAcompteDate', sAcompteDate ],
-    [ 'sSolde', argsComptaPdfLastContract.rowCompta.solde + '€' ],
+    [ 'sSolde', argsComptaPdfLastContract.rowCompta.soldeAmount + '€' ],
     [ 'sService1', services[0] ],
     [ 'sService2', (services.length >= 2) ? services[1] : '' ],
     [ 'sService3', (services.length >= 3) ? services[2] : '' ],
