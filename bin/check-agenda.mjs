@@ -192,12 +192,12 @@ function checkBank(dataCompta, dataBank) {
 
 
   dataBankToCheck.forEach(bank => {
-    console.log(`BForBank: ${DateTime.fromExcelSerialStartOfDay(bank.date).toFormat('dd/MM/yyyy')} - ${bank.name} ${bank.credit}`)
+    console.log(`BForBank: ${DateTime.fromExcelSerialStartOfDay(bank.date).toFormat('dd/MM/yyyy')} - ${bank.name} ${bank.credit}€`)
   })
 
   dataFilled = dataFilled.filter(data => (data.date >= excelStart))
   dataFilled.forEach(data => {
-    console.log(`Compta: ${DateTime.fromExcelSerialStartOfDay(data.date).toFormat('dd/MM/yyyy')} - ${data.name} ${data.amount}`)
+    console.log(`Compta: ${DateTime.fromExcelSerialStartOfDay(data.date).toFormat('dd/MM/yyyy')} - ${data.name} ${data.amount}€`)
   })
 
 }

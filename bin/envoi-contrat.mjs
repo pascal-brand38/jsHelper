@@ -189,7 +189,7 @@ async function sendMail(argsComptaPdf) {
     const vaccin = await getYesNo('Vaccins à refaire')    // ask as they seem not up-to-date
     if (vaccin == 'y') {
       body += `Les vaccins de ${catNames} seront à refaire avant ${getSes(gender)} vacances. `
-      body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins`
+      body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins `
       body += `afin que je mette le contrat à jour? Merci.`
       body += `<br>`
       body += `<br>`
