@@ -297,9 +297,9 @@ async function checkXls(argsComptaPdf) {
     const askedDepositPrev = (rowPrev.acompteAmount != undefined)
     if (askedDepositPrev != askedDepositCurrent) {
       if (!askedDepositCurrent) {
-        console.log(`Pas de demande d'acompteAmount, alors que demande la fois précédente`)
+        console.log(`Pas de demande d'acompte, alors que demande la fois précédente`)
       } else {
-        console.log(`Demande d'acompteAmount, alors que pas de demande la fois précédente`)
+        console.log(`Demande d'acompte, alors que pas de demande la fois précédente`)
       }
       let cont = await getYesNo(`On continue`)
       console.log()
