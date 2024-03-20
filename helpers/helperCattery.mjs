@@ -379,13 +379,13 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
 function getEmail(pdfObject) {
   let email = pdfObject.getExtend().proprio.email
   if ((email === undefined) || (email === '')) {
-    email = ''
     helperJs.warning(`Impossible de connaitre l'email de ${pdfObject.getExtend().proprio.nom}`)
+    email = ''
   }
-  // else if (os.userInfo().username == 'pasca') {
-  //   helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
-  //   email = 'toto@titi.com'
-  // }
+  else if (os.userInfo().username == 'pasca') {
+    helperJs.warning(`WARNING - As you are pasca, replace real email ${email} with a fake one`)
+    email = 'toto@titi.com'
+  }
 
   return email
 }
