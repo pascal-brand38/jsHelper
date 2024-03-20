@@ -58,7 +58,7 @@ function checkStatusPay(dataCompta) {
 
   console.log()
   console.log('-------------------------------------------------')
-  console.log('--------------------------------------------- PAY')
+  console.log('-------------------------------------- PAY STATUS')
   console.log('-------------------------------------------------')
   dataCompta.forEach(data => {
     const dArrival = DateTime.fromExcelSerialStartOfDay(data.arrival)
@@ -102,10 +102,30 @@ function _newFromCompta(dataFilled, excelStart, name, amount, date, type, status
   dataFilled.push({name, amount, date, type, status})
 }
 
+
+function checkAcompte(dataComptaNoSort) {
+  console.log()
+  console.log('-------------------------------------------------')
+  console.log('-------------------------------- ACOMPTE RECOVERY')
+  console.log('-------------------------------------------------')
+  const todaySerial = DateTime.fromNowStartOfDay().toExcelSerial()
+  let warning = false
+  //console.log(dataComptaNoSort)
+  dataComptaNoSort.findLastIndex(row => {
+    if (warning) {
+      if ((!row.acompteDate) && (row.acompteAmount)) {
+        console.log(`${row.name} ${row.acompteAmount}€`)
+      }
+    } else {
+      warning = ((row.acompteDate) && (row.acompteDate+15<todaySerial))
+    }
+  })
+}
+
 function checkBank(dataCompta, dataBank) {
   console.log()
   console.log('-------------------------------------------------')
-  console.log('-------------------------------------------- BANK')
+  console.log('---------------------------------- BANK vs COMPTA')
   console.log('-------------------------------------------------')
   const epochStart = DateTime.fromNowStartOfDay().toEpoch() - DateTime.epochNDays(60)
   const excelStart = DateTime.fromEpochStartOfDay(epochStart).toExcelSerial()
@@ -192,7 +212,7 @@ function checkBank(dataCompta, dataBank) {
 
 
   dataBankToCheck.forEach(bank => {
-    console.log(`BForBank: ${DateTime.fromExcelSerialStartOfDay(bank.date).toFormat('dd/MM/yyyy')} - ${bank.name} ${bank.credit}€`)
+    console.log(`Bank: ${DateTime.fromExcelSerialStartOfDay(bank.date).toFormat('dd/MM/yyyy')} - ${bank.name} ${bank.credit}€`)
   })
 
   dataFilled = dataFilled.filter(data => (data.date >= excelStart))
@@ -263,6 +283,12 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
   toBeCheckeds.forEach(data => console.log(`${data.name} departure: ${DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')}  rcps: ${data.rcps}`))
 }
 
+const xlsFormatComptaNoSort = {
+  sheetName: helperCattery.helperXls.xlsFormatCompta.sheetName,
+  cols: helperCattery.helperXls.xlsFormatCompta.cols,
+  postComputationRow: helperCattery.helperXls.xlsFormatCompta.postComputationRow,
+  postComputationSheet: (rows) => rows.filter(e => (e.name !== undefined) && !isNaN(e.comptaArrival) && !isNaN(e.comptaDeparture)),
+}
 
 async function main() {
   const argv = process.argv
@@ -271,10 +297,12 @@ async function main() {
 
   // Reading compta and agenda data
   let dataCompta = helperExcel.readXls(argv[2], helperCattery.helperXls.xlsFormatCompta)
+  let dataComptaNoSort = helperExcel.readXls(argv[2], xlsFormatComptaNoSort)
   let dataBank   = helperExcel.readXls(argv[2], helperCattery.helperXls.xlsFormatBank)
   let dataAgenda = helperExcel.readXls(argv[3], helperCattery.helperXls.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
+  checkAcompte(dataComptaNoSort)
   checkBank(dataCompta, dataBank)
 
   // filter the dates from the compta that are prior the 1st arrival in the agenda
