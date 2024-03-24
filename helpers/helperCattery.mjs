@@ -12,8 +12,7 @@ import helperExcel from './helperExcel.mjs'
 import { DateTime } from '../extend/luxon.mjs'
 import { PDFDocument, setProplist } from '../extend/pdf-lib.mjs'
 
-
-async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
+async function getArgs(usage) {
   console.log(process.argv)
   const yargs = _yargs(hideBin(process.argv));
 
@@ -59,6 +58,16 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
     options.from = DateTime.fromExcelSerialStartOfDay(parseInt(options.from)).toFormat('dd/MM/yyyy')
   }
 
+  const rootDir = path.parse(options.comptaXls).dir
+  options.enterprise = path.parse(rootDir).base
+  options.contractRootDir = path.join(rootDir, 'Contrat Clients ' + options.enterprise)
+
+  return options
+}
+
+async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
+  let options = getArgs(usage)
+
   // from these options, read the compta.xls, and get the row data used for this request
   let dataCompta = helperExcel.readXls(options.comptaXls, xlsFormatCompta)
   const serialArrival = DateTime.fromFormatStartOfDay(options.from).toExcelSerial()
@@ -75,8 +84,6 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
     exactPdf)
 
   // populate other properties in options
-  const rootDir = path.parse(options.comptaXls).dir
-  options.enterprise = path.parse(rootDir).base
   options.to = DateTime.fromExcelSerialStartOfDay(rowCompta.comptaDeparture).toFormat('dd/MM/yyyy')
 
   // Dump values
@@ -809,6 +816,7 @@ async function checkInFuture(fromStr) {
 }
 
 export default {
+  getArgs,
   getArgsComptaPdf,
   checkInFuture,
 
