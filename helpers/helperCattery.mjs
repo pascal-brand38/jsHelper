@@ -105,92 +105,54 @@ async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
   }
 }
 
-function getImmediateSubdirs(dir) {
-  return fs.readdirSync(dir, { withFileTypes: true })
-    .filter((item) => item.isDirectory())
-    .map((item) => item.name);
-}
-
-function getCurrentContractDir(rootDir, who, returnList = false) {
+// normalize the contract dir, given the name in compta
+// when slashOnly==false, remove spurious space and accent
+// TODO: slashOnly lust always be true
+function normalizeContractDir(dir, slashOnly=false) {
   const reDoubleSpace = /[\s]{2,}/g;
   const reSlash = /\//g;
-  const reTrailing = /[\s]+$/g;
-  const reStarting = /^[\s]+/g;
-  who = who
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-    .replace(reDoubleSpace, ' ')
-    .replace(reTrailing, '')
-    .replace(reStarting, '')
-    .replace(reSlash, '-')
-    .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
-  var candidates;
-
-  // 1st method: look if who and subdir are a prefix of the other after / and accents and double-space removal
-  candidates = [];
-  const subdirs = getImmediateSubdirs(rootDir);
-  subdirs.forEach((subdir) => {
-    var subdirProcessed = subdir
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-      .replace(reDoubleSpace, ' ')
-      .replace(reTrailing, '')
-      .replace(reStarting, '')
-      .replace(reSlash, '-')
-      .toLowerCase();  // so now who does contain neither accents nor double-space nor slash (replace with dash)
-
-    if (subdirProcessed.startsWith(who) || who.startsWith(subdirProcessed)) {
-      candidates.push(subdir);
-    }
-  })
-  if (candidates.length == 1) {
-    if (returnList) {
-      // for testing only
-      return candidates;
-    } else {
-      return candidates[0];
-    }
-  }
-
-  // 3rd method: look for catname only
-  const reCatNameExtract = /[\s]+-.*/;    // look for 1st dash, and remove the remaining
-  const catCompta = who.replace(reCatNameExtract, '');
-
-  candidates = [];
-  subdirs.forEach((subdir) => {
-    var subdirProcessed = subdir
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-      .replace(reDoubleSpace, ' ')
-      .replace(reTrailing, '')
-      .replace(reStarting, '')
-      .replace(reSlash, '-')
-      .toLowerCase()
-      .replace(reCatNameExtract, '');  // so now who does contain neither accents nor double-space nor slash (replace with dash)
-    if (subdirProcessed === catCompta) {
-      candidates.push(subdir);
-    }
-  })
-
-  if (returnList) {
-    return candidates;
+  if (slashOnly) {
+    return dir.replace(reSlash, '-')
   } else {
-    if (candidates.length === 0) {
-      helperJs.error('Impossible de trouver le répertoire de contrat de ' + catCompta);
-    } else if (candidates.length > 1) {
-      helperJs.error('Plusieurs chats s\'appellent ' + catCompta + '\n' + candidates)
-    }
-
-    return candidates[0];
+    return dir
+      .trim()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
+      .replace(reDoubleSpace, ' ')
+      .replace(reSlash, '-')  // so now who does contain neither accents nor double-space nor slash (replace with dash)
   }
 }
 
+function getCurrentContractDir(rootDir, who) {
+  who = normalizeContractDir(who).toLowerCase();    //TODO: remove toLowerCase
+
+  let found = undefined
+  const subdirs = helperJs.utils.getImmediateSubdirs(rootDir);
+  subdirs.some((subdir) => {
+    if (who === normalizeContractDir(subdir).toLowerCase()) {   // remove toLowerCase
+      found = subdir
+      return true
+    } else {
+      return false
+    }
+  })
+
+  if (found !== undefined) {
+    return found
+  }
+  helperJs.utils.error(`Impossible de trouver le répertoire de contrat de ${who}`);
+}
+
+// get the last contract by alphabetic order, that starts with 20
+// (as contracts start with 'yyyy - mm - dd - ')
 function getLastContract(dir) {
-  const all_files = fs.readdirSync(dir, { withFileTypes: true })
-    .filter((item) => item.isFile() && item.name.startsWith('20'))
-    .map((item) => item.name);
-  if (all_files.length == 0) {
+  const allFiles = fs.readdirSync(dir, { withFileTypes: true })
+  const index = allFiles.findLastIndex(f => (item.isFile() && item.name.startsWith('20')))
+  if (index === -1) {
     helperJs.warning('Aucun contrat existant dans ' + dir)
     return undefined
+  } else {
+    return allFiles[index].name
   }
-  return all_files[all_files.length - 1];
 }
 
 function getContractName(from, dir) {
@@ -819,6 +781,7 @@ export default {
   getArgs,
   getArgsComptaPdf,
   checkInFuture,
+  normalizeContractDir,
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {

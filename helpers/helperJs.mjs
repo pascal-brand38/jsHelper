@@ -81,10 +81,20 @@ const thunderbird = {
   },
 }
 
+const utils = {
+  getImmediateSubdirs: (dir) => {
+    return fs.readdirSync(dir, { withFileTypes: true })
+      .filter((item) => item.isDirectory())
+      .map((item) => item.name);
+  },
+  error,
+  warning,
+}
 
 export default {
   question,
   thunderbird,
+  utils,
 
   warning,
   error,

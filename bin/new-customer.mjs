@@ -5,15 +5,11 @@
 ///
 
 import _yargs from 'yargs'
-import fontkit from '@pdf-lib/fontkit'
 import fs from 'fs'
 import path from 'path';
-import { fileURLToPath } from 'url';
 import child_process from 'child_process'
 import helperCattery from '../helpers/helperCattery.mjs';
 import helperJs from '../helpers/helperJs.mjs';
-import { DateTime } from '../extend/luxon.mjs'
-import { PDFDocument } from '../extend/pdf-lib.mjs';
 
 
 async function main() {
@@ -24,17 +20,7 @@ async function main() {
   })
 
   // create dir
-  const reDoubleSpace = /[\s]{2,}/g;
-  const reSlash = /\//g;
-  const who = options.who
-    .trim()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-    .replace(reDoubleSpace, ' ')
-    .replace(reSlash, '-')
-
-  console.log(options)
-  console.log(who)
-
+  const who = helperCattery.normalizeContractDir(options.who, true)
   const dir = path.join(options.contractRootDir, who)
   console.log(dir)
   if (fs.existsSync(dir)) {
