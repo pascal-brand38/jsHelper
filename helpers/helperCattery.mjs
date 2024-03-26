@@ -66,7 +66,7 @@ async function getArgs(usage) {
 }
 
 async function getArgsComptaPdf({ usage, exactPdf, checkError }) {
-  let options = getArgs(usage)
+  let options = await getArgs(usage)
 
   // from these options, read the compta.xls, and get the row data used for this request
   let dataCompta = helperExcel.readXls(options.comptaXls, xlsFormatCompta)
@@ -146,7 +146,7 @@ function getCurrentContractDir(rootDir, who) {
 // (as contracts start with 'yyyy - mm - dd - ')
 function getLastContract(dir) {
   const allFiles = fs.readdirSync(dir, { withFileTypes: true })
-  const index = allFiles.findLastIndex(f => (item.isFile() && item.name.startsWith('20')))
+  const index = allFiles.findLastIndex(f => (f.isFile() && f.name.startsWith('20')))
   if (index === -1) {
     helperJs.warning('Aucun contrat existant dans ' + dir)
     return undefined

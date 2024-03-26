@@ -1,7 +1,7 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
 
-import { exit } from 'process';
+import fs from 'fs'
 import child_process from 'child_process'
 import pdfjsdist from '../extend/pdfjs-dist.mjs'
 
