@@ -58,29 +58,10 @@ async function main() {
       console.log('pdfObject: ', pdfObject.getExtend())
     }
 
-    const errorCell = `ERROR in ${contractName} from ${data.name}`
-    // if (decompose === undefined) {
-    //   rows.push([
-    //     data.arrival,
-    //     data.departure,
-    //     arrivalCell,
-    //     '',
-    //     '',
-    //     departureCell,
-    //     errorCell,
-    //   ])
-    //   return
-    // }
-
     // owner: name, address1, address2, phone
     const proprio = pdfObject.getExtend().proprio
     const ownerCell = `${nameOrEmpty(proprio.nom,true)}${nameOrEmpty(proprio.adr1)}${nameOrEmpty(proprio.adr2)}${nameOrEmpty(proprio.tel)}`
 
-    // const error =
-    //   (decompose.error !== undefined) ||
-    //   (decompose.chatNom.length !== decompose.chatNaissance.length) ||
-    //   (decompose.chatNom.length !== decompose.id.length)
-    //   // do not check the race. Take the same if not same length
     const chat = pdfObject.getExtend().chat
     const error = (chat.noms === undefined)
     if (error) {
@@ -91,7 +72,7 @@ async function main() {
         `${chat.noms}\n${chat.ids}\n${chat.races}`,
         ownerCell,
         departureCell,
-        errorCell,
+        `ERROR in ${contractName} from ${data.name}`,
       ])
     } else {
       chat.noms.forEach((c, index) => {
