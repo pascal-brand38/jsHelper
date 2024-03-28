@@ -83,20 +83,61 @@ async function main() {
 
   // check daily tarif
   const noms = lastContract.getExtend().chat.noms
-  const daily = argsComptaPdfLastContract.rowCompta.prixJour
+  let prixJour = argsComptaPdfLastContract.rowCompta.prixJour
   if (
-    ((noms.length === 1) && (daily < 14)) ||
-    ((noms.length === 2) && (daily < 24)) ||
-    ((noms.length === 3) && (daily < 36)) ||
-    ((noms.length === 4) && (daily < 44))) {
-    await helperJs.question.question(`${daily}€ pour ${noms} ???? - Appuyer sur entrée`)
+    ((noms.length === 1) && (prixJour < 14)) ||
+    ((noms.length === 2) && (prixJour < 24)) ||
+    ((noms.length === 3) && (prixJour < 36)) ||
+    ((noms.length === 4) && (prixJour < 44))) {
+    await helperJs.question.question(`${prixJour}€ pour ${noms} ???? - Appuyer sur entrée`)
   }
 
-  let services = []
-  if (argsComptaPdfLastContract.options.services==='') {
-    services.push('0€')
-  } else {
+  let services
+  if (argsComptaPdfLastContract.options.services !== '') {
     services = argsComptaPdfLastContract.options.services.split(' + ')
+  } else {
+    services = []
+  }
+
+  let soins = undefined
+  switch (noms.length) {
+    case 1:
+      if (prixJour > 14) {
+        soins = `${(prixJour - 14) / 2} x 2€ / jour (soins)`
+        prixJour = 14
+
+        console.log(`1 seul chat, mais tarif journalier de ${argsComptaPdfLastContract.rowCompta.prixJour}€ au lieu de ${prixJour}€`)
+        console.log("Modification du contrat:")
+        console.log(`- Tarif journalier: ${prixJour}€`)
+        services.forEach((s, i) => {
+          services[i] = s.replace(argsComptaPdfLastContract.rowCompta.prixJour, prixJour)
+          console.log(`- Services: ${services[i]}`)
+        })
+        await helperJs.question.question(`Appuyer sur entrée pour continuer`)
+        console.log()
+      }
+      break;
+    case 2:
+      break;
+    case 3:
+      break;
+    case 4:
+      break;
+  }
+
+  if (soins !== undefined) {
+    console.log("Modification du contrat:")
+    console.log(`- Service: ${soins}`)
+    const answer = await helperJs.question.question(`Appuyer sur entrée pour approuver, ou entrer un nouveau service: `)
+    if (answer === '') {
+      services.push(soins)
+    } else {
+      services.push(answer)
+    }
+  }
+
+  if (services.length === 0) {
+    services.push('0€')
   }
 
   let sAcompteDate = argsComptaPdfLastContract.rowCompta.acompteDate
@@ -110,7 +151,7 @@ async function main() {
     [ 'sArriveeDate', argsComptaPdfLastContract.options.from ],
     [ 'sDepartDate', argsComptaPdfLastContract.options.to ],
     [ 'sNbJours', argsComptaPdfLastContract.rowCompta.nbJours.toString() ],
-    [ 'sTarifJour', argsComptaPdfLastContract.rowCompta.prixJour + '€' ],
+    [ 'sTarifJour', prixJour + '€' ],
     [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
     [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.acompteAmount===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.acompteAmount + '€') ],
     [ 'sAcompteDate', sAcompteDate ],
