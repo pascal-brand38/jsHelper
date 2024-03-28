@@ -777,11 +777,22 @@ async function checkInFuture(fromStr) {
   }
 }
 
+const priceDay = [
+  [ { price: 14             }, { price: 14             }, ],
+  [ { price: 24, nbRooms: 1 }, { price: 28, nbRooms: 2 }, ],
+  [ { price: 36, nbRooms: 2 }, { price: 42, nbRooms: 3 }, ],
+  [ { price: 44, nbRooms: 2 }, { price: 56, nbRooms: 4 }, ],
+]
+
 export default {
   getArgs,
   getArgsComptaPdf,
   checkInFuture,
   normalizeContractDir,
+
+  helperContract: {
+    priceDay,
+  },
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {

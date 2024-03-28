@@ -62,53 +62,56 @@ function fillCats(newContract, lastContract, argsComptaPdfLastContract, fontToUs
 
 // fill pdf fields corresponding to the booking
 async function fillBooking(newContract, lastContract, argsComptaPdfLastContract, fontToUse) {
-  // check daily tarif
-  const noms = lastContract.getExtend().chat.noms
-  let prixJour = argsComptaPdfLastContract.rowCompta.prixJour
-  if (
-    ((noms.length === 1) && (prixJour < 14)) ||
-    ((noms.length === 2) && (prixJour < 24)) ||
-    ((noms.length === 3) && (prixJour < 36)) ||
-    ((noms.length === 4) && (prixJour < 44))) {
-    await helperJs.question.question(`${prixJour}€ pour ${noms} ???? - Appuyer sur entrée`)
-  }
-
-  let services
-  if (argsComptaPdfLastContract.options.services !== '') {
-    services = argsComptaPdfLastContract.options.services.split(' + ')
+  // services: from string to list
+  let services = argsComptaPdfLastContract.options.services
+  if (services !== '') {
+    services = services.split(' + ')
   } else {
     services = []
   }
 
-  let soins = undefined
-  switch (noms.length) {
-    case 1:
-      if (prixJour > 14) {
-        soins = `${(prixJour - 14) / 2} x 2€ / jour (soins)`
-        prixJour = 14
-
-        console.log(`1 seul chat, mais tarif journalier de ${argsComptaPdfLastContract.rowCompta.prixJour}€ au lieu de ${prixJour}€`)
-        console.log("Modification du contrat:")
-        console.log(`- Tarif journalier: ${prixJour}€`)
-        services.forEach((s, i) => {
-          services[i] = s.replace(argsComptaPdfLastContract.rowCompta.prixJour, prixJour)
-          console.log(`- Services: ${services[i]}`)
-        })
-        await helperJs.question.question(`Appuyer sur entrée pour continuer`)
-        console.log()
-      }
-      break;
-    case 2:
-      break;
-    case 3:
-      break;
-    case 4:
-      break;
+  // check daily tariff
+  const noms = lastContract.getExtend().chat.noms
+  let prixJour = argsComptaPdfLastContract.rowCompta.prixJour
+  const prixChambreMin = helperCattery.helperContract.priceDay[noms.length-1][0].price
+  const prixChambreMax = helperCattery.helperContract.priceDay[noms.length-1][1].price
+  if (prixJour < prixChambreMin) {
+    await helperJs.question.question(`${prixJour}€ pour ${noms} ???? - Appuyer sur entrée`)
   }
 
-  if (soins !== undefined) {
-    console.log("Modification du contrat:")
-    console.log(`- Service: ${soins}`)
+  // check how many rooms we take
+  let prixSoins = (prixJour - prixChambreMin)
+  if ((prixJour >= prixChambreMax) && (prixChambreMin!==prixChambreMax)) {
+    let answer
+    while ((answer!=='0') && (answer!=='1')) {
+      console.log(`0) ${helperCattery.helperContract.priceDay[noms.length-1][0].nbRooms} chambre`)
+      console.log(`1) ${helperCattery.helperContract.priceDay[noms.length-1][1].nbRooms} chambre`)
+      answer = await helperJs.question.question(`==> `)
+    }
+    if (answer === '0') {
+      prixJour = prixChambreMin
+    } else {
+      prixSoins = (prixJour - prixChambreMax)
+      prixJour = prixChambreMax
+    }
+  } else {
+    prixJour = prixChambreMin
+  }
+
+  if (prixSoins !== 0) {
+    if (prixSoins % 2 != 0) {
+      console.log(`Prix des soins journalier n'est pas pair: ${prixSoins}€`)
+      await helperJs.question.question(`Appuyer pour continuer`)
+    }
+
+    const soins = `${prixSoins * argsComptaPdfLastContract.rowCompta.nbJours}€ (${prixSoins / 2}x2€/jour - soins)`
+
+    console.log(`Prix journalier ajusté à: ${prixJour}€`)
+    services.forEach((s, i) => {
+      services[i] = s.replace(argsComptaPdfLastContract.rowCompta.prixJour, prixJour)
+      console.log(`- Services: ${services[i]}`)
+    })
+    console.log(`- Services: ${soins}`)
     const answer = await helperJs.question.question(`Appuyer sur entrée pour approuver, ou entrer un nouveau service: `)
     if (answer === '') {
       services.push(soins)
@@ -155,6 +158,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
 
 
 async function main() {
+  // TODO: check daily price is the same than last time, not to forget medecine when creating the contract
   const argsComptaPdfLastContract = await helperCattery.getArgsComptaPdf({
     usage: 'Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]',
     exactPdf: false,
