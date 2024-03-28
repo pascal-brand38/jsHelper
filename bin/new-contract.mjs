@@ -15,34 +15,8 @@ import helperJs from '../helpers/helperJs.mjs';
 import { DateTime } from '../extend/luxon.mjs'
 import { PDFDocument } from '../extend/pdf-lib.mjs';
 
-
-async function main() {
-  const argsComptaPdfLastContract = await helperCattery.getArgsComptaPdf({
-    usage: 'Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]',
-    exactPdf: false,
-    checkError: true,
-  })
-
-  const contratDir =  path.parse(argsComptaPdfLastContract.options.comptaXls).dir + '\\Contrat Clients ' + argsComptaPdfLastContract.options.enterprise
-  const lastContract = argsComptaPdfLastContract.pdfObject
-  const newContract = await PDFDocument.loadInit(contratDir + '\\' + argsComptaPdfLastContract.options.blankContract, helperCattery.helperPdf.getVersion)
-
-  await helperCattery.checkInFuture(argsComptaPdfLastContract.options.from)
-
-  if (newContract.getExtend().version !== helperCattery.helperPdf.currentVersionContrat) {
-    helperJs.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract.getExtend().version}`)
-  }
-
-  // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
-  // const helvetica = await newContract.embedFont(StandardFonts.Helvetica)
-  newContract.registerFontkit(fontkit)
-  //const fontToUse = await newContract.embedFont(fs.readFileSync('C:\\Windows\\Fonts\\ARLRDBD.TTF'))
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  const fontToUse = await newContract.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
-
-  const epochDeparture = DateTime.fromFormatStartOfDay(argsComptaPdfLastContract.options.to).toEpoch()
-
+// fill pdf fields corresponding to the owner
+function fillProprio(newContract, lastContract, fontToUse) {
   newContract.setTextfield('pNom',       lastContract.getExtend().proprio.nom,        fontToUse)
   newContract.setTextfield('pAddr1',     lastContract.getExtend().proprio.adr1,       fontToUse)
   newContract.setTextfield('pAddr2',     lastContract.getExtend().proprio.adr2,       fontToUse)
@@ -50,7 +24,10 @@ async function main() {
   newContract.setTextfield('pEmail',     lastContract.getExtend().proprio.email,      fontToUse)
   newContract.setTextfield('pUrgence1',  lastContract.getExtend().proprio.urgenceNom, fontToUse)
   newContract.setTextfield('pUrgence2',  lastContract.getExtend().proprio.urgenceTel, fontToUse)
+}
 
+// fill pdf fields corresponding to the cats
+function fillCats(newContract, lastContract, fontToUse, argsComptaPdfLastContract) {
   newContract.setTextfields(['c1Nom', 'c2Nom', 'c3Nom'], lastContract.getExtend().chat.noms, fontToUse)
   newContract.setTextfields(['c1Naissance', 'c2Naissance', 'c3Naissance'], lastContract.getExtend().chat.naissances, fontToUse)
   newContract.setTextfields(['c1Id', 'c2Id', 'c3Id'], lastContract.getExtend().chat.ids, fontToUse)
@@ -79,7 +56,39 @@ async function main() {
   })
 
   // check vaccination date
+  const epochDeparture = DateTime.fromFormatStartOfDay(argsComptaPdfLastContract.options.to).toEpoch()
   helperCattery.helperPdf.isVaccinUptodate(lastContract, epochDeparture, newContract, fontToUse)
+}
+
+
+async function main() {
+  const argsComptaPdfLastContract = await helperCattery.getArgsComptaPdf({
+    usage: 'Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]',
+    exactPdf: false,
+    checkError: true,
+  })
+
+  // check the dates are in the future, not in the past
+  await helperCattery.checkInFuture(argsComptaPdfLastContract.options.from)
+
+  const lastContract = argsComptaPdfLastContract.pdfObject
+  const newContract = await PDFDocument.loadInit(path.join(argsComptaPdfLastContract.options.contractRootDir, argsComptaPdfLastContract.options.blankContract), helperCattery.helperPdf.getVersion)
+
+
+  if (newContract.getExtend().version !== helperCattery.helperPdf.currentVersionContrat) {
+    helperJs.utils.error(`New contract version:\n  Expected: ${helperCattery.helperPdf.currentVersionContrat}\n  and is: ${newContract.getExtend().version}`)
+  }
+
+  // cf. https://pdf-lib.js.org/docs/api/classes/pdfdocument#embedfont
+  // const helvetica = await newContract.embedFont(StandardFonts.Helvetica)
+  newContract.registerFontkit(fontkit)
+  //const fontToUse = await newContract.embedFont(fs.readFileSync('C:\\Windows\\Fonts\\ARLRDBD.TTF'))
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const fontToUse = await newContract.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
+
+  fillProprio(newContract, lastContract, fontToUse)
+  fillCats(newContract, lastContract, fontToUse, argsComptaPdfLastContract)
 
   // check daily tarif
   const noms = lastContract.getExtend().chat.noms
@@ -195,7 +204,7 @@ async function main() {
     await newContract.saveWrite(newContractName)
   } catch(e) {
     console.log(e);
-    helperJs.error("Impossible d'écrire le fichier   " + newContractName);
+    helperJs.utils.error("Impossible d'écrire le fichier   " + newContractName);
   }
   console.log('explorer ' + newContractName)
   child_process.exec('explorer "' + newContractName.replace(/\//g, '\\') + '"');
