@@ -83,12 +83,16 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
   let prixSoins = (prixJour - prixChambreMin)
   if ((prixJour >= prixChambreMax) && (prixChambreMin!==prixChambreMax)) {
     let answer
-    while ((answer!=='0') && (answer!=='1')) {
-      console.log(`0) ${helperCattery.helperContract.priceDay[noms.length-1][0].nbRooms} chambre`)
-      console.log(`1) ${helperCattery.helperContract.priceDay[noms.length-1][1].nbRooms} chambre`)
-      answer = await helperJs.question.question(`==> `)
+    let possibleAnswers = [
+      helperCattery.helperContract.priceDay[noms.length-1][0].nbRooms,
+      helperCattery.helperContract.priceDay[noms.length-1][1].nbRooms,
+    ]
+    while (!possibleAnswers.includes(answer)) {
+      console.log(`${possibleAnswers[0]}) ${possibleAnswers[0]} chambre(s)`)
+      console.log(`${possibleAnswers[1]}) ${possibleAnswers[1]} chambre(s)`)
+      answer = parseInt(await helperJs.question.question(`==> `))
     }
-    if (answer === '0') {
+    if (answer === possibleAnswers[0]) {
       prixJour = prixChambreMin
     } else {
       prixSoins = (prixJour - prixChambreMax)
@@ -135,7 +139,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
     [ 'sArriveeDate', argsComptaPdfLastContract.options.from ],
     [ 'sDepartDate', argsComptaPdfLastContract.options.to ],
     [ 'sNbJours', argsComptaPdfLastContract.rowCompta.nbJours.toString() ],
-    [ 'sTarifJour', prixJour + '€' ],
+    [ 'sTarifJour', prixJour + '€' ],   // TODO: add number of rooms
     [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
     [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.acompteAmount===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.acompteAmount + '€') ],
     [ 'sAcompteDate', sAcompteDate ],
@@ -144,7 +148,9 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
     [ 'sService2', (services.length >= 2) ? services[1] : '' ],
     [ 'sService3', (services.length >= 3) ? services[2] : '' ],
   ]
-  const forbiddenWords = [ 'undefined', 'nan', ]    // must be a lower case list
+
+  // TODO: check the tariffs are correct when summing all fields
+  const forbiddenWords = [ 'undefined', 'nan', 'infinity', ]    // must be a lower case list
   reservations.forEach(resa => {
     console.log(`${resa[0]} ${resa[1]}`)
     forbiddenWords.forEach(w => {
