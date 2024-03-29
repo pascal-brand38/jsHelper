@@ -822,7 +822,8 @@ async function checkComptaData(argsComptaPdf) {
 
     // check daily price is the same - can be different in case of medecine
     if (rowPrev.prixJour != rowCurrent.prixJour)  {
-      console.log(`Le prix journalier a été modifié: ${rowCurrent.prixJour}€ contre ${rowPrev.prixJour}€ précédemment`)
+      console.log(`Le prix journalier n'est pas le même par rapport à la dernière réservation`)
+      console.log(`   ${rowCurrent.prixJour}€  vs  ${rowPrev.prixJour}€ précédemment`)
       await helperJs.question.question(`Appuyer pour continuer`)
       console.log()
     }
