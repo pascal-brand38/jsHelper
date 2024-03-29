@@ -157,18 +157,12 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
   const forbiddenWords = [ 'undefined', 'nan', 'infinity', ]    // must be a lower case list
   reservations.forEach(resa => {
     console.log(`${resa[0]} ${resa[1]}`)
-    forbiddenWords.forEach(w => {
-      if (resa[1].toLowerCase().includes(w)) {
-        throw(`${w.toUpperCase()}: ${resa[0]} ${resa[1]}`)
-      }
-    })
     newContract.setTextfield(resa[0], resa[1], fontToUse)
   })
 }
 
 
 async function main() {
-  // TODO: check daily price is the same than last time, not to forget medecine when creating the contract
   const argsComptaPdfLastContract = await helperCattery.getArgsComptaPdf({
     usage: 'Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]',
     exactPdf: false,
@@ -199,6 +193,7 @@ async function main() {
   fillProprio(newContract, lastContract, argsComptaPdfLastContract, fontToUse)
   fillCats(newContract, lastContract, argsComptaPdfLastContract, fontToUse)
   await fillBooking(newContract, lastContract, argsComptaPdfLastContract, fontToUse)
+  await helperCattery.helperContract.checkContractBooking(newContract, argsComptaPdfLastContract)
 
   // adding cat name on top of page 1
   // newContract.addText(lastContract.getExtend().chat.noms.join(', '))

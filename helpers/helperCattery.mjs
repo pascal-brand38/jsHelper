@@ -11,6 +11,8 @@ import helperJs from './helperJs.mjs';
 import helperExcel from './helperExcel.mjs'
 import { DateTime } from '../extend/luxon.mjs'
 import { PDFDocument, setProplist } from '../extend/pdf-lib.mjs'
+import { emitKeypressEvents } from 'readline';
+import { emitWarning } from 'process';
 
 async function getArgs(usage) {
   console.log(process.argv)
@@ -523,6 +525,7 @@ async function postErrorCheck(pdfObject, result) {
     console.log(`List of warnings in ${fullname}:`)
     console.log(warnings)
     await helperJs.question.question('Liste des warnings à manipuler à la main - Appuyer sur entrée')
+    console.log()
   }
 }
 
@@ -837,6 +840,95 @@ async function checkComptaData(argsComptaPdf) {
   }
 }
 
+// check pdf booking data:
+// - no forbidden keyword
+// - days... same as the one in compta (TODO)
+// - total, acompte and solde are the same in compta (TODO)
+// - summing prices in the pdf leads to correct calculation (TODO)
+async function checkContractBooking(pdfObject, argsComptaPdfLastContract) {
+  let sAcompteDate = argsComptaPdfLastContract.rowCompta.acompteDate
+  if (sAcompteDate) {
+    sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('d/M/y')
+  } else {
+    sAcompteDate = ''
+  }
+
+  const forbiddenWords = [ 'undefined', 'nan', 'infinity', ]    // must be a lower case list
+  const booking = [
+    { field: 'sArriveeDate', expected: argsComptaPdfLastContract.options.from, },
+    { field: 'sDepartDate',  expected: argsComptaPdfLastContract.options.to, },
+    { field: 'sNbJours',     expected: argsComptaPdfLastContract.rowCompta.nbJours.toString(), },
+    { field: 'sTarifJour',   expected: undefined, },
+    { field: 'sTotal',       expected: argsComptaPdfLastContract.rowCompta.total + '€', },
+    { field: 'sAcompte',     expected: (argsComptaPdfLastContract.rowCompta.acompteAmount===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.acompteAmount + '€'), },
+    { field: 'sAcompteDate', expected: sAcompteDate, },
+    { field: 'sSolde',       expected: argsComptaPdfLastContract.rowCompta.soldeAmount + '€', },
+    { field: 'sService1',    expected: undefined, },
+    { field: 'sService2',    expected: undefined,},
+    { field: 'sService3',    expected: undefined,},
+  ]
+  let values = {}
+
+  // extract and check
+  let errors = []
+  booking.forEach(b => {
+    let result = pdfObject.getForm().getTextField(b.field).getText();
+    if (result === undefined) {
+      result = ''
+    }
+
+    // check forbidden words
+    forbiddenWords.forEach(w => {
+      if (result.toLowerCase().includes(w)) {
+        errors.push(`${w.toUpperCase()}: ${b.field} ${result}`)
+      }
+    })
+
+    // check same value as the one in compta
+    if ((b.expected !== undefined) && (b.expected !== result)) {
+      errors.push(`Wrong expected value of ${b.field}:  contract='${result}'  vs  compta='${b.expected}'`)
+    }
+
+    if (result === '') {
+      result = '0'
+    }
+    values[b.field] = result
+  })
+
+  if (errors.length !== 0) {
+    errors.forEach(e => console.log(e))
+    await helperJs.question.question('Appuyer sur entrée')
+    console.log()
+  }
+
+  // check summing is correct
+  const e = {
+    days: parseInt(values['sNbJours']),
+    tarifJours: parseInt(values['sTarifJour']),
+    total: parseInt(values['sTotal']),
+    acompte: parseInt(values['sAcompte']),
+    solde: parseInt(values['sSolde']),
+    s1: parseInt(values['sService1']),
+    s2: parseInt(values['sService2']),
+    s3: parseInt(values['sService3']),
+  }
+
+  const sum = (e.days * e.tarifJours) + e.s1 + e.s2 + e.s3
+  if (sum !== e.total) {
+    console.log('Total is not equal to partial sums ')
+    console.log(`${e.total} != (${e.days} * ${e.tarifJours}) + ${e.s1} + ${e.s2} + ${e.s3}`)
+    await helperJs.question.question('Appuyer sur entrée')
+    console.log()
+  }
+
+  if (e.acompte + e.solde !== e.total) {
+    console.log('Total is not equal to acompte + solde ')
+    console.log(`${e.total} != (${e.acompte} + ${e.solde})`)
+    await helperJs.question.question('Appuyer sur entrée')
+    console.log()
+  }
+}
+
 
 export default {
   getArgs,
@@ -847,6 +939,7 @@ export default {
   helperContract: {
     priceDay,
     checkComptaData,
+    checkContractBooking,
   },
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
