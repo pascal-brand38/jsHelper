@@ -272,68 +272,6 @@ async function sendMail(argsComptaPdf) {
   await helperJs.thunderbird.compose(email, subject, body, attachment)
 }
 
-// Check the contract is coherent with respect to the previous one
-// - deposit asking, or not
-// - same daily price, not to forget medecine
-async function checkXls(argsComptaPdf) {
-  const serialFrom = DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).toExcelSerial()
-  const rows = argsComptaPdf.dataCompta.filter(row => row.name === argsComptaPdf.options.who)
-
-  let rowPrev = null
-  let rowCurrent = null
-  rows.every((row) => {
-    if (serialFrom === row.comptaArrival) {
-      rowCurrent = row
-      return false  // stop the loop
-    } else {
-      rowPrev = row
-      return true   // we continue
-    }
-  })
-
-  const askedDepositCurrent = (rowCurrent.acompteAmount != undefined)
-  if (rowPrev && rowCurrent) {
-    // check a deposit asking is the same (always ask, or never ask)
-    const askedDepositPrev = (rowPrev.acompteAmount != undefined)
-    if (askedDepositPrev != askedDepositCurrent) {
-      if (!askedDepositCurrent) {
-        console.log(`Pas de demande d'acompte, alors que demande la fois précédente`)
-      } else {
-        console.log(`Demande d'acompte, alors que pas de demande la fois précédente`)
-      }
-      let cont = await getYesNo(`On continue`)
-      console.log()
-      if (cont == 'n') {
-        helperJs.error('Quit')
-      }
-    }
-
-    // check daily price is the same - can be different in case of medecine
-    if (rowPrev.prixJour != rowCurrent.prixJour)  {
-      console.log(`Le prix journalier a été modifié: ${rowCurrent.prixJour}€ contre ${rowPrev.prixJour}€ précédemment`)
-      let cont = await getYesNo(`On continue`)
-      console.log()
-      if (cont == 'n') {
-        helperJs.error('Quit')
-      }
-    }
-
-  } else {
-    console.log(`1ere réservation`)
-    console.log(`    Prix journalier de (${rowCurrent.prixJour}€)?`)
-    if (askedDepositCurrent) {
-      console.log(`    AVEC demande d'acompte?`)
-    } else {
-      console.log(`    SANS demande d'acompte?`)
-    }
-    let cont = await getYesNo(`On continue`)
-    console.log()
-    if (cont == 'n') {
-      helperJs.error('Quit')
-    }
-  }
-}
-
 async function main() {
   const argsComptaPdf = await helperCattery.getArgsComptaPdf({
     usage: 'Open thunderbird to send a contract, from an excel compta macro directly\n\nUsage: $0 [options]',
@@ -341,7 +279,6 @@ async function main() {
     checkError: true,
   })
 
-  await checkXls(argsComptaPdf)
   await sendMail(argsComptaPdf)
 }
 

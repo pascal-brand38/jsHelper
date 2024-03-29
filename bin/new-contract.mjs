@@ -77,6 +77,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
   const prixChambreMax = helperCattery.helperContract.priceDay[noms.length-1][1].price
   if (prixJour < prixChambreMin) {
     await helperJs.question.question(`${prixJour}€ pour ${noms} ???? - Appuyer sur entrée`)
+    console.log()
   }
 
   // check how many rooms we take
@@ -91,6 +92,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
       console.log(`${possibleAnswers[0]}) ${possibleAnswers[0]} chambre(s)`)
       console.log(`${possibleAnswers[1]}) ${possibleAnswers[1]} chambre(s)`)
       answer = parseInt(await helperJs.question.question(`==> `))
+      console.log()
     }
     if (answer === possibleAnswers[0]) {
       prixJour = prixChambreMin
@@ -106,6 +108,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
     if (prixSoins % 2 != 0) {
       console.log(`Prix des soins journalier n'est pas pair: ${prixSoins}€`)
       await helperJs.question.question(`Appuyer pour continuer`)
+      console.log()
     }
 
     const soins = `${prixSoins * argsComptaPdfLastContract.rowCompta.nbJours}€ (${prixSoins / 2}x2€/jour - soins)`
@@ -116,7 +119,8 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
       console.log(`- Services: ${services[i]}`)
     })
     console.log(`- Services: ${soins}`)
-    const answer = await helperJs.question.question(`Appuyer sur entrée pour approuver, ou entrer un nouveau service: `)
+    const answer = await helperJs.question.question(`Appuyer pour continuer, ou entrer un nouveau service: `)
+    console.log()
     if (answer === '') {
       services.push(soins)
     } else {
@@ -190,10 +194,11 @@ async function main() {
   const __dirname = path.dirname(__filename);
   const fontToUse = await newContract.embedFont(fs.readFileSync(path.join(__dirname, 'Helvetica.ttf')))
 
+  await helperCattery.helperContract.checkComptaData(argsComptaPdfLastContract)
+
   fillProprio(newContract, lastContract, argsComptaPdfLastContract, fontToUse)
   fillCats(newContract, lastContract, argsComptaPdfLastContract, fontToUse)
   await fillBooking(newContract, lastContract, argsComptaPdfLastContract, fontToUse)
-
 
   // adding cat name on top of page 1
   // newContract.addText(lastContract.getExtend().chat.noms.join(', '))

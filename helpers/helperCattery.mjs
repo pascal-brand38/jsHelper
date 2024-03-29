@@ -784,6 +784,60 @@ const priceDay = [
   [ { price: 44, nbRooms: 2 }, { price: 56, nbRooms: 4 }, ],
 ]
 
+// Check the data in compta is coherent with respect to the previous one
+// - deposit asking, or not
+// - same daily price, not to forget medecine
+async function checkComptaData(argsComptaPdf) {
+  const serialFrom = DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).toExcelSerial()
+  const rows = argsComptaPdf.dataCompta.filter(row => row.name === argsComptaPdf.options.who)
+
+  let rowPrev = null
+  let rowCurrent = null
+  rows.every((row) => {
+    if (serialFrom === row.comptaArrival) {
+      rowCurrent = row
+      return false  // stop the loop
+    } else {
+      rowPrev = row
+      return true   // we continue
+    }
+  })
+
+  const askedDepositCurrent = (rowCurrent.acompteAmount != undefined)
+  if (rowPrev && rowCurrent) {
+    // check a deposit asking is the same (always ask, or never ask)
+    const askedDepositPrev = (rowPrev.acompteAmount != undefined)
+    if (askedDepositPrev != askedDepositCurrent) {
+      if (!askedDepositCurrent) {
+        console.log(`Pas de demande d'acompte, alors que demande la fois précédente`)
+      } else {
+        console.log(`Demande d'acompte, alors que pas de demande la fois précédente`)
+      }
+      await helperJs.question.question(`Appuyer pour continuer`)
+      console.log()
+    }
+
+    // check daily price is the same - can be different in case of medecine
+    if (rowPrev.prixJour != rowCurrent.prixJour)  {
+      console.log(`Le prix journalier a été modifié: ${rowCurrent.prixJour}€ contre ${rowPrev.prixJour}€ précédemment`)
+      await helperJs.question.question(`Appuyer pour continuer`)
+      console.log()
+    }
+
+  } else {
+    console.log(`1ere réservation`)
+    console.log(`    Prix journalier de (${rowCurrent.prixJour}€)?`)
+    if (askedDepositCurrent) {
+      console.log(`    AVEC demande d'acompte?`)
+    } else {
+      console.log(`    SANS demande d'acompte?`)
+    }
+    await helperJs.question.question(`Appuyer pour continuer`)
+    console.log()
+  }
+}
+
+
 export default {
   getArgs,
   getArgsComptaPdf,
@@ -792,6 +846,7 @@ export default {
 
   helperContract: {
     priceDay,
+    checkComptaData,
   },
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
