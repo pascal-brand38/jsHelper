@@ -13,11 +13,7 @@ import helperJs from '../helpers/helperJs.mjs';
 
 
 async function main() {
-  const options = await helperCattery.getArgs({
-    usage: 'Create new directory of a new customer',
-    exactPdf: false,
-    checkError: false,
-  })
+  const options = await helperCattery.getArgs('Create new directory of a new customer')
 
   // create dir
   const who = helperCattery.normalizeContractDir(options.who, true)
