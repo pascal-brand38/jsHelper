@@ -242,7 +242,7 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
   body += `Advocate, Advantage,`
   body += `<br>`
-  body += `Vectra Felis, Capstar chat,`
+  body += `Vectra Felis, Vetocanis, Capstar chat,`
   body += `<br>`
   body += `ainsi que tous les produits à base de fipronil ...`
   body += `<br>`
