@@ -904,14 +904,14 @@ async function checkContractBooking(pdfObject, argsComptaPdfLastContract) {
 
   // check summing is correct
   const e = {
-    days: parseInt(values['sNbJours']),
-    tarifJours: parseInt(values['sTarifJour']),
-    total: parseInt(values['sTotal']),
-    acompte: parseInt(values['sAcompte']),
-    solde: parseInt(values['sSolde']),
-    s1: parseInt(values['sService1']),
-    s2: parseInt(values['sService2']),
-    s3: parseInt(values['sService3']),
+    days: parseInt(values['sNbJours']) || 0,
+    tarifJours: parseInt(values['sTarifJour']) || 0,
+    total: parseInt(values['sTotal']) || 0,
+    acompte: parseInt(values['sAcompte']) || 0,
+    solde: parseInt(values['sSolde']) || 0,
+    s1: parseInt(values['sService1']) || 0,
+    s2: parseInt(values['sService2']) || 0,
+    s3: parseInt(values['sService3']) || 0,
   }
 
   const sum = (e.days * e.tarifJours) + e.s1 + e.s2 + e.s3
