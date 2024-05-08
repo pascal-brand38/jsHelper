@@ -794,6 +794,13 @@ async function checkComptaData(argsComptaPdf) {
   const serialFrom = DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).toExcelSerial()
   const rows = argsComptaPdf.dataCompta.filter(row => row.name === argsComptaPdf.options.who)
 
+  const serialToday = DateTime.fromNowStartOfDay().toExcelSerial();
+  if (rows.some(r => ((r.arrival <= serialToday) && (serialToday <= r.departure)))) {
+    console.log(`Attention: ce chat est présent dans la garderie`)
+    await helperJs.question.question(`Appuyer pour continuer`)
+    console.log()
+  }
+
   let rowPrev = null
   let rowCurrent = null
   rows.every((row) => {
