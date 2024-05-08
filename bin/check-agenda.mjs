@@ -136,6 +136,7 @@ function checkBank(dataCompta, dataBank) {
     _newFromCompta(dataFilled, excelStart, data.name, data.soldeAmount, data.soldeDate, data.soldeType, data.soldeStatus)
     _newFromCompta(dataFilled, excelStart, data.name, data.extraAmount, data.extraDate, data.extraType, data.extraStatus)
   })
+  dataFilled.sort(function(a, b) { return a.date - b.date } );
 
   let dataBankToCheck = dataBank.filter(bank => {
     const epochDate = DateTime.fromExcelSerialStartOfDay(bank.date).toEpoch()
