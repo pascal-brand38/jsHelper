@@ -849,7 +849,7 @@ async function checkComptaData(argsComptaPdf) {
 async function checkContractBooking(pdfObject, argsComptaPdfLastContract) {
   let sAcompteDate = argsComptaPdfLastContract.rowCompta.acompteDate
   if (sAcompteDate) {
-    sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('d/M/y')
+    sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('dd/MM/yyyy')
   } else {
     sAcompteDate = ''
   }
