@@ -39,16 +39,19 @@ function checkDates(dataCompta, dataAgenda) {
   populateDates(dates, dataCompta)
   populateDates(dates, dataAgenda)
 
+  const todaySerial = DateTime.fromNowStartOfDay().toExcelSerial()
   dates.forEach(d => {
-    const what = d.what
-    const compta = dataCompta.filter(e => e[what] === d.date)
-    const agenda = dataAgenda.filter(e => e[what] === d.date)
-    if (compta.length !== agenda.length) {
-      console.log(`--- ${what} on ${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} ----------------`)
-      console.log('Compta: ')
-      compta.forEach(c => console.log(`   ${c.name}`))
-      console.log('Agenda: ')
-      agenda.forEach(c => console.log(`   ${c.name}`))
+    if (todaySerial <= d.date) {
+      const what = d.what
+      const compta = dataCompta.filter(e => e[what] === d.date)
+      const agenda = dataAgenda.filter(e => e[what] === d.date)
+      if (compta.length !== agenda.length) {
+        console.log(`--- ${what} on ${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} ----------------`)
+        console.log('Compta: ')
+        compta.forEach(c => console.log(`   ${c.name}`))
+        console.log('Agenda: ')
+        agenda.forEach(c => console.log(`   ${c.name}`))
+      }
     }
   })
 }
