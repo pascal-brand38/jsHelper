@@ -5,7 +5,7 @@
 ///
 /// Save files on the cloud
 /// - if it does not exist: mv
-/// - if it exists and not the same: copy with -v000 the previous version, and move
+/// - if it exists and not the same: copy with -{date} the previous version, and move
 ///
 /// node bin/save-on-cloud.mjs <local-dir> <remote-dir>
 /// node bin/save-on-cloud.mjs /c/Users/pasca/Desktop/save-on-cloud "/c/Users/pasca/Mon Drive/tmp/save-on-cloud"
@@ -61,6 +61,7 @@ function main() {
     }
 
     let mustCopy = false
+    let update = false
     if (fs.existsSync(dstFile)) {
       // the file already exists in the cloud
       const statDstFile = fs.statSync(dstFile)
@@ -77,6 +78,7 @@ function main() {
           statistics.identical++
         } else {
           mustCopy = true
+          update = true
           statistics.updated++
         }
       }
@@ -94,22 +96,26 @@ function main() {
       let fileExt = dstFile.split('.').pop();
       const dstDatedFile = path.join(dstDir, _dirDated, file) + '.' + dateExt + '.' + fileExt
 
-      const dirname = path.dirname(dstDatedFile)
-      if (!fs.existsSync(dirname)) {
-        fs.mkdirSync(dirname, { recursive: true });
-      }
-
       if (_dryrun) {
+        if (update) {
+          console.log(`fs.copyFileSync(${srcFile}, ${dstDatedFile})`)
+        }
         console.log(`fs.copyFileSync(${srcFile}, ${dstFile})`)
-        console.log(`fs.copyFileSync(${srcFile}, ${dstDatedFile})`)
       } else {
+        if (update) {
+          const dirname = path.dirname(dstDatedFile)
+          if (!fs.existsSync(dirname)) {
+            fs.mkdirSync(dirname, { recursive: true });
+          }
+          fs.copyFileSync(dstFile, dstDatedFile)
+        }
         fs.copyFileSync(srcFile, dstFile)
-        fs.copyFileSync(srcFile, dstDatedFile)
       }
       console.log(`Copy ${path.basename(srcFile)}`)
     }
   })
 }
+
 
 if (process.argv.length !== 4) {
   console.log(`save-on-cloud /c/Users/pasca/Desktop/save-on-cloud "/c/Users/pasca/Mon Drive/tmp/save-on-cloud"`)
