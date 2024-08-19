@@ -55,7 +55,7 @@ async function getArgs(usage) {
     // })
     .argv;
 
-  options.excludeDirs = [ 'tmp', '.tmp.drivedownload' ]
+  options.excludes = [ 'tmp', '.tmp.drivedownload', 'desktop.ini', 'Thumbs.db', _dirDated ]
 
   return options
 }
@@ -70,12 +70,12 @@ function walkDir(options, srcFiles, rootDir, subDir) {
   console.log(`walkdir ${subDir}`)
   const thisDir = path.join(rootDir, subDir);
   fs.readdirSync(thisDir).forEach(file => {
+    if (options.excludes.includes(file)) {
+      return
+    }
     const absolute = path.join(thisDir, file);
     const sub = path.join(subDir, file)
     if (fs.statSync(absolute).isDirectory()) {
-      if (options.excludeDirs.includes(file)) {
-        return
-      }
       walkDir(options, srcFiles, rootDir, sub);
     } else {
       srcFiles.push(sub);
@@ -83,17 +83,11 @@ function walkDir(options, srcFiles, rootDir, subDir) {
   });
 }
 
+function equalFiles(file1, file2) {
+  return fileSyncCmp.equalFiles(file1, file2)
+}
 
 function main(options) {
-  const argv = process.argv
-  // console.log(argv)
-
-  let today = new Date()
-  let dateExt = '' + today.getFullYear() + ("0" + (today.getMonth() + 1)).slice(-2) + ("0" + today.getDate()).slice(-2)
-
-  // Reading compta and agenda data
-  console.log(options)
-  console.log(options.srcDir)
   let srcDir = options.srcDir
   let dstDir = options.dstDir
 
@@ -103,10 +97,6 @@ function main(options) {
   srcFiles.forEach(file => {
     const srcFile = path.join(srcDir, file);
     const dstFile = path.join(dstDir, file);
-
-    if (path.basename(srcFile) === 'desktop.ini') {
-      return
-    }
 
     let mustCopy = false
     let update = false
@@ -120,7 +110,7 @@ function main(options) {
       } else {
         // file exists on the cloud. Are there the same?
         // console.log('FILE EXISTS: ', dstFile)
-        if (fileSyncCmp.equalFiles(srcFile, dstFile)) {
+        if (equalFiles(srcFile, dstFile)) {
           // same files ==> nothing to do
           // console.log(`Same files: ${srcFile} and ${dstFile}`)
           statistics.identical++
