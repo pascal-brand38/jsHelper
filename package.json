@@ -6,6 +6,7 @@
     "html-entities": "^2.3.3",
     "lodash": "^4.17.21",
     "luxon": "^3.3.0",
+    "mv": "^2.1.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.10.111",
     "xlsx": "^0.18.5",
@@ -21,6 +22,7 @@
     "envoi-contrat": "bin/envoi-contrat.mjs",
     "livre-entrees-sorties": "bin/livre-entrees-sorties.mjs",
     "new-contract": "bin/new-contract.mjs",
+    "rm-duplicates": "bin/rm-duplicates.mjs",
     "save-on-cloud": "bin/save-on-cloud.mjs",
     "thanks": "bin/thanks.mjs"
   },
