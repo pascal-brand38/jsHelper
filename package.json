@@ -21,6 +21,7 @@
     "check-agenda": "bin/check-agenda.mjs",
     "envoi-contrat": "bin/envoi-contrat.mjs",
     "livre-entrees-sorties": "bin/livre-entrees-sorties.mjs",
+    "merge-mbox": "bin/merge-mbox.mjs",
     "new-contract": "bin/new-contract.mjs",
     "rm-duplicates": "bin/rm-duplicates.mjs",
     "save-on-cloud": "bin/save-on-cloud.mjs",
