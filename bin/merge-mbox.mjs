@@ -18,6 +18,8 @@ let statistics = {
   nTotalSize: 0,
   nRemoved: 0,
   nRemovedSize: 0,
+  nTrash: 0,
+  nDuplicated: 0,
 }
 
 async function getArgs(usage) {
@@ -112,14 +114,37 @@ function mboxParse(messagesDic, filename, fResult){
         statistics.nTotal ++
         statistics.nTotalSize += message.length
 
-        const sha1sum = crypto.createHash('sha1').update(message).digest("hex");
-        if (messagesDic[sha1sum] !== undefined) {
+        let remove = false
+        const labelIndex = message.search('X-Gmail-Labels')
+        if (labelIndex !== -1) {
+          const eol = message.slice(labelIndex).search('\n')
+          if (eol === -1) {
+            throw('No end of line at X-Gmail-Labels')
+          }
+          const label = message.slice(labelIndex, eol+labelIndex)
+          if (label.search('Corbeille') !== -1) {
+            remove = true
+            statistics.nTrash ++
+          }
+        }
+
+        if (!remove) {
+          const sha1sum = crypto.createHash('sha1').update(message).digest("hex");
+          if (messagesDic[sha1sum] === undefined) {
+            messagesDic[sha1sum] = true
+          } else {
+            // sha1 is found, so remove as a duplicate
+            remove = true
+            statistics.nDuplicated ++
+          }
+        }
+
+        if (remove) {
           // console.log(`Message already found!   ${messagesDic[sha1sum]}`)
           statistics.nRemoved ++
           statistics.nRemovedSize += message.length
         } else {
           // console.log('                 NEW MESSAGE! +++++++++++++++++++++++++++++++++++++')
-          messagesDic[sha1sum] = true
           fs.writeSync(fResult, message)
         }
         prevIndex = lastIndex
@@ -169,5 +194,7 @@ main(options);
 // console.log(`Removed files can be found in ${path.join(os.tmpdir(), 'rm-duplicate')}`)
 // console.log('Done')
 console.log(`Number of processed emails: ${statistics.nTotal}, that is ${size(statistics.nTotalSize)}`)
-console.log(`Number of duplicated emails: ${statistics.nRemoved}, that is ${size(statistics.nRemovedSize)}`)
+console.log(`Number of removed emails: ${statistics.nRemoved}, that is ${size(statistics.nRemovedSize)}`)
+console.log(`  - number removed because in the trash: ${statistics.nTrash}`)
+console.log(`  - number removed because duplicated:   ${statistics.nDuplicated}`)
 console.log('DONE')
