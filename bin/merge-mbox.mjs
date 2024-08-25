@@ -1,25 +1,17 @@
 #!/usr/bin/env node
 
-/// Copyright (c) Pascal Brand
-/// MIT License
-///
-/// Save files on the cloud
-/// - if it does not exist: mv
-/// - if it exists and not the same: copy with -{date} the previous version, and move
-///
-/// node bin/save-on-cloud.mjs <local-dir> <remote-dir>
-/// node bin/save-on-cloud.mjs /c/Users/pasca/Desktop/save-on-cloud "/c/Users/pasca/Mon Drive/tmp/save-on-cloud"
-
-/*
-https://github.com/ditesh/node-mbox/tree/master
-*/
+// Copyright (c) Pascal Brand
+// MIT License
+//
+// Merge 2 mbox, removing duplicate emails
+// To be used to merge with google takeout
 
 import fs from 'fs'
+import path from 'path'
+import os from 'os'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import crypto from 'node:crypto'
-
-
 
 let statistics = {
   nTotal: 0,
@@ -76,11 +68,6 @@ function mboxParse(messagesDic, filename, fResult){
   let fp = fs.openSync(filename, 'r');
   let bytesRead = 0;
   let nMessage = 0
-
-
-  // let mbox = fs.readFileSync(filename).toString();
-
-  // let resStream = fs.createWriteStream(resultName);
 
   while(bytesRead = fs.readSync(fp, chunkBuffer, 0, chunkSize, offset)) {
     // read a chunk of file of 100MB
@@ -166,11 +153,13 @@ function size(s) {
 
 function main(options) {
   // const messages = mboxParse("C:\\Users\\pasca\\Desktop\\merge-mbox\\20240623-tous les messages.mbox")
+  const tmpFile = path.join(os.tmpdir(), 'merge-mbox.mbox')
   let messagesDic = {}
-  let fResult = fs.openSync(options.resultMbox, 'w');
+  let fResult = fs.openSync(tmpFile, 'w');
   messagesDic = mboxParse(messagesDic, options.lastMbox, fResult)
   messagesDic = mboxParse(messagesDic, options.allMbox, fResult)
   fs.closeSync(fResult)
+  fs.copyFileSync(tmpFile, options.resultMbox)
 }
 
 const options = await getArgs(`merge-mbox --last-mbox=<> --all-mbox=<> --result-mbox=<>`)
