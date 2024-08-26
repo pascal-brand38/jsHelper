@@ -64,7 +64,8 @@ function mboxParse(messagesDic, filename, fResult){
   console.log(`mboxParse(${filename})`)
 
   let offset = 0;
-  let chunkSize = 100 * 1024*1024;    // 100MB for very large email
+  // let chunkSize = 100 * 1024*1024;    // 100MB for very large email
+  let chunkSize = 1 * 1024*1024;    // 100MB for very large email
   let chunkBuffer = Buffer.alloc(chunkSize);
 
   let fp = fs.openSync(filename, 'r');
@@ -88,6 +89,11 @@ function mboxParse(messagesDic, filename, fResult){
         // apart if it is the last chunk
         if (bytesRead === chunkSize) {
           lastIndex = -1          // not the last chunk
+          if (prevIndex === 0) {
+            chunkSize = chunkSize * 2
+            console.log(`Double chunck size: ${size(chunkSize)}`)
+            chunkBuffer = Buffer.alloc(chunkSize);
+          }
           // console.log(`lastIndex = ${lastIndex}`)
         } else {
           lastIndex = bytesRead   // last chunk - end of message is the end of this buffer
@@ -189,10 +195,7 @@ function main(options) {
 
 const options = await getArgs(`merge-mbox --last-mbox=<> --all-mbox=<> --result-mbox=<>`)
 main(options);
-// console.log('-------------------------------')
-// console.log(statistics)
-// console.log(`Removed files can be found in ${path.join(os.tmpdir(), 'rm-duplicate')}`)
-// console.log('Done')
+
 console.log(`Number of processed emails: ${statistics.nTotal}, that is ${size(statistics.nTotalSize)}`)
 console.log(`Number of removed emails: ${statistics.nRemoved}, that is ${size(statistics.nRemovedSize)}`)
 console.log(`  - number removed because in the trash: ${statistics.nTrash}`)
