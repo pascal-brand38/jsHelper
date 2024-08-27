@@ -36,10 +36,15 @@ already archived:
 * and if already archived, and is the same, then nothing
   is done!
 
+Using options ```-remove-moved-files```, files that are in
+dstDir, and not in srcDir, but which have a copy somewhere in
+srcDir, are removed as that means they have been moved.
+
 ```bash
 save-on-cloud
-  --src-dir=google-drive
-  --dst-dir=archive-dir
+  --src-dir=google-drive \
+  --dst-dir=archive-dir  \
+  --remove-moved-files
 ```
 
 ## rm-duplicates
