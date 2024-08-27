@@ -4,11 +4,12 @@
 import fs from 'fs'
 import child_process from 'child_process'
 import pdfjsdist from '../extend/pdfjs-dist.mjs'
+import crypto from 'node:crypto'
+import fileSyncCmp from 'file-sync-cmp'
 
 // https://nodejs.org/api/readline.html
 import * as readline from 'readline';
 import { stdin as input, stdout as output } from 'process';
-const rl = readline.createInterface({ input, output });
 
 function warning(s) {
   console.log('WARNING');
@@ -28,6 +29,7 @@ function error(s) {
 
 const question = {
   question: async (text) =>  await new Promise(resolve => {
+    const rl = readline.createInterface({ input, output })
     rl.question(`${text}`, resolve)
   })
 }
@@ -89,12 +91,61 @@ const utils = {
   },
   error,
   warning,
+  sleep: (seconds) => setInterval(() => {}, seconds),
+}
+
+const sha1 = {
+  getSha1: (file) => {
+    let fp = fs.openSync(file, 'r');
+    let chunkSize = 1 * 1024*1024
+    let chunkBuffer = Buffer.alloc(chunkSize);
+    let bytesRead = 0;
+    let offset = 0
+    let sha1Struct = crypto.createHash('sha1')
+
+    while(bytesRead = fs.readSync(fp, chunkBuffer, 0, chunkSize, offset)) {
+      const data = chunkBuffer.subarray(0, bytesRead)
+      sha1Struct.update(data)
+      offset += bytesRead
+    }
+
+    fs.closeSync(fp)
+    return sha1Struct.digest("hex");
+  },
+
+  initSha1List: () => { return {} },
+
+  updateSha1List: (sha1List, sha1sum, file) => {
+    if (sha1List[sha1sum] === undefined) {
+      sha1List[sha1sum] = [ ]
+    } else {
+      // check files are the same
+      if (!fileSyncCmp.equalFiles(file, sha1List[sha1sum][0])) {
+        throw(`Different files, but same sha1: ${file} vs ${sha1List[sha1sum][0]}`)
+      }
+    }
+    sha1List[sha1sum].push(file)
+    return sha1List
+  },
+
+  isInSha1List: (sha1List, file) => {
+    const sha1sum = sha1.getSha1(file)
+    if (sha1List[sha1sum] === undefined) {
+      return undefined
+    } else {
+      if (!fileSyncCmp.equalFiles(file, sha1List[sha1sum][0])) {
+        throw(`Different files, but same sha1: ${file} vs ${sha1List[sha1sum][0]}`)
+      }
+      return sha1List[sha1sum][0]
+    }
+  },
 }
 
 export default {
   question,
   thunderbird,
   utils,
+  sha1,
 
   warning,
   error,
