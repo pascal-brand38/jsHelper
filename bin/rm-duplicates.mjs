@@ -23,7 +23,6 @@ import mv from 'mv'
 import fileSyncCmp from 'file-sync-cmp'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
-import crypto from 'node:crypto'
 import helperJs from '../helpers/helperJs.mjs'
 
 let statistics = {
@@ -112,7 +111,7 @@ function getHashes(dir, options) {
   let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, })
 
   console.log(`    --- Computes Hashes of ${dir}---`)
-  let hashes = {}
+  let hashes = helperJs.sha1.initSha1List()
   files.forEach((file, index) => {
     try {
       if ((index % _step) === 0) {
@@ -123,13 +122,9 @@ function getHashes(dir, options) {
       if (options.nameonly) {
         sha1sum = path.basename(file)
       } else {
-        const text = fs.readFileSync(fullname);
-        sha1sum = crypto.createHash('sha1').update(text).digest("hex");
+        sha1sum = helperJs.sha1.getSha1(fullname)
       }
-      if (hashes[sha1sum] === undefined) {
-        hashes[sha1sum] = [ ]
-      }
-      hashes[sha1sum].push(fullname)
+      helperJs.sha1.updateSha1List(hashes, sha1sum, fullname, false)
     } catch (e) {
       console.log(e)
     }
