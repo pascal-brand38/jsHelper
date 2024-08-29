@@ -60,29 +60,13 @@ function getArgs(usage) {
     // })
     .argv;
 
-  options.excludes = [ 'tmp', '.tmp.drivedownload', 'desktop.ini', 'Thumbs.db', _dirDated ]
-  console.log(`getArgs complete`)
+  options.walkDirOptions = {
+    excludes: [ 'tmp', '.tmp.drivedownload', 'desktop.ini', 'Thumbs.db', _dirDated ],
+    stepVerbose: 1000,
+  }
   return options
 }
 
-
-
-/// get the list of all files in rootDir, from subDir recursiveley
-function walkDir(options, srcFiles, rootDir, subDir) {
-  const thisDir = path.join(rootDir, subDir);
-  fs.readdirSync(thisDir).forEach(file => {
-    if (options.excludes.includes(file)) {
-      return
-    }
-    const absolute = path.join(thisDir, file);
-    const sub = path.join(subDir, file)
-    if (fs.statSync(absolute).isDirectory()) {
-      walkDir(options, srcFiles, rootDir, sub);
-    } else {
-      srcFiles.push(sub);
-    }
-  });
-}
 
 function equalFiles(file1, file2) {
   return fileSyncCmp.equalFiles(file1, file2)
@@ -92,11 +76,10 @@ function equalFiles(file1, file2) {
 function removeMovedFiles(options, sha1List) {
   let srcDir = options.srcDir
   let dstDir = options.dstDir
-  let dstFiles = []
 
   console.log(`--- Remove moved files step`)
   console.log(`------ Scan dir ${dstDir}`)
-  walkDir(options, dstFiles, dstDir, '')
+  let dstFiles = helperJs.utils.walkDir(dstDir, options.walkDirOptions)
 
   console.log(`------ Remove moved files from ${dstDir}`)
   // console.log(dstFiles)
@@ -127,8 +110,7 @@ function main(options) {
   let sha1List = helperJs.sha1.initSha1List()
 
   console.log(`------ Scan dir ${srcDir}`)
-  let srcFiles = []
-  walkDir(options, srcFiles, srcDir, '')
+  let srcFiles = helperJs.utils.walkDir(srcDir, options.walkDirOptions)
   // console.log(srcFiles)
 
   console.log(`------ Save non-existing files`)

@@ -2,6 +2,7 @@
 /// MIT License
 
 import fs from 'fs'
+import path from 'path'
 import child_process from 'child_process'
 import pdfjsdist from '../extend/pdfjs-dist.mjs'
 import crypto from 'node:crypto'
@@ -83,6 +84,56 @@ const thunderbird = {
   },
 }
 
+/// get the list of all files in rootDir, from subDir recursiveley
+function _walkDir(rootDir, options, files, subDir) {
+  const thisDir = path.join(rootDir, subDir);
+  fs.readdirSync(thisDir).forEach(file => {
+    if (options.excludes.includes(file)) {
+      return
+    }
+    const absolute = path.join(thisDir, file);
+    const sub = path.join(subDir, file)
+    if (fs.statSync(absolute).isDirectory()) {
+      _walkDir(rootDir, options, files, sub);
+    } else {
+      files.push(sub);
+      if ((options.stepVerbose > 0) && ((files.length % options.stepVerbose) === 0)) {
+        console.log(`      ${files.length} files found`)
+      }
+    }
+  });
+
+  if ((subDir === '.') && (options.stepVerbose > 0)) {
+    console.log(`      ${files.length} files found`)
+  }
+
+}
+
+function _createOptions(options, defaultOptions) {
+  let currentOptions = {}
+  if (options === undefined) {
+    currentOptions = defaultOptions
+  } else {
+    Object.keys(defaultOptions).forEach(o => {
+      currentOptions[o] = (options[o] === undefined) ? defaultOptions[o] : options[o]
+    })
+  }
+  return currentOptions
+}
+
+function walkDir(rootDir, options) {
+  // create options
+  const defaultOptions = {
+    excludes: [],       // list of files / directories to exclude from the list
+    stepVerbose: -1,    // no verbose
+  }
+  const currentOptions = _createOptions(options, defaultOptions)
+
+  let files = []
+  _walkDir(rootDir, currentOptions, files, '.')
+  return files
+}
+
 const utils = {
   getImmediateSubdirs: (dir) => {
     return fs.readdirSync(dir, { withFileTypes: true })
@@ -92,6 +143,7 @@ const utils = {
   error,
   warning,
   sleep: (seconds) => setInterval(() => {}, seconds),
+  walkDir,
 }
 
 const sha1 = {

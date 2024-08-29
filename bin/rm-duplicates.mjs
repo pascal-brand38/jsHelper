@@ -24,6 +24,7 @@ import fileSyncCmp from 'file-sync-cmp'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import crypto from 'node:crypto'
+import helperJs from '../helpers/helperJs.mjs'
 
 let statistics = {
   nTotal: 0,
@@ -99,29 +100,6 @@ function rmEmptyDir(options, rootDir, subDir) {
   }
 }
 
-/// get the list of all files in rootDir, from subDir recursiveley
-function walkDir(options, srcFiles, rootDir, subDir) {
-  // if (subDir === '') {
-  //   console.log('--- walkDir')
-  // }
-  // console.log(`walkdir ${subDir}`)
-  const thisDir = path.join(rootDir, subDir);
-  fs.readdirSync(thisDir).forEach(file => {
-    // if (options.excludes.includes(file)) {
-    //   return
-    // }
-    const absolute = path.join(thisDir, file);
-    const sub = path.join(subDir, file)
-    if (fs.statSync(absolute).isDirectory()) {
-      walkDir(options, srcFiles, rootDir, sub);
-    } else {
-      srcFiles.push(sub);
-      if ((srcFiles.length % _step) === 0) {
-        console.log(`      ${srcFiles.length} files found`)
-      }
-    }
-  });
-}
 
 function equalFiles(file1, file2) {
   return fileSyncCmp.equalFiles(file1, file2)
@@ -131,8 +109,7 @@ function getHashes(dir, options) {
   console.log(`--- getHashes of ${dir}---`)
 
   console.log(`    --- Get files list of ${dir}---`)
-  let files = []
-  walkDir(options, files, dir, '')
+  let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, })
 
   console.log(`    --- Computes Hashes of ${dir}---`)
   let hashes = {}
