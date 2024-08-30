@@ -10,6 +10,7 @@
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.10.111",
     "xlsx": "^0.18.5",
+    "xml-js": "^1.6.11",
     "yargs": "^17.6.2"
   },
   "name": "jshelper",
@@ -22,6 +23,7 @@
     "envoi-contrat": "bin/envoi-contrat.mjs",
     "livre-entrees-sorties": "bin/livre-entrees-sorties.mjs",
     "merge-mbox": "bin/merge-mbox.mjs",
+    "merge-sms-backup": "bin/merge-sms-backup.mjs",
     "new-contract": "bin/new-contract.mjs",
     "rm-duplicates": "bin/rm-duplicates.mjs",
     "save-on-cloud": "bin/save-on-cloud.mjs",

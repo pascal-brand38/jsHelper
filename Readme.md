@@ -22,6 +22,20 @@ merge-mbox \
   --result-mbox=all-time-emails.mbox
 ```
 
+## merge-sms-backup.mjs
+
+Utility used when using "SMS Backup & Restore" application.
+Instead of resulting in duplicate messages in successive
+backup, merging the backup by removing the duplicates is
+now possible.
+
+```bash
+merge-mbox \
+  --last-xml=latest-backup.xml \
+  --all-xml=all-backup.xml \
+  --result-xml=all-backup.xml
+```
+
 ## save-on-cloud
 
 Utility used when archives of google drive are stored.
