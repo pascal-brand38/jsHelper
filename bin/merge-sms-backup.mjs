@@ -63,31 +63,66 @@ function getJson(filename) {
   var xml = fs.readFileSync(filename)
   console.log('-- Convert to json')
   const json = convert.xml2js(xml,  {compact: true})
-  console.log(`-- #sms: ${json['smses']['sms'].length} `)
-  console.log(`-- #mms: ${json['smses']['mms'].length} `)
-  return json
+
+  const isCalls = (json['calls'] !== undefined)
+  const isSms = (json['smses'] !== undefined)
+
+  if (!isCalls && !isSms) {
+    throw(`Neither calls nor sms backup`)
+  }
+  if (isCalls && isSms) {
+    throw(`Calls AND sms backup`)
+  }
+
+  if (isSms) {
+    console.log(`-- #sms: ${json['smses']['sms'].length} `)
+    console.log(`-- #mms: ${json['smses']['mms'].length} `)
+  } else {
+    fs.writeFileSync('C:\\Users\\pasca\\Desktop\\save\\res.json', JSON.stringify(json, null, "  "))
+
+    console.log(`-- #calls: ${json['calls']['call'].length} `)
+  }
+
+  return { json, isSms }
 }
 
 
+//  html encode, from https://stackoverflow.com/questions/18749591/encode-html-entities-in-javascript
+// const encodedStr = rawStr => rawStr.replace(/[\u00A0-\u9999<>\&]/g, i => '&#'+i.charCodeAt(0)+';')
+const encodedStr = rawStr => rawStr.replace(/[\&\n]/g, i => '&#'+i.charCodeAt(0)+';')
 
 
 const options = await getArgs(`merge-sms-backup --last-xml=<> --all-xml=<> --result-xml=<>`)
 
-const jsonNew = getJson(options.lastXml)
-const jsonOld = getJson(options.allXml)
+const { json: jsonNew, isSms: isSmsNew } = getJson(options.lastXml)
+const { json: jsonOld, isSms: isSmsOld } = getJson(options.allXml)
+if (isSmsNew !== isSmsOld) {
+  throw('Trying to merge sms and calls')
+}
 
-console.log('Merge sms')
-merge(jsonNew['smses']['sms'], jsonOld['smses']['sms'])
-console.log(`-- #sms: ${jsonNew['smses']['sms'].length} `)
+if (isSmsNew) {
+  console.log('Merge sms')
+  merge(jsonNew['smses']['sms'], jsonOld['smses']['sms'])
+  console.log(`-- #sms: ${jsonNew['smses']['sms'].length} `)
 
-console.log('Merge mms')
-merge(jsonNew['smses']['mms'], jsonOld['smses']['mms'])
-console.log(`-- #mms: ${jsonNew['smses']['mms'].length} `)
+  console.log('Merge mms')
+  merge(jsonNew['smses']['mms'], jsonOld['smses']['mms'])
+  console.log(`-- #mms: ${jsonNew['smses']['mms'].length} `)
 
-jsonNew['_comment'].push('Merge using merge-sms-backup from https://github.com/pascal-brand38/jsHelper')
+  jsonNew['smses']['sms'].forEach(sms => {
+    // sms['_attributes']['body'] = sms['_attributes']['body'].replaceAll('&', ' et ')
+    sms['_attributes']['body'] = encodedStr(sms['_attributes']['body'])
+  })
+} else {
+  console.log('Merge calls')
+  merge(jsonNew['calls']['call'], jsonOld['calls']['call'])
+  console.log(`-- #calls: ${jsonNew['calls']['call'].length} `)
+}
+// fs.writeFileSync('C:\\Users\\pasca\\Desktop\\save\\res.json', JSON.stringify(jsonNew, null, "  "))
+
+jsonNew['_comment'].push('\nCreated using merge-sms-backup from\n\t\t\thttps://github.com/pascal-brand38/jsHelper\n')
 console.log('Convert to xml')
-// fs.writeFileSync('C:\\Users\\pasca\\Desktop\\save\\res.json', json)
-const resxml = convert.js2xml(jsonNew, {compact: true, ignoreComment: false, spaces: 4})
+const resxml = convert.js2xml(jsonNew, {compact: true, ignoreComment: false, spaces: 2})
 console.log(`Write ${options.resultXml}`)
 fs.writeFileSync(options.resultXml, resxml)
 
