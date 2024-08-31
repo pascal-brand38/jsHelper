@@ -77,9 +77,8 @@ function getJson(filename) {
   if (isSms) {
     console.log(`-- #sms: ${json['smses']['sms'].length} `)
     console.log(`-- #mms: ${json['smses']['mms'].length} `)
+    // fs.writeFileSync('res.json', JSON.stringify(json, null, "  "))
   } else {
-    fs.writeFileSync('C:\\Users\\pasca\\Desktop\\save\\res.json', JSON.stringify(json, null, "  "))
-
     console.log(`-- #calls: ${json['calls']['call'].length} `)
   }
 
@@ -88,8 +87,8 @@ function getJson(filename) {
 
 
 //  html encode, from https://stackoverflow.com/questions/18749591/encode-html-entities-in-javascript
-// const encodedStr = rawStr => rawStr.replace(/[\u00A0-\u9999<>\&]/g, i => '&#'+i.charCodeAt(0)+';')
-const encodedStr = rawStr => rawStr.replace(/[\&\n]/g, i => '&#'+i.charCodeAt(0)+';')
+const encodedStr = rawStr => rawStr.replace(/[\u00A0-\u9999<>\&\n\r]/g, i => '&#'+i.charCodeAt(0)+';')
+//const encodedStr = rawStr => rawStr.replace(/[\&\n\r]/g, i => '&#'+i.charCodeAt(0)+';')
 
 
 const options = await getArgs(`merge-sms-backup --last-xml=<> --all-xml=<> --result-xml=<>`)
@@ -101,17 +100,22 @@ if (isSmsNew !== isSmsOld) {
 }
 
 if (isSmsNew) {
-  console.log('Merge sms')
+  console.log('Merge')
   merge(jsonNew['smses']['sms'], jsonOld['smses']['sms'])
   console.log(`-- #sms: ${jsonNew['smses']['sms'].length} `)
 
-  console.log('Merge mms')
   merge(jsonNew['smses']['mms'], jsonOld['smses']['mms'])
   console.log(`-- #mms: ${jsonNew['smses']['mms'].length} `)
 
   jsonNew['smses']['sms'].forEach(sms => {
-    // sms['_attributes']['body'] = sms['_attributes']['body'].replaceAll('&', ' et ')
     sms['_attributes']['body'] = encodedStr(sms['_attributes']['body'])
+  })
+
+  jsonNew['smses']['mms'].forEach(mms => {
+    mms['parts']['part'].forEach(part => {
+      part['_attributes']['text'] = encodedStr(part['_attributes']['text'])
+      part['_attributes']['cid'] = encodedStr(part['_attributes']['cid'])
+    })
   })
 } else {
   console.log('Merge calls')
@@ -120,9 +124,10 @@ if (isSmsNew) {
 }
 // fs.writeFileSync('C:\\Users\\pasca\\Desktop\\save\\res.json', JSON.stringify(jsonNew, null, "  "))
 
-jsonNew['_comment'].push('\nCreated using merge-sms-backup from\n\t\t\thttps://github.com/pascal-brand38/jsHelper\n')
+// jsonNew['_comment'].push('\nCreated using merge-sms-backup from\n\t\t\thttps://github.com/pascal-brand38/jsHelper\n')
 console.log('Convert to xml')
-const resxml = convert.js2xml(jsonNew, {compact: true, ignoreComment: false, spaces: 2})
+let resxml = convert.js2xml(jsonNew, {compact: true, ignoreComment: false, spaces: 2})
+
 console.log(`Write ${options.resultXml}`)
 fs.writeFileSync(options.resultXml, resxml)
 
