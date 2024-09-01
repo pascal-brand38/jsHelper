@@ -4,6 +4,8 @@
     "alpine": "^0.2.1",
     "file-sync-cmp": "^0.1.1",
     "html-entities": "^2.3.3",
+    "jsdom": "^25.0.0",
+    "jsdom-global": "^3.0.2",
     "lodash": "^4.17.21",
     "luxon": "^3.3.0",
     "mv": "^2.1.1",

@@ -36,6 +36,26 @@ merge-mbox \
   --result-xml=all-backup.xml
 ```
 
+## sms-backup-viewer.mjs
+Utility used when using "SMS Backup & Restore" application from SyncTech,
+in order to render the backup.
+
+Orginally, https://synctech.com.au/view-backup can be used.
+
+An other possibility is to used
+https://github.com/JumiDeluxe/SMS-XML-backup-reader
+
+Both solutions require to click on a webpage to select the
+backup file to read and view.
+
+```sms-backup-viewer.mjs``` is a nodejs application that
+creates an html page with sms/mms messages, and then open chrome.
+So no user intercation is required.
+
+```bash
+sms-backup-viewer all-backup.xml
+```
+
 ## save-on-cloud
 
 Utility used when archives of google drive are stored.
