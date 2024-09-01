@@ -22,7 +22,7 @@ merge-mbox \
   --result-mbox=all-time-emails.mbox
 ```
 
-## merge-sms-backup.mjs
+## sms-backup-merge.mjs
 
 Utility used when using "SMS Backup & Restore" application.
 Instead of resulting in duplicate messages in successive

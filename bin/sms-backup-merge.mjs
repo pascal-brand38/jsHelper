@@ -91,7 +91,7 @@ const encodedStr = rawStr => rawStr.replace(/[\u00A0-\u9999<>\&\n\r]/g, i => '&#
 //const encodedStr = rawStr => rawStr.replace(/[\&\n\r]/g, i => '&#'+i.charCodeAt(0)+';')
 
 
-const options = await getArgs(`merge-sms-backup --last-xml=<> --all-xml=<> --result-xml=<>`)
+const options = await getArgs(`sms-backup-merge --last-xml=<> --all-xml=<> --result-xml=<>`)
 
 const { json: jsonNew, isSms: isSmsNew } = getJson(options.lastXml)
 const { json: jsonOld, isSms: isSmsOld } = getJson(options.allXml)
@@ -124,7 +124,7 @@ if (isSmsNew) {
 }
 // fs.writeFileSync('C:\\Users\\pasca\\Desktop\\save\\res.json', JSON.stringify(jsonNew, null, "  "))
 
-// jsonNew['_comment'].push('\nCreated using merge-sms-backup from\n\t\t\thttps://github.com/pascal-brand38/jsHelper\n')
+// jsonNew['_comment'].push('\nCreated using sms-backup-merge from\n\t\t\thttps://github.com/pascal-brand38/jsHelper\n')
 console.log('Convert to xml')
 let resxml = convert.js2xml(jsonNew, {compact: true, ignoreComment: false, spaces: 2})
 
