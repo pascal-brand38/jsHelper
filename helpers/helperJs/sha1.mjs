@@ -47,7 +47,7 @@ function updateSha1List(sha1List, sha1sum, filename, checkCollision=true) {
 // return true if a filename sha1 is in sha1List
 // in case of collision, and if the file contents differ, an exception is thrown
 function isInSha1List(sha1List, filename) {
-  const sha1sum = sha1.getSha1(filename)
+  const sha1sum = getSha1(filename)
   if (sha1List[sha1sum] === undefined) {
     return undefined
   } else {
