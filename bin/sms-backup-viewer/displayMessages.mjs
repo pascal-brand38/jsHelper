@@ -1,61 +1,43 @@
+// Copyright (c) Pascal Brand
+// MIT License
+//
+// Initial version from https://github.com/JumiDeluxe/SMS-XML-backup-reader
+
 import globalJsdom from 'jsdom-global'
 globalJsdom()
-let DOMParser = window.DOMParser
 
 import SMS from './SMS.mjs'
 import MMS from './MMS.mjs'
 
-let input, file, fr, doc, parser;
-let loaded = false; //`loaded` prevents spamming site with same file on multiclick
-
-function init() {
-  if (typeof (DOMParser) == 'undefined') {
-    console.log('DOMParser')
-    DOMParser = function () { }
-      DOMParser.prototype.parseFromString = function (str, contentType) {
-          if (typeof (ActiveXObject) != 'undefined') {
-            console.log('ActiveXObject')
-              let xmldata = new ActiveXObject('MSXML.DomDocument');
-              xmldata.async = false;
-              xmldata.loadXML(str);
-              return xmldata;
-          } else if (typeof (XMLHttpRequest) != 'undefined') {
-              let xmldata = new XMLHttpRequest;
-              if (!contentType) {
-                  contentType = 'application/xml';
-              }
-              xmldata.open('GET', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(str), false);
-              if (xmldata.overrideMimeType) {
-                  xmldata.overrideMimeType(contentType);
-              }
-              xmldata.send(null);
-              return xmldata.responseXML;
-          }
-      }
-  }
-
-  let xmlString = "<root><thing attr='val'/></root>";
-  parser = new DOMParser();
-  doc = parser.parseFromString(xmlString, "text/xml");
-}
-
 function showMessages(xmlText) {
-  console.log('showMessage')
-    doc = parser.parseFromString(xmlText, "text/xml");
+  let DOMParser = window.DOMParser
+  let parser = new DOMParser();
+
+  console.log('--- Parse the XML structure')
+  let doc = parser.parseFromString(xmlText, "text/xml");
 
     let currentElement = doc['childNodes'][2]['firstElementChild'];
     let messages = [];
+    let nSms = 0
+    let nMms = 0
 
+    console.log('--- Reading all messages sms/mms')
     while (currentElement != null) {
+      if ((messages.length % 200) === 0) {
+        console.log(`--- --- #${messages.length} found`)
+      }
+
         let messageType = currentElement.tagName;
 
         switch(messageType) {
             case "sms":
+                nSms++
                 let sms = new SMS(currentElement);
                 messages.push(sms.getMessage());
                 break;
 
             case "mms":
+                nMms++
                 let mms = new MMS(currentElement);
                 messages.push(mms.getMessage());
                 break;
@@ -63,6 +45,8 @@ function showMessages(xmlText) {
 
         currentElement = currentElement['nextElementSibling'];
     }
+    console.log(`--- --- #sms: ${nSms}`)
+    console.log(`--- --- #mms: ${nMms}`)
 
     messages.sort(function(x, y){
         let add0 = x[0]["nodeValue"];
@@ -74,8 +58,12 @@ function showMessages(xmlText) {
         return x[1]["nodeValue"] - y[1]["nodeValue"];
     });
 
+    console.log('--- Generating the DOM')
     let container = document.getElementById("container");
-    messages.forEach(function(message) {
+    messages.forEach(function(message, index) {
+      if ((index % 200) === 0) {
+        console.log(`--- --- #${index} / #${messages.length}`)
+      }
         let hr = document.createElement("hr");
         document.getElementById("container").appendChild(hr);
 
@@ -84,6 +72,5 @@ function showMessages(xmlText) {
 }
 
 export default {
-  init,
   showMessages,
 }

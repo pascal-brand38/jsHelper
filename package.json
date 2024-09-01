@@ -26,6 +26,7 @@
     "livre-entrees-sorties": "bin/livre-entrees-sorties.mjs",
     "merge-mbox": "bin/merge-mbox.mjs",
     "sms-backup-merge": "bin/sms-backup-merge.mjs",
+    "sms-backup-viewer": "bin/sms-backup-viewer.mjs",
     "new-contract": "bin/new-contract.mjs",
     "rm-duplicates": "bin/rm-duplicates.mjs",
     "save-on-cloud": "bin/save-on-cloud.mjs",

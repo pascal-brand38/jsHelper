@@ -1,3 +1,8 @@
+// Copyright (c) Pascal Brand
+// MIT License
+//
+// Initial version from https://github.com/JumiDeluxe/SMS-XML-backup-reader
+
 class Message {
     constructor (message) {
         this.attributes = message["attributes"];

@@ -1,3 +1,8 @@
+// Copyright (c) Pascal Brand
+// MIT License
+//
+// Initial version from https://github.com/JumiDeluxe/SMS-XML-backup-reader
+
 import SMS from './SMS.mjs'
 
 class MMS extends SMS {

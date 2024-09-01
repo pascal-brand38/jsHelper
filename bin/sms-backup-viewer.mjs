@@ -9,15 +9,20 @@ import os from  'os'
 import child_process from 'child_process'
 import globalJsdom from 'jsdom-global'
 import displayMessages from './sms-backup-viewer/displayMessages.mjs'
-globalJsdom()
+import { exit } from 'process'
 
-document.body.innerHTML = '<div id="container"></div>'
-let DOMParser = window.DOMParser
+if (process.argv.length !== 3) {
+  console.log('Usage: sms-backup-viewer backup.xml')
+  exit(-1)
+}
 
-displayMessages.init()
+globalJsdom()   // declaration of document, windows,... variables in nodejs
 
-console.log(process.argv)
+document.body.innerHTML = '<div id="container"></div>'    // container is the div that will contain all messages
+
+console.log(`Read file ${process.argv[2]}`)
 const xmlText = fs.readFileSync(process.argv[2])
+console.log('Generating the html page')
 displayMessages.showMessages(xmlText)
 
 var s = new window.XMLSerializer();
@@ -27,7 +32,6 @@ var str = s.serializeToString(document);
 const indexFile = path.join(os.tmpdir(), 'index.html')
 console.log(`Writting ${indexFile}`)
 fs.writeFileSync(indexFile, str)
-child_process.exec(`explorer ${indexFile}`)
+child_process.exec(`explorer ${indexFile}`)   // open chrome or firefox or whatever
 
-// console.log(window.XMLSerializer(document))
 console.log('DONE')
