@@ -4,6 +4,7 @@
 /// MIT License
 
 import helperCattery from '../helpers/helperCattery.mjs'
+import helperJs from '../helpers/helperJs.mjs'
 
 
 async function main() {
@@ -24,4 +25,4 @@ try {
   console.log(e)
   console.log('Error is catched')
 }
-helperJs.utils.sleep(60*60)   // sleep for 1 hour, so that the console does not disappear when ran from Excel
+await helperJs.utils.sleep(60*60)   // sleep for 1 hour, so that the console does not disappear when ran from Excel

@@ -326,4 +326,4 @@ try {
 } catch (e) {
   console.log(e)
 }
-helperJs.utils.sleep(60*60)   // sleep for 1 hour, so that the console does not disappear when ran from Excel
+await helperJs.utils.sleep(60*60)   // sleep for 1 hour, so that the console does not disappear when ran from Excel

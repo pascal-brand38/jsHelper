@@ -141,7 +141,7 @@ const utils = {
   },
   error,
   warning,
-  sleep: (seconds) => setInterval(() => {}, seconds),
+  sleep: async s => new Promise(r => setTimeout(r, s * 1000)),
   walkDir,
 }
 
