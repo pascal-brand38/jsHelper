@@ -25,36 +25,6 @@ async function _readLines(filename) {
   return lines
 }
 
-async function _read(logFilename) {
-  // Apache logs: https://httpd.apache.org/docs/current/mod/mod_log_config.html
-  // On
-  //    '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"'
-  // returns:
-  //   {
-  //     originalLine: '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"',
-  //     remoteHost: '78.153.241.205',
-  //     logname: 'www.example.com',
-  //     remoteUser: '-',
-  //     time: '27/Dec/2021:05:55:01 +0100',
-  //     request: 'GET /index.html HTTP/1.1',
-  //     status: '200',
-  //     sizeCLF: '3092',
-  //     'RequestHeader Referer': '-',
-  //     'RequestHeader User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
-  //   }
-  var alpine = new Alpine('%h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-Agent}i"');
-
-  // var logs = alpine.parseLine('78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"');
-  // console.log(logs);
-
-  const lines = await _readLines(logFilename)
-  let logs = []
-  for (const line of lines) {
-    logs.push(alpine.parseLine(line))
-  }
-  return logs
-}
-
 async function _readDbip(dbIpFilename) {
   try {
     if (dbIpFilename === undefined) {
@@ -87,8 +57,48 @@ class ApacheData {
     this.todayStr = DateTime.fromNowStartOfDay().toFormat('d/M/y')
   }
 
-  async read(logFilename, dbIpFilename) {
-    this.logs = await _read(logFilename)
+  /**
+   * Read all log files, and populates this->logs
+   * @param {Array.<string>} logFilenames
+   */
+  async readLogs(logFilenames) {
+    // Apache logs: https://httpd.apache.org/docs/current/mod/mod_log_config.html
+    // On
+    //    '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"'
+    // returns:
+    //   {
+    //     originalLine: '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"',
+    //     remoteHost: '78.153.241.205',
+    //     logname: 'www.example.com',
+    //     remoteUser: '-',
+    //     time: '27/Dec/2021:05:55:01 +0100',
+    //     request: 'GET /index.html HTTP/1.1',
+    //     status: '200',
+    //     sizeCLF: '3092',
+    //     'RequestHeader Referer': '-',
+    //     'RequestHeader User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
+    //   }
+    var alpine = new Alpine('%h %l %u %t "%r" %>s %b "%{Referer}i" "%{User-Agent}i"');
+
+    // var logs = alpine.parseLine('78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"');
+    // console.log(logs);
+
+    let lines = []
+    logFilenames.forEach(logFilename => {
+      const log = fs.readFileSync(logFilename).toString()
+      lines = lines.concat(log.split('\n'))
+    })
+
+    this.logs = []
+    for (const line of lines) {
+      if (line.length !== 0) {
+        this.logs.push(alpine.parseLine(line))
+      }
+    }
+  }
+
+
+  async readDbIp(dbIpFilename) {
     this.dbip = await _readDbip(dbIpFilename)
     this._setuserIps()
 

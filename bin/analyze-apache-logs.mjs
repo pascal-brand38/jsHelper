@@ -30,13 +30,7 @@ function getArgs(argv) {
     .usage('DESCRIPTION TODO')
     .help('help').alias('help', 'h')
     .version('version', '1.0').alias('version', 'V')
-    .options({
-      "log-file": {
-        description: "TODO",
-        requiresArg: true,
-        required: true,
-      },
-    })
+    .demandCommand(1)   // at least 1 arg without options, which is the log
     .argv;
 
   setDbIpFilename(options)
@@ -46,10 +40,11 @@ function getArgs(argv) {
 
 async function main() {
   const options = getArgs(process.argv)
-  // console.log(options)
+  console.log(options)
 
   const apacheData = new ApacheData(options)
-  await apacheData.read(options.logFile, options.dbIpFilename)
+  apacheData.readLogs(options['_'])
+  await apacheData.readDbIp(options.dbIpFilename)
 
   // await local.spamDetection(apacheData)
   // await stopforumspam.spamDetection(apacheData)
