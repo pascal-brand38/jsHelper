@@ -75,7 +75,7 @@ async function spamDetection(apacheData) {
       await fetch(url + params, { headers: headers })
         .then(response =>response.json())
         .then(rawDatas => {
-          console.log(rawDatas)
+          // console.log(rawDatas)
               if (rawDatas.data.abuseConfidenceScore > 0) {  // only the ones that show a spam
                 spamIps.push(apacheData.spamDetected(ip, 'detected', 'abuseipdb'))
               } else {
@@ -86,7 +86,7 @@ async function spamDetection(apacheData) {
       }
   }))
 
-  console.log(spamIps)
+  // console.log(spamIps)
   apacheData.filter(spamIps)
 }
 

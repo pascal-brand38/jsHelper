@@ -51,13 +51,13 @@ async function main() {
   const apacheData = new ApacheData(options)
   await apacheData.read(options.logFile, options.dbIpFilename)
 
-  await local.spamDetection(apacheData)
-  await stopforumspam.spamDetection(apacheData)
-  await abuseipdb.spamDetection(apacheData)
+  // await local.spamDetection(apacheData)
+  // await stopforumspam.spamDetection(apacheData)
+  // await abuseipdb.spamDetection(apacheData)
   // await ipqualityscore.spamDetection(apacheData)   NOT ACCURATE because of 37.66.21.18
 
   apacheData.print()
-  apacheData.saveDbip(options.dbIpFilename)
+  // apacheData.saveDbip(options.dbIpFilename)
 
   console.log('Done')
 }

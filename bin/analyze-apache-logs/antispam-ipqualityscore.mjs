@@ -55,7 +55,7 @@ async function spamDetection(apacheData) {
     }
   }))
 
-  console.log(spamIps)
+  // console.log(spamIps)
   apacheData.filter(spamIps)
 }
 

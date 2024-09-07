@@ -1,7 +1,7 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
-import Alpine from 'alpine'
+import Alpine from 'alpine'   // Apache Log Parser
 import fs from 'fs'
 import { createReadStream } from 'fs'
 import { createInterface } from 'readline'
@@ -70,8 +70,18 @@ async function _readDbip(dbIpFilename) {
 
 class ApacheData {
   constructor() {
-    this.logs = undefined
-    this.uniqueIps = undefined    // list of IPs considered as OK
+    this.logs = []
+
+    /**
+     * list of IPs considered as coming from real users (not spam)
+     * @type {Array.<string>}
+     */
+    this.userIps = []    /** {Array.<string>} */
+
+    /**
+     * list of IPs considered as spams (bots, phishing,...)
+     * @type {Array.<string>}
+     */
     this.spamIps = []             // list of IPs considered as spams
     this.dbip = undefined
     this.todayStr = DateTime.fromNowStartOfDay().toFormat('d/M/y')
@@ -80,20 +90,20 @@ class ApacheData {
   async read(logFilename, dbIpFilename) {
     this.logs = await _read(logFilename)
     this.dbip = await _readDbip(dbIpFilename)
-    this._setUniqueIps()
+    this._setuserIps()
 
     // check spams in db
-    let spamIps = []
-    this.uniqueIps.forEach(ip => {
+    let newSpamIps = []
+    this.userIps.forEach(ip => {
       if (this.dbip[ip]) {
         const antispams =  Object.keys(this.dbip[ip])
         if (antispams.some(s => this.dbip[ip][s].isSpam)) {
-          spamIps.push({ ip: ip, isSpam: true })
+          newSpamIps.push(ip)
         }
       }
     });
 
-    this.filter(spamIps)
+    this.addSpamIps(newSpamIps)
   }
 
   async saveDbip(dbIpFilename) {
@@ -120,8 +130,7 @@ class ApacheData {
   _spamInformation(ip, isSpam, antispam, reason) {
     this._addToDb(ip, isSpam, antispam, reason)
 
-    const spam = { ip: ip, isSpam: isSpam, antispam: antispam, date: this.todayStr, reason: reason }
-    return spam
+    return { ip, isSpam, antispam, reason, date: this.todayStr }
   }
 
   spamCheckToday(ip, antispam) {
@@ -142,29 +151,47 @@ class ApacheData {
     return this._spamInformation(ip, false, antispam, undefined)
   }
 
+  /**
+   * Print statistics on logs
+   */
   print() {
-    console.log('')
-    const nUniqueIps = this.uniqueIps.length
-    const nTotalIps = nUniqueIps + this.spamIps.length
-    const percentage = Math.round(100 * nUniqueIps / nTotalIps)
-    console.log(`${nUniqueIps} unique users on ${nTotalIps} unique connection (${percentage}%)`)
+    console.log(`\nStatistics:`)
 
-    const userlogs = this.XXXXXXXXXXXXXXXXXXXXXXXXx
+    const nuserIps = this.userIps.length
+    const nSpams =  this.spamIps.length
+    const percentageSpams = Math.round(100 * nSpams / (nSpams + nuserIps))
+    console.log(`- IPS:`)
+    console.log(`    #Real Users: ${nuserIps}`)
+    console.log(`    #Spams (bots, phishing...): ${nSpams} (${percentageSpams}%)`)
+
+    const logsUsers = this.logs.filter(l => this.userIps.includes(l.remoteHost))
+    const logsSpams = this.logs.filter(l => this.spamIps.includes(l.remoteHost))
+    const percentageLogsSpams = Math.round(100 * logsSpams.length / (logsSpams.length + logsUsers.length))
+    console.log(`- Requests:`)
+    console.log(`    #Requests from Real Users: ${logsUsers.length}`)
+    console.log(`    #Requests from Spams (bots, phishing...): ${logsSpams.length} (${percentageLogsSpams}%)`)
   }
 
-  filter(spamIps) {
-    // this.uniqueIps = spamIps.filter(ip => ip.isSpam === false).map(ip => ip.ip)
-    this.uniqueIps = this.uniqueIps.filter(ip =>
-      (ip !== '0.0.0.0') && (!spamIps.some(spam => (ip === spam.ip)  && (spam.isSpam)))
+  /**
+   * Knowing new ips are spam, remove them from the list this.userIps,
+   * and add them to the list this.spamIps
+   * @param {Array.<string>} newSpamIps List of new ips detected as spam ip
+   */
+  addSpamIps(newSpamIps) {
+    if (newSpamIps.some(ip => this.spamIps.includes(ip))) {
+      console.trace('ERROR: new spam ips already in spam')
+      process.exit(-1)
+    }
+    this.userIps = this.userIps.filter(ip =>
+      (ip !== '0.0.0.0') && (!newSpamIps.some(spamip => (ip === spamip)))
     )
-    this.spamIps = [ ...this.spamIps, ...spamIps.filter(ip => ip.isSpam) ]
+    this.spamIps = [ ...this.spamIps, ...newSpamIps ]
   }
-
 
   // private methods
-  _setUniqueIps() {
+  _setuserIps() {
     let setUnique = new Set(this.logs.map(function(a) {return a.remoteHost;}))
-    this.uniqueIps = [ ...setUnique ].sort()
+    this.userIps = [ ...setUnique ].sort()
   }
 }
 
