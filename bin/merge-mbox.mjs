@@ -12,6 +12,7 @@ import os from 'os'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import crypto from 'node:crypto'
+import helperJs from '../helpers/helperJs.mjs';
 
 let statistics = {
   nTotal: 0,
@@ -170,18 +171,6 @@ function mboxParse(messagesDic, filename, fResult){
   return messagesDic
 }
 
-function size(s) {
-  if (s < 1024) {
-    return `${s.toFixed(2)}Bytes`
-  } else if (s < 1024*1024) {
-    return `${(s/1024).toFixed(2)}KB`
-  } else if (s < 1024*1024*1024) {
-    return `${(s/(1024*1024)).toFixed(2)}MB`
-  } else {
-    return `${(s/(1024*1024*1024)).toFixed(2)}GB`
-  }
-}
-
 function main(options) {
   // const messages = mboxParse("C:\\Users\\pasca\\Desktop\\merge-mbox\\20240623-tous les messages.mbox")
   const tmpFile = path.join(os.tmpdir(), 'merge-mbox.mbox')
@@ -196,8 +185,8 @@ function main(options) {
 const options = await getArgs(`merge-mbox --last-mbox=<> --all-mbox=<> --result-mbox=<>`)
 main(options);
 
-console.log(`Number of processed emails: ${statistics.nTotal}, that is ${size(statistics.nTotalSize)}`)
-console.log(`Number of removed emails: ${statistics.nRemoved}, that is ${size(statistics.nRemovedSize)}`)
+console.log(`Number of processed emails: ${statistics.nTotal}, that is ${helperJs.utils.beautifulSize(statistics.nTotalSize)}`)
+console.log(`Number of removed emails: ${statistics.nRemoved}, that is ${helperJs.utils.beautifulSize(statistics.nRemovedSize)}`)
 console.log(`  - number removed because in the trash: ${statistics.nTrash}`)
 console.log(`  - number removed because duplicated:   ${statistics.nDuplicated}`)
 console.log('DONE')

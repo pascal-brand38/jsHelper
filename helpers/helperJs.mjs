@@ -143,6 +143,17 @@ const utils = {
   warning,
   sleep: async s => new Promise(r => setTimeout(r, s * 1000)),
   walkDir,
+  beautifulSize(s) {
+    if (s < 1024) {
+      return `${s.toFixed(2)}Bytes`
+    } else if (s < 1024*1024) {
+      return `${(s/1024).toFixed(2)}KB`
+    } else if (s < 1024*1024*1024) {
+      return `${(s/(1024*1024)).toFixed(2)}MB`
+    } else {
+      return `${(s/(1024*1024*1024)).toFixed(2)}GB`
+    }
+  },
 }
 
 
