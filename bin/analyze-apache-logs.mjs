@@ -44,7 +44,8 @@ async function main() {
 
   const apacheData = new ApacheData(options)
   apacheData.readLogs(options['_'])
-  await apacheData.readDbIp(options.dbIpFilename)
+  apacheData.readDbIp(options.dbIpFilename)
+  apacheData.populateIps()
 
   // await local.spamDetection(apacheData)
   // await stopforumspam.spamDetection(apacheData)

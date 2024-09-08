@@ -7,61 +7,33 @@ import { createReadStream } from 'fs'
 import { createInterface } from 'readline'
 import { DateTime } from '../../extend/luxon.mjs';
 import assert from 'node:assert';
+import helperJs from '../../helpers/helperJs.mjs';
 
-async function _readLines(filename) {
-  const fileStream = createReadStream(filename);
-
-  const rl = createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
-  // Note: we use the crlfDelay option to recognize all instances of CR LF
-  // ('\r\n') as a single line break.
-
-  let lines = []
-  for await (const line of rl) {
-    lines.push(line)
-  }
-  return lines
-}
-
-async function _readDbip(dbIpFilename) {
-  try {
-    if (dbIpFilename === undefined) {
-      return {}
-    }
-    return JSON.parse(fs.readFileSync(dbIpFilename, 'utf8'))
-  } catch (e) {
-    console.log(e)
-    console.log(`CANNOT READ ${dbIpFilename}`)
-    return {}
-  }
-}
 
 class ApacheData {
   constructor() {
-    this.logs = []
+    this.logs = undefined
 
     /**
      * list of IPs considered as coming from real users (not spam)
      * @type {Array.<string>}
      */
-    this.userIps = []    /** {Array.<string>} */
+    this.userIps = undefined    /** {Array.<string>} */
 
     /**
      * list of IPs considered as spams (bots, phishing,...)
      * @type {Array.<string>}
      */
-    this.spamIps = []             // list of IPs considered as spams
+    this.spamIps = undefined             // list of IPs considered as spams
     this.dbip = undefined
     this.todayStr = DateTime.fromNowStartOfDay().toFormat('d/M/y')
   }
 
   /**
-   * Read all log files, and populates this->logs
+   * Read all log files, and populates this.logs
    * @param {Array.<string>} logFilenames
    */
-  async readLogs(logFilenames) {
+  readLogs(logFilenames) {
     // Apache logs: https://httpd.apache.org/docs/current/mod/mod_log_config.html
     // On
     //    '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"'
@@ -97,12 +69,34 @@ class ApacheData {
     }
   }
 
+  /**
+   * Read the db file (containing spams), and populates this.dbip
+   * @param {string} dbIpFilename
+   */
+  readDbIp(dbIpFilename) {
+    try {
+      if (dbIpFilename === undefined) {
+        this.dbip = {}
+      } else {
+        this.dbip = JSON.parse(fs.readFileSync(dbIpFilename, 'utf8'))
+      }
+    } catch (e) {
+      console.log(e)
+      console.log(`CANNOT READ ${dbIpFilename}`)
+      this.dbip = {}
+    }
+  }
 
-  async readDbIp(dbIpFilename) {
-    this.dbip = await _readDbip(dbIpFilename)
-    this._setuserIps()
+  /**
+   * Populate this.userIps and this.spamIps using this.logs and this.dbip
+   */
+  populateIps() {
+    // populate this.userIps with all known ips, and spamIps to the empty list
+    let setUnique = new Set(this.logs.map(function(a) {return a.remoteHost;}))
+    this.userIps = [ ...setUnique ].sort()
+    this.spamIps = []
 
-    // check spams in db
+    // get all spams from the db
     let newSpamIps = []
     this.userIps.forEach(ip => {
       if (this.dbip[ip]) {
@@ -113,6 +107,7 @@ class ApacheData {
       }
     });
 
+    // populate this.spamIps, and remove these ips from this.userIps
     this.addSpamIps(newSpamIps)
   }
 
@@ -171,15 +166,32 @@ class ApacheData {
     const nSpams =  this.spamIps.length
     const percentageSpams = Math.round(100 * nSpams / (nSpams + nuserIps))
     console.log(`- IPS:`)
-    console.log(`    #Real Users: ${nuserIps}`)
+    console.log(`    #Real Users...............: ${nuserIps}`)
     console.log(`    #Spams (bots, phishing...): ${nSpams} (${percentageSpams}%)`)
 
     const logsUsers = this.logs.filter(l => this.userIps.includes(l.remoteHost))
     const logsSpams = this.logs.filter(l => this.spamIps.includes(l.remoteHost))
     const percentageLogsSpams = Math.round(100 * logsSpams.length / (logsSpams.length + logsUsers.length))
     console.log(`- Requests:`)
-    console.log(`    #Requests from Real Users: ${logsUsers.length}`)
+    console.log(`    #Requests from Real Users...............: ${logsUsers.length}`)
     console.log(`    #Requests from Spams (bots, phishing...): ${logsSpams.length} (${percentageLogsSpams}%)`)
+
+    // const sizeUsers = this.logs.reduce((partialSum, log) =>
+    //   (this.userIps.includes(log.remoteHost)) ? partialSum + parseInt(log.sizeCLF) : partialSum, 0
+    // )
+    const computeSize = (logs) => logs.reduce(
+      (partialSum, log) => {
+        const current = parseInt(log.sizeCLF)
+        return (isNaN(current)) ? partialSum : partialSum + current
+      },
+      0
+    )
+    const sizeUsers = computeSize(logsUsers)
+    const sizeSpams = computeSize(logsSpams)
+    const percentageSize = Math.round(100 * sizeSpams / (sizeSpams + sizeUsers))
+    console.log(`- Sizes:`)
+    console.log(`    #Sizes from Real Users...: ${helperJs.utils.beautifulSize(sizeUsers)}`)
+    console.log(`    #Sizes from Spams........: ${helperJs.utils.beautifulSize(sizeSpams)} (${percentageSize}%)`)
   }
 
   /**
@@ -199,10 +211,6 @@ class ApacheData {
   }
 
   // private methods
-  _setuserIps() {
-    let setUnique = new Set(this.logs.map(function(a) {return a.remoteHost;}))
-    this.userIps = [ ...setUnique ].sort()
-  }
 }
 
 export default ApacheData
