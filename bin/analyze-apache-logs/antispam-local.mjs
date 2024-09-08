@@ -113,8 +113,6 @@ async function spamDetection(apacheData) {
   apacheData.filter(results)
 }
 
-// https://api.stopforumspam.org/api?json&ip=0.0.0.0&ip=85.68.121.4
-
 export default {
   spamDetection,
 }

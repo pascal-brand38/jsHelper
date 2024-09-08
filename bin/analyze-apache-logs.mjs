@@ -6,14 +6,8 @@
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import ApacheData  from './analyze-apache-logs/apache-data.mjs'
-import DbIp  from './analyze-apache-logs/db-ip.mjs'
-import local  from './analyze-apache-logs/antispam-local.mjs'
-import stopforumspam  from './analyze-apache-logs/antispam-stopforumspam.mjs'
-import abuseipdb  from './analyze-apache-logs/antispam-abuseipdb.mjs'
-import ipqualityscore  from './analyze-apache-logs/antispam-ipqualityscore.mjs'
 import path from 'path'
 import url from 'url';
-// import fs from 'fs'
 
 function setDbIpFilename(options) {
   // https://stackoverflow.com/questions/8817423/why-is-dirname-not-defined-in-node-repl
@@ -31,6 +25,13 @@ function getArgs(argv) {
     .help('help').alias('help', 'h')
     .version('version', '1.0').alias('version', 'V')
     .demandCommand(1)   // at least 1 arg without options, which is the log
+    .options({
+      "dbip": {
+        description: 'Do not use an existing DB IP to know spams',
+        type: 'boolean',
+        default: true,
+      },
+    })
     .argv;
 
   setDbIpFilename(options)
@@ -40,11 +41,12 @@ function getArgs(argv) {
 
 async function main() {
   const options = getArgs(process.argv)
-  console.log(options)
 
   const apacheData = new ApacheData(options)
   apacheData.readLogs(options['_'])
-  apacheData.readDbIp(options.dbIpFilename)
+  if (options.dbip) {
+    apacheData.readDbIp(options.dbIpFilename)
+  }
   apacheData.populateIps()
 
   // await local.spamDetection(apacheData)

@@ -3,12 +3,9 @@
 
 import Alpine from 'alpine'   // Apache Log Parser
 import fs from 'fs'
-import { createReadStream } from 'fs'
-import { createInterface } from 'readline'
 import { DateTime } from '../../extend/luxon.mjs';
 import assert from 'node:assert';
 import helperJs from '../../helpers/helperJs.mjs';
-
 
 class ApacheData {
   constructor() {
@@ -95,6 +92,10 @@ class ApacheData {
     let setUnique = new Set(this.logs.map(function(a) {return a.remoteHost;}))
     this.userIps = [ ...setUnique ].sort()
     this.spamIps = []
+
+    if (!this.dbip) {
+      return
+    }
 
     // get all spams from the db
     let newSpamIps = []
