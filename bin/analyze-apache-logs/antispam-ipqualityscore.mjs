@@ -37,7 +37,7 @@ import fs from 'fs'
 // https://www.ipqualityscore.com/api/json/ip/DJcK0cFyVvqBhR4RYqqsELIxHz0clzja/51.15.233.178
 
 async function spamDetection(apacheData) {
-  const ipsToCheck = apacheData.uniqueIps.filter(ip => !apacheData.spamCheckToday(ip, 'ipqualityscore'))
+  const ipsToCheck = apacheData.userIps.filter(ip => !apacheData.spamCheckToday(ip, 'ipqualityscore'))
 
   const url = 'https://www.ipqualityscore.com/api/json/ip/DJcK0cFyVvqBhR4RYqqsELIxHz0clzja/'
 

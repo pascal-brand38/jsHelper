@@ -3,11 +3,12 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
+import path from 'path'
+import url from 'url';
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import ApacheData  from './analyze-apache-logs/apache-data.mjs'
-import path from 'path'
-import url from 'url';
+import local from './analyze-apache-logs/antispam-local.mjs'
 
 function setDbIpFilename(options) {
   // https://stackoverflow.com/questions/8817423/why-is-dirname-not-defined-in-node-repl
@@ -49,7 +50,7 @@ async function main() {
   }
   apacheData.populateIps()
 
-  // await local.spamDetection(apacheData)
+  await local.spamDetection(apacheData)
   // await stopforumspam.spamDetection(apacheData)
   // await abuseipdb.spamDetection(apacheData)
   // await ipqualityscore.spamDetection(apacheData)   NOT ACCURATE because of 37.66.21.18

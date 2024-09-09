@@ -39,7 +39,7 @@ class DbIp {
   status(apacheData) {
     let nTrue = 0
     let nFalse = 0
-    apacheData.uniqueIps.forEach(ip => {
+    apacheData.userIps.forEach(ip => {
       let thisOne = true  // default is: ip is correct
       this.providers.forEach(provider => {
         // console.log(`${ip} ${this.db[ip]}`)

@@ -22,7 +22,7 @@ class ApacheData {
      * @type {Array.<string>}
      */
     this.spamIps = undefined             // list of IPs considered as spams
-    this.dbip = undefined
+    this.dbip = {}
     this.todayStr = DateTime.fromNowStartOfDay().toFormat('d/M/y')
   }
 
@@ -210,6 +210,14 @@ class ApacheData {
     )
     this.spamIps = [ ...this.spamIps, ...newSpamIps ]
   }
+
+  saveLogsUser(filename) {
+    const userLogs = this.logs.filter(log => this.userIps.includes(log.remoteHost))
+    let text = ''
+    userLogs.forEach(log => text = text + log.originalLine + '\n')
+    fs.writeFileSync(filename, text)
+  }
+
 
   // private methods
 }

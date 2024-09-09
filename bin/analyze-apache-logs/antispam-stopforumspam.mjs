@@ -16,7 +16,7 @@ import fetch from 'node-fetch'
 // }
 
 async function spamDetection(apacheData) {
-  const ipsToCheck = apacheData.uniqueIps.filter(ip => !apacheData.spamCheckToday(ip, 'stopforumspam'))
+  const ipsToCheck = apacheData.userIps.filter(ip => !apacheData.spamCheckToday(ip, 'stopforumspam'))
   const chunkSize = 15;   // stopforumspam sends 15 ip information at a time
 
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
