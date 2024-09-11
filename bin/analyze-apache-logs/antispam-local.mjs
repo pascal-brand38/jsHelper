@@ -12,8 +12,29 @@ function _getNbSecs(time) {
   return (parseInt(fields[1])*60 + parseInt(fields[2])) * 60 + parseInt(fields[3])
 }
 
+function _checkLog(apacheData, requests, botsOnly, logField, textReason, fctToCheck) {
+  let logText
+  let configTexts = []
+  Object.keys(botsOnly).forEach(key => {
+    if (!key.startsWith('comments-')) {
+      configTexts = [...configTexts, ...botsOnly[key]]
+    }
+  })
+  if (requests.some(r => {
+    if (configTexts.some(configText => { logText = r[logField]; return fctToCheck(logText, configText) })) {
+      return true
+    } else {
+      return false
+    }
+  })) {
+    return apacheData.spamDetected(requests[0].remoteHost, `${textReason}: ${logText}`, antispam)
+  }
+  return undefined
+}
+
 async function spamDetection(apacheData, options) {
-  const results = await Promise.all(apacheData.userIps.map(async ip => {
+  let spam=undefined
+  const results = apacheData.userIps.map(ip => {
     const requests = apacheData.logs.filter((l) => (l.remoteHost === ip))
     let reason = 'strange'
 
@@ -44,39 +65,21 @@ async function spamDetection(apacheData, options) {
     }
 
     // check access to files reserved for bots
-    const getBotsOnly =  options.config.local.get.botsOnly
-    let getFilenames = []
-    Object.keys(getBotsOnly).forEach(key => {
-      if (!key.startsWith('comment')) {
-        getFilenames = [ ...getFilenames, ...getBotsOnly[key] ]
-      }
-    })
-    if (requests.some(r => {
-      if (getFilenames.some(wp => { reason = r.request; return reason.startsWith('GET /' + wp) })) {
-        return true
-      } else {
-        return false
-      }
-    })) {
-      return apacheData.spamDetected(ip, `Accessing a file indicating a bot or a spammer: ${reason}`, antispam)
+    spam = _checkLog(
+      apacheData, requests,
+      options.config.local.get.botsOnly, 'request', 'Accessing a file indicating a bot or a spammer',
+      (logText, configText) => logText.startsWith('GET /' + configText))
+    if (spam !== undefined) {
+      return spam
     }
 
     // check forbidden keywords in user agent
-    const uaBotsOnly =  options.config.local.userAgent.botsOnly
-    let uaText = []
-    Object.keys(uaBotsOnly).forEach(key => {
-      if (!key.startsWith('comment')) {
-        uaText = [ ...uaText, ...uaBotsOnly[key] ]
-      }
-    })
-    if (requests.some(r => {
-      if (uaText.some(wp => { reason = r['RequestHeader User-Agent']; return reason.toLowerCase().includes(wp.toLowerCase()) })) {
-        return true
-      } else {
-        return false
-      }
-    })) {
-      return apacheData.spamDetected(ip, `User Agent indicates a bot or a spammer: ${reason}`, antispam)
+    spam = _checkLog(
+      apacheData, requests,
+      options.config.local.userAgent.botsOnly, 'RequestHeader User-Agent', 'User Agent indicates a bot or a spammer',
+      (logText, configText) => logText.toLowerCase().includes(configText.toLowerCase()))
+    if (spam !== undefined) {
+      return spam
     }
 
 
@@ -99,7 +102,7 @@ async function spamDetection(apacheData, options) {
     }
 
     return apacheData.noSpam(ip, antispam)
-  }))
+  })
 
   apacheData.addSpamIps(results.filter(r=>r.isSpam).map(r => r.ip))
 
