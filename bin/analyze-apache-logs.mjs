@@ -4,18 +4,28 @@
 // MIT License
 
 import path from 'path'
+import fs from 'fs'
 import url from 'url';
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import ApacheData  from './analyze-apache-logs/apache-data.mjs'
 import local from './analyze-apache-logs/antispam-local.mjs'
 
-function setDbIpFilename(options) {
+function _setDbIpFilename(options) {
   // https://stackoverflow.com/questions/8817423/why-is-dirname-not-defined-in-node-repl
   // get dir where analyze-apache-logs.mjs is stored
   const __filename = url.fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   options.dbIpFilename = path.join(__dirname, 'analyze-apache-logs', 'db-ip.json')
+}
+
+function _readConfig(options) {
+  const __filename = url.fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const configFilename = path.join(__dirname, 'analyze-apache-logs', 'analyze-apache-logs.json')
+
+  const configText = fs.readFileSync(configFilename)
+  options.config = JSON.parse(configText)
 }
 
 function getArgs(argv) {
@@ -35,7 +45,8 @@ function getArgs(argv) {
     })
     .argv;
 
-  setDbIpFilename(options)
+  _setDbIpFilename(options)
+  _readConfig(options)
 
   return options;
 }
@@ -50,7 +61,7 @@ async function main() {
   }
   apacheData.populateIps()
 
-  await local.spamDetection(apacheData)
+  await local.spamDetection(apacheData, options)
   // await stopforumspam.spamDetection(apacheData)
   // await abuseipdb.spamDetection(apacheData)
   // await ipqualityscore.spamDetection(apacheData)   NOT ACCURATE because of 37.66.21.18

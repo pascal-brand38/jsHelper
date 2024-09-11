@@ -1,0 +1,45 @@
+{
+  "local": {
+    "comments-get": "get: properties related to get requests",
+    "get": {
+      "comments-botsOnly": "List of files that are accessed by bots or spammer only",
+      "botsOnly": {
+        "comments-botsReserved": "botsReserved: files accessed by bots only",
+        "botsReserved": [
+          "ads.txt",
+          "robots.txt",
+          "humans.txt",
+          "security.txt",
+          "sitemap"
+        ],
+
+        "comments-wordpress": "wordpress: files accessed when the site is biult with wordpress",
+        "wordpress": [
+          "wp-",
+          "wordpress"
+        ],
+
+        "comments-system": "wordpressFiles: files accessed when the site is biult with wordpress",
+        "system": [
+          "."
+        ]
+
+      }
+    },
+
+    "comments-userAgent": "userAgent: properties related to user agent",
+    "userAgent": {
+      "comments-botsOnly": "List of user-agent that are from bots",
+      "botsOnly": {
+        "comments-botsReserved": "botsReserved: files accessed by bots only",
+        "botsReserved": [
+          "Headless",
+          "facebookexternalhit",
+          "Bot",
+          "@", "https://",
+          "Go-http-client"
+        ]
+      }
+    }
+  }
+}

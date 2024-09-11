@@ -12,25 +12,7 @@ function _getNbSecs(time) {
   return (parseInt(fields[1])*60 + parseInt(fields[2])) * 60 + parseInt(fields[3])
 }
 
-const _filesForBots = [
-  'GET /ads.txt', 'GET /robots.txt', 'GET /humans.txt', 'GET /security.txt', 'GET /sitemap',
-]
-const _filesWordpress = [
-  'GET /wp-', 'GET /wordpress',
-]
-const _filesSystem = [
-  'GET /.',
-]
-
-const _useragentForBots = [
-  'Headless',               // bots do not use a user interface+
-  'facebookexternalhit',    // facebook crawler
-  'Bot',
-  '@', 'https://',          // user-agent may contain how to contact the bot provider
-  // 'Go-http-client',
-]
-
-async function spamDetection(apacheData) {
+async function spamDetection(apacheData, options) {
   const results = await Promise.all(apacheData.userIps.map(async ip => {
     const requests = apacheData.logs.filter((l) => (l.remoteHost === ip))
     let reason = 'strange'
@@ -62,47 +44,39 @@ async function spamDetection(apacheData) {
     }
 
     // check access to files reserved for bots
+    const getBotsOnly =  options.config.local.get.botsOnly
+    let getFilenames = []
+    Object.keys(getBotsOnly).forEach(key => {
+      if (!key.startsWith('comment')) {
+        getFilenames = [ ...getFilenames, ...getBotsOnly[key] ]
+      }
+    })
     if (requests.some(r => {
-      if (_filesForBots.some(wp => { reason = r.request; return r.request.startsWith(wp) })) {
+      if (getFilenames.some(wp => { reason = r.request; return reason.startsWith('GET /' + wp) })) {
         return true
       } else {
         return false
       }
     })) {
-      return apacheData.spamDetected(ip, `Accessing files reserved for bots: ${reason}`, antispam)
-    }
-
-    // check access to files reserved for wordpress
-    if (requests.some(r => {
-      if (_filesWordpress.some(wp => { reason = r.request; return r.request.startsWith(wp) })) {
-        return true
-      } else {
-        return false
-      }
-    })) {
-      return apacheData.spamDetected(ip, `Accessing files from wordpress: ${reason}`, antispam)
-    }
-
-    // check access to files reserved for system
-    if (requests.some(r => {
-      if (_filesSystem.some(wp => { reason = r.request; return r.request.startsWith(wp) })) {
-        return true
-      } else {
-        return false
-      }
-    })) {
-      return apacheData.spamDetected(ip, `Accessing files reserved to system: ${reason}`, antispam)
+      return apacheData.spamDetected(ip, `Accessing a file indicating a bot or a spammer: ${reason}`, antispam)
     }
 
     // check forbidden keywords in user agent
+    const uaBotsOnly =  options.config.local.userAgent.botsOnly
+    let uaText = []
+    Object.keys(uaBotsOnly).forEach(key => {
+      if (!key.startsWith('comment')) {
+        uaText = [ ...uaText, ...uaBotsOnly[key] ]
+      }
+    })
     if (requests.some(r => {
-      if (_useragentForBots.some(wp => { reason = r['RequestHeader User-Agent']; return reason.toLowerCase().includes(wp.toLowerCase()) })) {
+      if (uaText.some(wp => { reason = r['RequestHeader User-Agent']; return reason.toLowerCase().includes(wp.toLowerCase()) })) {
         return true
       } else {
         return false
       }
     })) {
-      return apacheData.spamDetected(ip, `Forbidden keyword in user-agent: ${reason}`, antispam)
+      return apacheData.spamDetected(ip, `User Agent indicates a bot or a spammer: ${reason}`, antispam)
     }
 
 
