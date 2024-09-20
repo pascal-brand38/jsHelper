@@ -8,7 +8,8 @@ import pdfjsdist from '../extend/pdfjs-dist.mjs'
 import sha1 from './helperJs/sha1.mjs'
 
 // https://nodejs.org/api/readline.html
-import * as readline from 'readline';
+// https://stackoverflow.com/questions/74903152/running-node-js-readline-functions
+import * as readline from 'readline/promises';
 import { stdin as input, stdout as output } from 'process';
 
 function warning(s) {
@@ -28,10 +29,16 @@ function error(s) {
 }
 
 const question = {
-  question: async (text) =>  await new Promise(resolve => {
+  // question: async (text) =>  await new Promise(resolve => {
+  //   const rl = readline.createInterface({ input, output })
+  //   rl.question(`${text}`, resolve)
+  // })
+  question: async (text) => {
     const rl = readline.createInterface({ input, output })
-    rl.question(`${text}`, resolve)
-  })
+    const answer = await rl.question(`${text}`)
+    rl.close()
+    return answer
+  }
 }
 
 const thunderbird = {
