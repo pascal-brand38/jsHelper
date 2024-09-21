@@ -83,9 +83,11 @@ save-on-cloud
 
 ## rm-duplicates
 
-Utility used to remove files in a directory that are duplicated
-in another one. By default, exact comparison of files is
-performed, and is a dry-run so that no mistake is performed
+Utility used to remove files in a directory (provided in ```--dup-dir```) that are duplicated
+in another one (provided in ```--src-dir```). By default, exact comparison of files is
+performed (using sha1), and is a dry-run so that no mistake is performed
+
+When using ```--self```, duplicated files in src dir are checked (--dup-dir must not be provided).
 
 Possible options are:
 * --nameonly: check for name only, instead of file content
@@ -97,6 +99,9 @@ Possible options are:
 rm-duplicates \
   --src-dir="C:\Users\pasca\Pictures" \
   --dup-dir="C:\tmp"
+rm-duplicates \
+  --src-dir="C:\Users\pasca\Pictures" \
+  --self
 ```
 
 

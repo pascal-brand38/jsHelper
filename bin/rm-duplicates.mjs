@@ -49,7 +49,12 @@ async function getArgs(usage) {
       "dup-dir": {
         description: "directory that may contain duplicates",
         requiresArg: true,
-        required: true,
+        required: false,
+      },
+      "self": {
+        description: "check duplicates in source directory",
+        type: 'boolean',
+        required: false,
       },
       "remove": {
         description: 'remove - otherwise this is only a dryrun',
@@ -63,7 +68,16 @@ async function getArgs(usage) {
         description: 'do not check content, but only the name',
         type: 'boolean'
       },
+    }).check((argv) => {
+      if ((!argv['dup-dir']) && (!argv['self'])) {
+        throw new Error('You must supply either --dup-dir or --self');
+      } else if ((argv['dup-dir']) && (argv['self'])) {
+        throw new Error('You must supply either --dup-dir or --self, but not both');
+      } else {
+        return true;
+      }
     })
+
     // .fail((msg, err, yargs) => {
     //   if (err) throw err // preserve stack
     //   console.error('You broke it!')
@@ -105,12 +119,12 @@ function equalFiles(file1, file2) {
 }
 
 function getHashes(dir, options) {
-  console.log(`--- getHashes of ${dir}---`)
+  console.log(`--- getHashes of ${dir} ---`)
 
-  console.log(`    --- Get files list of ${dir}---`)
+  console.log(`    --- Get files list of ${dir} ---`)
   let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, })
 
-  console.log(`    --- Computes Hashes of ${dir}---`)
+  console.log(`    --- Computes Hashes of ${dir} ---`)
   let hashes = helperJs.sha1.initSha1List()
   files.forEach((file, index) => {
     try {
@@ -133,8 +147,7 @@ function getHashes(dir, options) {
   return hashes
 }
 
-function main(options) {
-  let srcHashes = getHashes(options.srcDir, options)
+function removeDup(srcHashes, options) {
   let dupHashes = getHashes(options.dupDir, options)
 
   console.log(`--- Move duplicates in ${path.join(os.tmpdir(), 'rm-duplicate')} ---`)
@@ -194,9 +207,72 @@ function main(options) {
   }
 }
 
-const options = await getArgs(`rm-duplicates --src-dir="C:\\Users\\pasca\\Pictures" --dup-dir="C:\tmp"`)
-main(options);
+async function removeSelf(srcHashes, options) {
+  const keys = Object.keys(srcHashes)
+  for (let index=0; index <= keys.length; index++) {
+    const key = keys[index]
+    if (key === undefined) {
+      break
+    }
+
+    if ((index % _step) === 0) {
+      console.log(`      ${index} / ${Object.keys(srcHashes).length} unique hashes`)
+    }
+    statistics.nTotal = statistics.nTotal + srcHashes[key].length
+
+    if ((options.self) && (srcHashes[key].length >= 2)) {
+      console.log()
+      console.log('Which ones to keep:')
+      console.log('0- All')
+      srcHashes[key].forEach((filename, index) => console.log(`${index+1}- ${filename}`))
+
+      let which = -1
+      while ((which<0) || (which>srcHashes[key].length)) {
+        which = await helperJs.question.question('Which one to keep?  ')
+      }
+      which = parseInt(which)
+      if (which === 0) {
+        console.log('Keep all')
+      } else {
+        for (let i=0; i<srcHashes[key].length; i++) {
+          if (i+1 !== which) {
+            statistics.nRemove++
+
+            const dup = srcHashes[key][i]
+            if (options.move) {
+              const newDirname = path.join(os.tmpdir(), 'rm-duplicate', path.dirname(dup).replace(options.srcDir, '.'))
+              if (!fs.existsSync(newDirname)) {
+                fs.mkdirSync(newDirname, { recursive: true });
+              }
+              // fs.renameSync(dup, path.join(newDirname, path.basename(dup)))
+              mv(dup, path.join(newDirname, path.basename(dup)), () => {})
+            } else if (options.remove) {
+              fs.unlinkSync(dup)
+            } else {
+              console.log(`DRYRUN REMOVE ${dup}`)
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
+
+async function main(options) {
+  let srcHashes = getHashes(options.srcDir, options)
+  if (options.self) {
+    await removeSelf(srcHashes, options)
+  } else {
+    removeDup(srcHashes, options)
+  }
+}
+
+const options = await getArgs(`rm-duplicates --src-dir="C:\\Users\\pasca\\Pictures" --dup-dir="C:\\tmp"`)
+await main(options);
 console.log('-------------------------------')
 console.log(statistics)
-console.log(`Removed files can be found in ${path.join(os.tmpdir(), 'rm-duplicate')}`)
+if (options.move) {
+  console.log(`Removed files can be found in ${path.join(os.tmpdir(), 'rm-duplicate')}`)
+}
 console.log('Done')
