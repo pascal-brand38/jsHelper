@@ -68,6 +68,9 @@ async function getArgs(usage) {
         description: 'do not check content, but only the name',
         type: 'boolean'
       },
+      "excludes": {
+        description: 'exclude list, separated by commas'
+      }
     }).check((argv) => {
       if ((!argv['dup-dir']) && (!argv['self'])) {
         throw new Error('You must supply either --dup-dir or --self');
@@ -76,7 +79,7 @@ async function getArgs(usage) {
       } else {
         return true;
       }
-    })
+    }).strict()   // raise an error if an option is unknown
 
     // .fail((msg, err, yargs) => {
     //   if (err) throw err // preserve stack
@@ -119,10 +122,14 @@ function equalFiles(file1, file2) {
 }
 
 function getHashes(dir, options) {
+  let excludes
+  if (options.excludes !== undefined) {
+    excludes = options.excludes
+  }
   console.log(`--- getHashes of ${dir} ---`)
 
   console.log(`    --- Get files list of ${dir} ---`)
-  let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, })
+  let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, excludes: excludes})
 
   console.log(`    --- Computes Hashes of ${dir} ---`)
   let hashes = helperJs.sha1.initSha1List()
@@ -229,8 +236,11 @@ async function removeSelf(srcHashes, options) {
       let which = -1
       while ((which<0) || (which>srcHashes[key].length)) {
         which = await helperJs.question.question('Which one to keep?  ')
+        which = parseInt(which)
+        if (isNaN(which)) {
+          which = 0   // keep all
+        }
       }
-      which = parseInt(which)
       if (which === 0) {
         console.log('Keep all')
       } else {

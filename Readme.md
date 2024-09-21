@@ -94,6 +94,7 @@ Possible options are:
 * --remove: instead of a dry-run, remove the duplicated files
 * --move: instead of a dry-run, move the duplicated files
   in a temporary directory
+* --excludes=tmp,Thumbs.db: exclude list, separated by comma
 
 ```bash
 rm-duplicates \
