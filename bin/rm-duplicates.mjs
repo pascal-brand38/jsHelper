@@ -124,7 +124,7 @@ function equalFiles(file1, file2) {
 function getHashes(dir, options) {
   let excludes
   if (options.excludes !== undefined) {
-    excludes = options.excludes
+    excludes = options.excludes.split(',')
   }
   console.log(`--- getHashes of ${dir} ---`)
 

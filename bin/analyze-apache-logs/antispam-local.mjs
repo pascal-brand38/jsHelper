@@ -12,6 +12,16 @@ function _getNbSecs(time) {
   return (parseInt(fields[1])*60 + parseInt(fields[2])) * 60 + parseInt(fields[3])
 }
 
+/**
+ *
+ * @param {*} apacheData
+ * @param {Array} requests
+ * @param {*} botsOnly
+ * @param {String} logField
+ * @param {String} textReason
+ * @param {Function} fctToCheck
+ * @returns
+ */
 function _checkLog(apacheData, requests, botsOnly, logField, textReason, fctToCheck) {
   let logText
   let configTexts = []

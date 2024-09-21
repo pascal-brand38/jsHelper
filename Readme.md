@@ -100,6 +100,9 @@ Possible options are:
 rm-duplicates \
   --src-dir="C:\Users\pasca\Pictures" \
   --dup-dir="C:\tmp"
+```
+
+```bash
 rm-duplicates \
   --src-dir="C:\Users\pasca\Pictures" \
   --self
