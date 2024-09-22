@@ -157,30 +157,39 @@ class ApacheData {
     return this._spamInformation(ip, false, antispam, undefined)
   }
 
+  _printSingle(users, spams, title, usersText, spamsText, from=false, print=(size)=>size) {
+    const composeText = (text, from) => {
+      let cText = `    ${text}`
+      if (from) {
+        cText += ` from ${from}`
+      }
+      while (cText.length <= 30) {
+        cText += '.'
+      }
+      return cText
+    }
+    const percentageSpams = Math.round(100 * spams / (spams + users))
+    const uText = composeText(usersText, (from ? 'Real Users' : false))
+    const sText = composeText(spamsText, (from ? 'Spams' : false))
+
+    console.log(title)
+    console.log(`${uText}: ${print(users)}`)
+    console.log(`${sText}: ${print(spams)} (${percentageSpams}%)`)
+  }
+
   /**
    * Print statistics on logs
    */
   print(options) {
     const statsConfig = options.config.stats
-    console.log(`\nStatistics:`)
-
-    const nuserIps = this.userIps.length
-    const nSpams =  this.spamIps.length
-    const percentageSpams = Math.round(100 * nSpams / (nSpams + nuserIps))
-    console.log(`- IPS:`)
-    console.log(`    #Real Users...............: ${nuserIps}`)
-    console.log(`    #Spams (bots, phishing...): ${nSpams} (${percentageSpams}%)`)
-
     const logsUsers = this.logs.filter(l => this.userIps.includes(l.remoteHost))
     const logsSpams = this.logs.filter(l => this.spamIps.includes(l.remoteHost))
-    const percentageLogsSpams = Math.round(100 * logsSpams.length / (logsSpams.length + logsUsers.length))
-    console.log(`- Requests:`)
-    console.log(`    #Requests from Real Users...............: ${logsUsers.length}`)
-    console.log(`    #Requests from Spams (bots, phishing...): ${logsSpams.length} (${percentageLogsSpams}%)`)
 
-    // const sizeUsers = this.logs.reduce((partialSum, log) =>
-    //   (this.userIps.includes(log.remoteHost)) ? partialSum + parseInt(log.sizeCLF) : partialSum, 0
-    // )
+    console.log(`\nStatistics (considering bots, phishing... as spams):`)
+
+    this._printSingle(this.userIps.length, this.spamIps.length, '- IPS:', '#Real Users', '#Spams')
+    this._printSingle(logsUsers.length, logsSpams.length, '- Requests:', '#Requests', '#Requests', true)
+
     const computeSize = (logs) => logs.reduce(
       (partialSum, log) => {
         const current = parseInt(log.sizeCLF)
@@ -188,20 +197,12 @@ class ApacheData {
       },
       0
     )
-    const sizeUsers = computeSize(logsUsers)
-    const sizeSpams = computeSize(logsSpams)
-    const percentageSize = Math.round(100 * sizeSpams / (sizeSpams + sizeUsers))
-    console.log(`- Sizes:`)
-    console.log(`    #Sizes from Real Users...: ${helperJs.utils.beautifulSize(sizeUsers)}`)
-    console.log(`    #Sizes from Spams........: ${helperJs.utils.beautifulSize(sizeSpams)} (${percentageSize}%)`)
+    this._printSingle(computeSize(logsUsers), computeSize(logsSpams), '- Sizes:', '#Sizes', '#Sizes', true, helperJs.utils.beautifulSize)
 
     if (statsConfig && statsConfig['contact-post']) {
       const logUsersContact = logsUsers.filter(l => (l['request'].startsWith(statsConfig['contact-post'])))
       const logSpamsContact = logsSpams.filter(l => (l['request'].startsWith(statsConfig['contact-post'])))
-      const percentageSpamsContact = Math.round(100 * logSpamsContact.length / (logSpamsContact.length + logUsersContact.length))
-      console.log(`- Contact Form:`)
-      console.log(`    #Contact from Real Users...: ${logUsersContact.length}`)
-      console.log(`    #Contact from Spams........: ${logSpamsContact.length} (${percentageSpamsContact}%)`)
+      this._printSingle(logUsersContact.length, logSpamsContact.length, '- Requests:', '#Contact', '#Contact', true)
     }
   }
 
