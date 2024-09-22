@@ -45,7 +45,10 @@ function _checkLog(apacheData, requests, botsOnly, logField, textReason, fctToCh
 async function spamDetection(apacheData, options) {
   let spam=undefined
   const results = apacheData.userIps.map(ip => {
-    const requests = apacheData.logs.filter((l) => (l.remoteHost === ip))
+    let requests = apacheData.logs.filter((l) => (l.remoteHost === ip))
+    if (options.config.local.get.excludes) {
+      requests = requests.filter(log => options.config.local.get.excludes.every(exclude => !log.request.startsWith('GET /' + exclude)))
+    }
     let reason = 'strange'
 
     if (requests.length <= 2) {

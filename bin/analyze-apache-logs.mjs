@@ -34,7 +34,7 @@ function _readConfig(options) {
 }
 
 function getArgs(argv) {
-  console.log(argv)
+  // console.log(argv)
 
   let options = yargs(hideBin(argv))
     .usage('DESCRIPTION TODO')
@@ -75,7 +75,9 @@ async function main() {
   // await ipqualityscore.spamDetection(apacheData)   NOT ACCURATE because of 37.66.21.18
 
   apacheData.print(options)
-  // apacheData.saveDbip(options.dbIpFilename)
+  if (options.dbip) {
+    apacheData.saveDbip(options.dbIpFilename)
+  }
 
   console.log('Done')
 }
