@@ -22,7 +22,12 @@ function _setDbIpFilename(options) {
 function _readConfig(options) {
   const __filename = url.fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const configFilename = path.join(__dirname, 'analyze-apache-logs', 'analyze-apache-logs.json')
+  let configFilename
+  if (options.config) {
+    configFilename = options.config
+  } else {
+    configFilename = path.join(__dirname, 'analyze-apache-logs', 'analyze-apache-logs.json')
+  }
 
   const configText = fs.readFileSync(configFilename)
   options.config = JSON.parse(configText)
@@ -41,6 +46,9 @@ function getArgs(argv) {
         description: 'Do not use an existing DB IP to know spams',
         type: 'boolean',
         default: true,
+      },
+      "config": {
+        description: 'Config json file. Default is analyze-apache-logs.json',
       },
     })
     .argv;
