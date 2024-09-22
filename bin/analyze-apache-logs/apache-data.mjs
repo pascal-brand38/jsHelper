@@ -160,7 +160,8 @@ class ApacheData {
   /**
    * Print statistics on logs
    */
-  print() {
+  print(options) {
+    const statsConfig = options.config.stats
     console.log(`\nStatistics:`)
 
     const nuserIps = this.userIps.length
@@ -193,6 +194,15 @@ class ApacheData {
     console.log(`- Sizes:`)
     console.log(`    #Sizes from Real Users...: ${helperJs.utils.beautifulSize(sizeUsers)}`)
     console.log(`    #Sizes from Spams........: ${helperJs.utils.beautifulSize(sizeSpams)} (${percentageSize}%)`)
+
+    if (statsConfig && statsConfig['contact-post']) {
+      const logUsersContact = logsUsers.filter(l => (l['request'].startsWith(statsConfig['contact-post'])))
+      const logSpamsContact = logsSpams.filter(l => (l['request'].startsWith(statsConfig['contact-post'])))
+      const percentageSpamsContact = Math.round(100 * logSpamsContact.length / (logSpamsContact.length + logUsersContact.length))
+      console.log(`- Contact Form:`)
+      console.log(`    #Contact from Real Users...: ${logUsersContact.length}`)
+      console.log(`    #Contact from Spams........: ${logSpamsContact.length} (${percentageSpamsContact}%)`)
+    }
   }
 
   /**

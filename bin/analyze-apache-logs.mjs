@@ -74,7 +74,7 @@ async function main() {
   // await abuseipdb.spamDetection(apacheData)
   // await ipqualityscore.spamDetection(apacheData)   NOT ACCURATE because of 37.66.21.18
 
-  apacheData.print()
+  apacheData.print(options)
   // apacheData.saveDbip(options.dbIpFilename)
 
   console.log('Done')
