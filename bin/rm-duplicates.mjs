@@ -91,6 +91,10 @@ async function getArgs(usage) {
     .argv;
 
   options.forceRm = [ 'Thumbs.db', 'desktop.ini' ]
+  if (options.dupDir) {
+    options.dupDir = path.normalize(options.dupDir)   // transform /c/tmp in C:\tmp
+  }
+
   return options
 }
 
