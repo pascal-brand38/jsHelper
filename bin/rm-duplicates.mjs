@@ -94,6 +94,9 @@ async function getArgs(usage) {
   if (options.dupDir) {
     options.dupDir = path.normalize(options.dupDir)   // transform /c/tmp in C:\tmp
   }
+  if (options.excludes) {
+    options.excludes = options.excludes.split(',')
+  }
 
   return options
 }
@@ -125,30 +128,45 @@ function equalFiles(file1, file2) {
   return fileSyncCmp.equalFiles(file1, file2)
 }
 
-function getHashes(dir, options) {
-  let excludes
-  if (options.excludes !== undefined) {
-    excludes = options.excludes.split(',')
+function print(text, index) {
+  if ((index % _step) === 0) {
+    console.log(text)
   }
-  console.log(`--- getHashes of ${dir} ---`)
+}
 
+function action(options, dup, src) {
+  statistics.nRemove++
+  if (options.move) {
+    console.log(`MOVE         ${path.basename(dup)} in ${path.dirname(dup)}`)
+    console.log(`  same as    ${path.basename(src)} in ${path.dirname(src)}`)
+    const newDirname = path.join(os.tmpdir(), 'rm-duplicate', path.dirname(dup).replace(options.dupDir, '.'))
+    if (!fs.existsSync(newDirname)) {
+      fs.mkdirSync(newDirname, { recursive: true });
+    }
+    // fs.renameSync(dup, path.join(newDirname, path.basename(dup)))
+    mv(dup, path.join(newDirname, path.basename(dup)), () => {})
+  } else if (options.remove) {
+    console.log(`REMOVE       ${path.basename(dup)} in ${path.dirname(dup)}`)
+    console.log(`  same as    ${path.basename(src)} in ${path.dirname(src)}`)
+    fs.unlinkSync(dup)
+  } else {
+    console.log(`DRYRUN       ${path.basename(dup)} in ${path.dirname(dup)}`)
+    console.log(`  same as    ${path.basename(src)} in ${path.dirname(src)}`)
+  }
+}
+
+function getHashes(dir, options) {
+  console.log(`--- getHashes of ${dir} ---`)
   console.log(`    --- Get files list of ${dir} ---`)
-  let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, excludes: excludes})
+  let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, excludes: options.excludes})
 
   console.log(`    --- Computes Hashes of ${dir} ---`)
   let hashes = helperJs.sha1.initSha1List()
   files.forEach((file, index) => {
     try {
-      if ((index % _step) === 0) {
-        console.log(`      ${index} / ${files.length}`)
-      }
+      print(`      ${index} / ${files.length}`, index)
       const fullname = path.join(dir, file);
-      let sha1sum
-      if (options.nameonly) {
-        sha1sum = path.basename(file)
-      } else {
-        sha1sum = helperJs.sha1.getSha1(fullname)
-      }
+      const sha1sum = (options.nameonly) ? path.basename(file) : helperJs.sha1.getSha1(fullname)
       helperJs.sha1.updateSha1List(hashes, sha1sum, fullname, false)
     } catch (e) {
       console.log(e)
@@ -163,10 +181,7 @@ function removeDup(srcHashes, options) {
 
   console.log(`--- Move duplicates in ${path.join(os.tmpdir(), 'rm-duplicate')} ---`)
   Object.keys(dupHashes).forEach((key, index) => {
-    if ((index % _step) === 0) {
-      console.log(`      ${index} / ${Object.keys(dupHashes).length} unique hashes`)
-    }
-
+    print(`      ${index} / ${Object.keys(dupHashes).length} unique hashes`, index)
     const srcs = srcHashes[key]
     const dups = dupHashes[key]
     statistics.nTotal = statistics.nTotal + dups.length
@@ -190,24 +205,7 @@ function removeDup(srcHashes, options) {
       }
 
       if (mustRemove) {
-        statistics.nRemove++
-        if (options.move) {
-          console.log(`MOVE         ${path.basename(dup)} in ${path.dirname(dup)}`)
-          console.log(`  same as    ${path.basename(candidate)} in ${path.dirname(candidate)}`)
-          const newDirname = path.join(os.tmpdir(), 'rm-duplicate', path.dirname(dup).replace(options.dupDir, '.'))
-          if (!fs.existsSync(newDirname)) {
-            fs.mkdirSync(newDirname, { recursive: true });
-          }
-          // fs.renameSync(dup, path.join(newDirname, path.basename(dup)))
-          mv(dup, path.join(newDirname, path.basename(dup)), () => {})
-        } else if (options.remove) {
-          console.log(`REMOVE       ${path.basename(dup)} in ${path.dirname(dup)}`)
-          console.log(`  same as    ${path.basename(candidate)} in ${path.dirname(candidate)}`)
-          fs.unlinkSync(dup)
-        } else {
-          console.log(`DRYRUN       ${path.basename(dup)} in ${path.dirname(dup)}`)
-          console.log(`  same as    ${path.basename(candidate)} in ${path.dirname(candidate)}`)
-        }
+        action(options, dup, candidate)
       }
     })
   })
@@ -226,14 +224,12 @@ async function removeSelf(srcHashes, options) {
       break
     }
 
-    if ((index % _step) === 0) {
-      console.log(`      ${index} / ${Object.keys(srcHashes).length} unique hashes`)
-    }
+    print(`      ${index} / ${keys.length} unique hashes`, index)
     statistics.nTotal = statistics.nTotal + srcHashes[key].length
 
-    if ((options.self) && (srcHashes[key].length >= 2)) {
+    if (srcHashes[key].length >= 2) {
       console.log()
-      console.log('Which ones to keep:')
+      console.log('Which one to keep:')
       console.log('0- All')
       srcHashes[key].forEach((filename, index) => console.log(`${index+1}- ${filename}`))
 
@@ -250,26 +246,11 @@ async function removeSelf(srcHashes, options) {
       } else {
         for (let i=0; i<srcHashes[key].length; i++) {
           if (i+1 !== which) {
-            statistics.nRemove++
-
-            const dup = srcHashes[key][i]
-            if (options.move) {
-              const newDirname = path.join(os.tmpdir(), 'rm-duplicate', path.dirname(dup).replace(options.srcDir, '.'))
-              if (!fs.existsSync(newDirname)) {
-                fs.mkdirSync(newDirname, { recursive: true });
-              }
-              // fs.renameSync(dup, path.join(newDirname, path.basename(dup)))
-              mv(dup, path.join(newDirname, path.basename(dup)), () => {})
-            } else if (options.remove) {
-              fs.unlinkSync(dup)
-            } else {
-              console.log(`DRYRUN REMOVE ${dup}`)
-            }
+            action(options, srcHashes[key][i], srcHashes[key][which-1])
           }
         }
       }
     }
-
   }
 }
 
