@@ -92,7 +92,7 @@ function mboxParse(messagesDic, filename, fResult){
           lastIndex = -1          // not the last chunk
           if (prevIndex === 0) {
             chunkSize = chunkSize * 2
-            console.log(`Double chunck size: ${size(chunkSize)}`)
+            console.log(`Double chunck size: ${helperJs.utils.beautifulSize(chunkSize)}`)
             chunkBuffer = Buffer.alloc(chunkSize);
           }
           // console.log(`lastIndex = ${lastIndex}`)
