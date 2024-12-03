@@ -73,6 +73,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
   // check daily tariff
   const noms = lastContract.getExtend().chat.noms
   let prixJour = argsComptaPdfLastContract.rowCompta.prixJour
+  let nbRooms = 1
   const prixChambreMin = helperCattery.helperContract.priceDay[noms.length-1][0].price
   const prixChambreMax = helperCattery.helperContract.priceDay[noms.length-1][1].price
   if (prixJour < prixChambreMin) {
@@ -94,6 +95,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
       answer = parseInt(await helperJs.question.question(`==> `))
       console.log()
     }
+    nbRooms = answer
     if (answer === possibleAnswers[0]) {
       prixJour = prixChambreMin
     } else {
@@ -102,6 +104,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
     }
   } else {
     prixJour = prixChambreMin
+    nbRooms = 0
   }
 
   if (prixSoins !== 0) {
@@ -139,11 +142,12 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
     sAcompteDate = ''
   }
   console.log(argsComptaPdfLastContract.rowCompta.acompteDate)
+  const sNbRooms = (nbRooms == 0) ? '' : ` (${nbRooms} chambre${(nbRooms>1) ? 's' : ''})`
   const reservations = [
     [ 'sArriveeDate', argsComptaPdfLastContract.options.from ],
     [ 'sDepartDate', argsComptaPdfLastContract.options.to ],
     [ 'sNbJours', argsComptaPdfLastContract.rowCompta.nbJours.toString() ],
-    [ 'sTarifJour', prixJour + '€' ],   // TODO: add number of rooms
+    [ 'sTarifJour', prixJour + '€' + sNbRooms ],
     [ 'sTotal', argsComptaPdfLastContract.rowCompta.total + '€' ],
     [ 'sAcompte', (argsComptaPdfLastContract.rowCompta.acompteAmount===undefined) ? ('0€') : (argsComptaPdfLastContract.rowCompta.acompteAmount + '€') ],
     [ 'sAcompteDate', sAcompteDate ],
