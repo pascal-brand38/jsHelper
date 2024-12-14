@@ -104,7 +104,9 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
     }
   } else {
     prixJour = prixChambreMin
-    nbRooms = 0
+    if (prixChambreMin===prixChambreMax) {
+      nbRooms = 0
+    }
   }
 
   if (prixSoins !== 0) {
