@@ -17,7 +17,7 @@ async function main() {
 
   const argv = process.argv
   if (argv.length !== 4) {
-    helperJs.error('Usage: node bin/livre-entrees-sorties.mjs /c/Users/pasca/Desktop/P*Cats/compta.xls 01/01/2023')
+    helperJs.error('Usage: node bin/livre-entrees-sorties.mjs /c/Users/pasca/Desktop/P*Cats/compta.ods 01/01/2023')
   }
 
   const comptaName = argv[2]
