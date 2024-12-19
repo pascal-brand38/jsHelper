@@ -639,6 +639,17 @@ function postSetPropFromFieldsV20230826(pdfObject, result) {
   Object.keys(chat).forEach(key => { chat[key] = chat[key].slice(0, lNom) })
 }
 
+function postSetPropFromFieldsV20241219(pdfObject, result) {
+  // check none is undefined
+  postSetPropNoUndefined(pdfObject, result)
+
+  // shrink cats array when less than 3 cats
+  let chat = pdfObject.getExtend().chat
+  chat.noms = chat.noms.filter(n => (n !== '') && (n !== undefined))
+  const lNom = chat.noms.length
+  Object.keys(chat).forEach(key => { chat[key] = chat[key].slice(0, lNom) })
+}
+
 
 function pdfExtractInfoDatas(version) {
   if (version === undefined) {
@@ -704,6 +715,38 @@ function pdfExtractInfoDatas(version) {
         },
       ],
       postSetPropFromFields: postSetPropFromFieldsV20230826,
+    }
+  } else if (version === 20241219) {
+    return {
+      setPropFromFieldsDatas: [
+        {
+          prop: 'proprio',
+          setPropFromFieldsDatas: [
+            { prop: 'nom',             method: setPropFromTextfieldCandidates,     args: [ 'pNom' ] },
+            { prop: 'adr1',            method: setPropFromTextfieldCandidates,     args: [ 'pAddr1' ] },
+            { prop: 'adr2',            method: setPropFromTextfieldCandidates,     args: [ 'pAddr2' ] },
+            { prop: 'tel',             method: setPropFromTextfieldCandidates,     args: [ 'pTel' ] },
+            { prop: 'email',           method: setPropFromTextfieldCandidates,     args: [ 'pEmail' ] },
+            { prop: 'urgenceNom',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence1' ] },
+            { prop: 'urgenceTel',      method: setPropFromTextfieldCandidates,     args: [ 'pUrgence2' ] },
+          ],
+        },
+        {
+          prop: 'chat',
+          setPropFromFieldsDatas: [
+            { prop: 'noms',            method: setProplist.fromTextfieldlist,     args: [ 'c1Nom', 'c2Nom', 'c3Nom' ] },
+            { prop: 'naissances',      method: setProplist.fromTextfieldlist,     args: [ 'c1Naissance', 'c2Naissance', 'c3Naissance' ] },
+            { prop: 'ids',             method: setProplist.fromTextfieldlist,     args: [ 'c1Id', 'c2Id', 'c3Id' ] },
+            { prop: 'races',           method: setProplist.fromTextfieldlist,     args: [ 'c1Race', 'c2Race', 'c3Race' ] },
+            { prop: 'felvs',           method: setProplist.fromTextfieldlist,     args: [ 'c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV' ] },
+            { prop: 'rcps',            method: setProplist.fromTextfieldlist,     args: [ 'c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP' ] },
+            { prop: 'maladies',        method: setProplist.fromTextfieldlistlist, args: [ [ 'c1Maladie1', 'c1Maladie2' ], [ 'c2Maladie1', 'c2Maladie2' ], [ 'c3Maladie1', 'c3Maladie2' ] ] },
+            { prop: 'males',           method: setProplist.fromChecklist,         args: [ 'c1Male', 'c2Male', 'c3Male' ] },
+            { prop: 'femelles',        method: setProplist.fromChecklist,         args: [ 'c1Femelle', 'c2Femelle', 'c3Femelle' ] },
+          ],
+        },
+      ],
+      postSetPropFromFields: postSetPropFromFieldsV20241219,
     }
   }
 
@@ -952,7 +995,7 @@ export default {
 
   // specific helpers used by pdf utilities to set prop and set fields of contract of the cattery
   helperPdf: {
-    currentVersionContrat: 20230826,
+    currentVersionContrat: 20241219,
     getVersion,
     getEmail,
     postErrorCheck,             // async

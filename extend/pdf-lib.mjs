@@ -81,16 +81,20 @@ function _setPropFromFields(setPropFromFieldsDatas, postproc, result=undefined) 
 }
 
 // set a textfield, or a list of text fields
-function _setTextfield(Textfield, text, fontToUse=undefined) {
-  const f = this.getForm().getTextField(Textfield);
+function _setTextfield(textField, text, fontToUse=undefined) {
+  const f = this.getForm().getTextField(textField);
   f.setText(text);
   if (fontToUse !== undefined) {
     f.updateAppearances(fontToUse)
   }
 }
 
-function _setTextfields(Textfields, texts, fontToUse=undefined) {
-  texts.forEach((text, index) => this.setTextfield(Textfields[index], text, fontToUse))
+function _setTextfields(textFields, texts, fontToUse=undefined) {
+  textFields.forEach((textField, index) => {
+    if (texts.length > index) {
+      this.setTextfield(textField, texts[index], fontToUse)
+    }
+  })
 }
 
 function _getTextfieldAsInt(field) {
@@ -143,7 +147,6 @@ PDFDocument.prototype.addText = _addText
 PDFDocument.prototype.checks = _checks
 PDFDocument.prototype.setPropFromFields = _setPropFromFields
 PDFDocument.prototype.setTextfield = _setTextfield
-PDFDocument.prototype.setTextfields = _setTextfields
 PDFDocument.prototype.setTextfields = _setTextfields
 PDFDocument.prototype.getTextfieldAsInt = _getTextfieldAsInt
 PDFDocument.prototype.getExtend = function () { return this.extend }

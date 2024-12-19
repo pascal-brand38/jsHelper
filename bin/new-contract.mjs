@@ -34,12 +34,12 @@ function fillCats(newContract, lastContract, argsComptaPdfLastContract, fontToUs
   newContract.setTextfields(['c1Race', 'c2Race', 'c3Race'], lastContract.getExtend().chat.races, fontToUse)
   newContract.setTextfields(['c1VaccinFELV', 'c2VaccinFELV', 'c3VaccinFELV'], lastContract.getExtend().chat.felvs, fontToUse)
   newContract.setTextfields(['c1VaccinRCP', 'c2VaccinRCP', 'c3VaccinRCP'], lastContract.getExtend().chat.rcps, fontToUse)
-  newContract.setTextfields(['c1Maladie1', 'c1Maladie2', 'c1Maladie3'], lastContract.getExtend().chat.maladies[0], fontToUse)
+  newContract.setTextfields(['c1Maladie1', 'c1Maladie2'], lastContract.getExtend().chat.maladies[0], fontToUse)
   if (lastContract.getExtend().chat.maladies[1] !== undefined) {
-    newContract.setTextfields(['c2Maladie1', 'c2Maladie2', 'c2Maladie3'], lastContract.getExtend().chat.maladies[1], fontToUse)
+    newContract.setTextfields(['c2Maladie1', 'c2Maladie2'], lastContract.getExtend().chat.maladies[1], fontToUse)
   }
   if (lastContract.getExtend().chat.maladies[2] !== undefined) {
-    newContract.setTextfields(['c3Maladie1', 'c3Maladie2', 'c3Maladie3'], lastContract.getExtend().chat.maladies[2], fontToUse)
+    newContract.setTextfields(['c3Maladie1', 'c3Maladie2'], lastContract.getExtend().chat.maladies[2], fontToUse)
   }
 
   // male / femelle
