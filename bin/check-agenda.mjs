@@ -47,11 +47,17 @@ function checkDates(dataCompta, dataAgenda) {
       const compta = dataCompta.filter(e => e[what] === d.date)
       const agenda = dataAgenda.filter(e => e[what] === d.date)
       if (compta.length !== agenda.length) {
+        const len = (compta.length<agenda.length) ? agenda.length : compta.length
         console.log(`--- ${what} on ${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} ----------------`)
-        console.log('Compta: ')
-        compta.forEach(c => console.log(`   ${c.name}`))
-        console.log('Agenda: ')
-        agenda.forEach(c => console.log(`   ${c.name}`))
+        let table = []
+        for (let i=0; i<len; i++) {
+          table.push({
+            'Agenda': (agenda[i] ? agenda[i].name : ''),
+            'Compta': (compta[i] ? compta[i].name : ''),
+          })
+        }
+        console.table(table)
+        console.log()
       }
     }
   })
