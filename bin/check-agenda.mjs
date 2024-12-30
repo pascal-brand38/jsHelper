@@ -87,9 +87,31 @@ function checkStatusPay(dataCompta) {
               console.log(`    Envoyé   ${arrivalStr} ${data.name} ${data.amountPay[index]}€`)
             }
             break
-          }
+        }
       })
     }
+
+    data.statusPay.forEach((status, index) => {
+      switch (status) {
+        case undefined:
+          if ((data.amountPay[index] !== undefined) || (data.datePay[index] !== undefined) || (data.typePay[index] !== undefined)) {
+            console.log(`*** status=${status} but some data for ${arrivalStr} ${data.name}`)
+          }
+          break
+        case 'Attente':
+          if ((data.amountPay[index] === undefined) || (data.datePay[index] !== undefined) || (data.typePay[index] !== undefined)) {
+            console.log(`*** status=${status} but wrong data for ${arrivalStr} ${data.name}`)
+          }
+          break
+        case 'Reçu':
+        case 'Envoyé':
+        case 'Encaissé':
+          if ((data.amountPay[index] === undefined) || (data.datePay[index] === undefined) || (data.typePay[index] === undefined)) {
+            console.log(`*** status=${status} but wrong data for ${arrivalStr} ${data.name}`)
+          }
+          break
+      }
+    })
   })
 }
 
