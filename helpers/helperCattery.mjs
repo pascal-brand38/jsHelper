@@ -288,6 +288,9 @@ const xlsFormatCompta = {
     { col: 'S', prop: 'extraStatus',                                        },
   ],
   postComputationRow: (row => {
+    row['amountPay'] = [ row['acompteAmount'], row['soldeAmount'], row['extraAmount'] ]
+    row['datePay']   = [ row['acompteDate'],   row['soldeDate'],   row['extraDate']   ]
+    row['typePay']   = [ row['acompteType'],   row['soldeType'],   row['extraType']   ]
     row['statusPay'] = [ row['acompteStatus'], row['soldeStatus'], row['extraStatus'] ]
     return row
   }),

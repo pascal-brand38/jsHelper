@@ -72,19 +72,19 @@ function checkStatusPay(dataCompta) {
     const epochArrival20 = epochArrival + DateTime.epochNDays(20)
     if (epochArrival <= epochToday) {
       //console.log(data.name)
-      data.statusPay.forEach(status => {
+      data.statusPay.forEach((status, index) => {
         switch (status) {
           case 'Attente':
-            console.log(`*** ATTENTE  ${arrivalStr} ${data.name}`)
+            console.log(`*** ATTENTE  ${arrivalStr} ${data.name} ${data.amountPay[index]}€`)
             break
           case 'Reçu':
             if (epochArrival10 < epochToday) {
-              console.log(`    Reçu     ${arrivalStr} ${data.name}`)
+              console.log(`    Reçu     ${arrivalStr} ${data.name} ${data.amountPay[index]}€`)
             }
             break
           case 'Envoyé':
             if (epochArrival20 < epochToday) {
-              console.log(`    Envoyé   ${arrivalStr} ${data.name}`)
+              console.log(`    Envoyé   ${arrivalStr} ${data.name} ${data.amountPay[index]}€`)
             }
             break
           }
