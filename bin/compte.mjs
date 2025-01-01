@@ -29,21 +29,63 @@ function initAccounts(workbook) {
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
 
-  rows.forEach(row => {
+  rows.forEach((row, index) => {
+    if (index < 5) {
+      return    // title of columns
+    }
     const account = row[0]
     const initDate = row[1]   // all the same date
     const initAmount = row[2] ? row[2] : 0
+    const type1 = row[3]    // immo / liquidites
+    const type2 = row[4]    // compte courant, livrets,...
+    const type3 = row[5]    // court terme, long terme,...
 
     if (account) {
       accounts[account] = {}
       accounts[account].init = initAmount
       accounts[account].initDate = initDate
+      accounts[account].lastUpdate = initDate
       accounts[account].amount = initAmount
+      accounts[account].lastAmount = 0
+      accounts[account].type1 = type1
+      accounts[account].type2 = type2
+      accounts[account].type3 = type3
     }
   })
 
   getLastAmounts(workbook, accounts)
   return accounts
+}
+
+function createResume(workbook, accounts) {
+  const dataSheet = workbook.sheet("Résumé")
+  const dataRange = dataSheet.usedRange()
+  const rows = dataRange.value()
+  console.log(dataRange)
+
+  // clean the rows, apart the title
+  rows.forEach((row, index) => {
+    if (index < 5) {
+      return    // title of columns
+    }
+    rows[index] = [ '', '', '' ]
+  })
+
+  let currentRow = 4
+  let lastType2 = undefined
+  Object.keys(accounts).map(key => {
+    if (accounts[key].amount !== 0) {
+      if (accounts[key].type2 !== lastType2) {
+        lastType2 = accounts[key].type2
+        currentRow++
+      }
+      rows[currentRow] = [ key, accounts[key].amount, accounts[key].lastUpdate ]
+      currentRow++
+    }
+  })
+
+
+  dataRange.value(rows)
 }
 
 
@@ -79,15 +121,16 @@ async function main() {
 
     if (account && amount && (date > accounts[account].initDate)) {
       accounts[account].amount += amount
+      accounts[account].amount = Math.round(accounts[account].amount * 100) / 100
+      if (accounts[account].lastUpdate < date) {
+        accounts[account].lastUpdate = date
+      }
     }
   })
 
   const amounts = {}
-  Object.keys(accounts).map(key => amounts[key] = Math.round(accounts[key].amount * 100) / 100)
   Object.keys(accounts).map(key => {
-    if (amounts[key] ===  accounts[key].lastAmount) {
-      delete amounts[key]
-    } else {
+    if (accounts[key].amount !==  accounts[key].lastAmount) {
       amounts[key] = `${amounts[key]}€  vs  ${accounts[key].lastAmount}€ (expected)`
     }
   })
@@ -98,7 +141,10 @@ async function main() {
   // const r = dataSheet.range("A10195:E10195");
   // r.value([[39448, 39448, 39448, 39448, 39448,]])
 
-  // await workbook.toFileAsync(compteResult);
+  createResume(workbook, accounts)
+
+
+  await workbook.toFileAsync(compteResult);
 }
 
 await main();
