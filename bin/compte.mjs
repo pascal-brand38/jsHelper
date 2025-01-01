@@ -5,6 +5,8 @@
 
 import fs from 'fs'
 import xlsxPopulate from 'xlsx-populate'
+import { DateTime } from '../extend/luxon.mjs'
+
 
 import helperJs from '../helpers/helperJs.mjs'
 
@@ -61,7 +63,6 @@ function createResume(workbook, accounts) {
   const dataSheet = workbook.sheet("Résumé")
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
-  console.log(dataRange)
 
   // clean the rows, apart the title
   rows.forEach((row, index) => {
@@ -88,18 +89,81 @@ function createResume(workbook, accounts) {
   dataRange.value(rows)
 }
 
+function readTSV(filename) {
+  const text = fs.readFileSync(filename, 'utf8')
+  const rows = []
+  text.split('\n').forEach(rowText => {
+    const row = rowText.trim().split('\t')
+    rows.push(row)
+  })
+  return rows
+}
+
+function frenchTextToFloat(text) {
+  return parseFloat(text.replaceAll(',', '.'))
+}
+
+function readCCPTSV(filename) {
+  let rows = readTSV(filename)
+
+  // look for solde in TSV
+  let solde = undefined
+  rows.forEach(row => {
+    if (row[0] && row[0].startsWith('Solde (EUROS)')) {
+      solde = frenchTextToFloat(row[1])
+    }
+  })
+
+  // leave only amount data, processed with date and value
+  rows = rows.filter(row => ((row.length === 3) && !isNaN(frenchTextToFloat(row[2]))))
+  rows.forEach(row => {
+    row[0] = DateTime.fromFormatStartOfDay(row[0]).toExcelSerial()
+    row[1] = row[1].replaceAll('"', '')
+    row[2] = frenchTextToFloat(row[2])
+  })
+  rows.sort((a, b) => a[0] - b[0])
+
+  return { solde, rows }
+}
+
+function insertCCPData(insRows, workbook) {
+  const dataSheet = workbook.sheet("data")
+  const dataRange = dataSheet.usedRange()
+  const rows = dataRange.value()
+  let addRows = []
+  insRows.forEach(insRow => {
+    let found = rows.some(row => (insRow[0]===row[0]) && (insRow[1]===row[2]) && (insRow[2]===row[3]))
+    if (!found) {
+      console.log(`Not found: ${insRow}`)
+      addRows.push([ insRow[0], 'CCP', insRow[1], insRow[2], '=== ERREUR ===' ])
+    }
+  })
+  if (addRows.length >= 1) {
+    console.log(`Inserting ${addRows.length} CCP data`)
+    console.log(`${dataRange._maxRowNumber + 1} ${dataRange._minColNumber} $  ${dataRange._maxRowNumber + addRows.length} ${dataRange._maxColNumber}`)
+    const addRange = dataSheet.range(dataRange._maxRowNumber + 1, dataRange._minColumnNumber, dataRange._maxRowNumber + addRows.length, dataRange._maxColumnNumber)
+    addRange.value(addRows)
+  }
+}
 
 async function main() {
   const argv = process.argv
-  if (argv.length !== 3) {
+  if (argv.length < 3) {
     helperJs.error('Usage: node bin/comptes.mjs /c/Users/pasca/Desktop/compte.xlsx')
   }
 
-
   const compteName = argv[2]
   const compteResult = 'C:/Users/pasca/Desktop/compte-copy.xlsx'
+  const insName = argv[3]
 
   const workbook = await xlsxPopulate.fromFileAsync(compteName)
+  let ccpSolde = undefined
+
+  if (insName) {
+    const { solde, rows: insRows } = readCCPTSV(insName)
+    insertCCPData(insRows, workbook)
+    ccpSolde = solde  // the one provided form data transfer from the bank
+  }
 
   const accounts = initAccounts(workbook)
 
@@ -128,18 +192,18 @@ async function main() {
     }
   })
 
+  // check CCP solde if known
+  if (ccpSolde && accounts['CCP'].amount !== ccpSolde) {
+    console.log(`\x1b[31mPLEASE CHECK: CCP solde: ${accounts['CCP'].amount}€ (computed)  vs  ${ccpSolde}€ (provided)\x1b[0m`)
+  }
+
   const amounts = {}
   Object.keys(accounts).map(key => {
     if (accounts[key].amount !==  accounts[key].lastAmount) {
-      amounts[key] = `${amounts[key]}€  vs  ${accounts[key].lastAmount}€ (expected)`
+      amounts[key] = `${accounts[key].amount}€  vs  ${accounts[key].lastAmount}€ (expected)`
     }
   })
   console.log(amounts)
-
-  // console.log(dataSheet.usedRange())
-
-  // const r = dataSheet.range("A10195:E10195");
-  // r.value([[39448, 39448, 39448, 39448, 39448,]])
 
   createResume(workbook, accounts)
 
