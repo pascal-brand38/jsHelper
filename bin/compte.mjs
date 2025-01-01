@@ -25,6 +25,48 @@ function getLastAmounts(workbook, accounts) {
   })
 }
 
+
+function updateCategories(workbook) {
+  function initCategoryMatch(workbook) {
+    const categoryMatchSheet = workbook.sheet("category")
+    const categoryMatchRange = categoryMatchSheet.usedRange()
+    const rows = categoryMatchRange.value()
+    rows.shift()
+    rows.shift()
+    rows.shift()
+    rows.shift()
+    rows.shift()
+
+    return rows.filter(row => row[0])
+  }
+
+  const categoryMatchRows = initCategoryMatch(workbook)
+
+  const dataSheet = workbook.sheet("data")
+  const dataRange = dataSheet.usedRange()
+  const rows = dataRange.value()
+  let update = false
+  rows.forEach((row, index) => {
+    const label = row[2]
+    const category = row[4]
+    if (label && !category || category === '=== ERREUR ===') {
+      // try to set the category
+      categoryMatchRows.some(match => {
+        if (label.startsWith(match[0])) {
+          row[4] = match[1]
+          update = true
+          return true
+        } else {
+          return false
+        }
+      })
+    }
+  })
+  if (update) {
+    dataRange.value(rows)
+  }
+}
+
 function initAccounts(workbook) {
   const accounts = {}
   const dataSheet = workbook.sheet("init")
@@ -164,6 +206,8 @@ async function main() {
     insertCCPData(insRows, workbook)
     ccpSolde = solde  // the one provided form data transfer from the bank
   }
+
+  updateCategories(workbook)
 
   const accounts = initAccounts(workbook)
 
