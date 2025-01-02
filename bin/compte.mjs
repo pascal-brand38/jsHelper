@@ -30,14 +30,18 @@ function updateCategories(workbook) {
   function initCategoryMatch(workbook) {
     const categoryMatchSheet = workbook.sheet("category")
     const categoryMatchRange = categoryMatchSheet.usedRange()
-    const rows = categoryMatchRange.value()
+    let rows = categoryMatchRange.value()
     rows.shift()
     rows.shift()
     rows.shift()
     rows.shift()
     // rows.shift()
 
-    return rows.filter(row => row[0])
+    rows =  rows.filter(row => row[0])
+    rows.forEach((row, index) => {
+      rows[index][0] = new RegExp(`^${row[0]}`, 'i');
+    })
+    return rows
   }
 
   const categoryMatchRows = initCategoryMatch(workbook)
@@ -49,10 +53,12 @@ function updateCategories(workbook) {
   rows.forEach((row, index) => {
     const label = row[2]
     const category = row[4]
-    if (label && !category || category === '=== ERREUR ===') {
+    if (label && (!category || category === '=== ERREUR ===')) {
       // try to set the category
       categoryMatchRows.some(match => {
-        if (label.startsWith(match[0])) {
+        // let re = new RegExp(`^${match[0]}`, 'i');
+        if (match[0].exec(label)) {
+        // if (label.startsWith(match[0])) {
           row[4] = match[1]
           update = true
           return true
