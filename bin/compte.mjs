@@ -246,6 +246,8 @@ function perYear(workbook) {
         yearData[year].category[category] = 0
       }
       yearData[year].category[category] += amount
+      yearData[year].category[category] = Math.round(yearData[year].category[category] * 100) / 100
+
     }
   })
   return yearData
