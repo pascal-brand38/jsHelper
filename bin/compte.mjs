@@ -35,7 +35,7 @@ function updateCategories(workbook) {
     rows.shift()
     rows.shift()
     rows.shift()
-    rows.shift()
+    // rows.shift()
 
     return rows.filter(row => row[0])
   }
@@ -101,7 +101,7 @@ function initAccounts(workbook) {
   return accounts
 }
 
-function createResume(workbook, accounts) {
+function createResumeSheet(workbook, accounts) {
   const dataSheet = workbook.sheet("Résumé")
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
@@ -188,6 +188,63 @@ function insertCCPData(insRows, workbook) {
   }
 }
 
+function displayErrors(workbook, accounts, yearData, ccpSolde) {
+  const errors = []
+  if (ccpSolde && accounts['CCP'].amount !== ccpSolde) {
+    errors.push(`PLEASE CHECK: CCP solde: ${accounts['CCP'].amount}€ (computed)  vs  ${ccpSolde}€ (provided)`)
+  }
+
+  Object.keys(accounts).map(key => {
+    if (accounts[key].amount !==  accounts[key].lastAmount) {
+      errors.push(`${key}: ${accounts[key].amount}€ (computed) vs  ${accounts[key].lastAmount}€ (expected from tsv imported file)`)
+    }
+  })
+
+  // check all labeled are categorized
+  Object.keys(yearData).forEach(key => {
+    if (yearData[key].category['=== ERREUR ==='] !== undefined) {
+      errors.push(`${key}: contains not categorized values (alimentation,...)`)
+    }
+    if (yearData[key].category['Virement'] !== 0) {
+      errors.push(`${key}: Virement are not null: ${yearData[key].category['Virement']}`)
+    }
+  })
+
+  if (errors.length !== 0) {
+    console.log('\x1b[32m' + '******* ERRORS TO BE CHECKED' + '\x1b[0m')
+    errors.forEach(e => console.log('\x1b[31m' + e + '\x1b[0m'))
+  } else {
+    console.log('\x1b[32m' + '******* No detected errors' + '\x1b[0m')
+  }
+}
+
+function perYear(workbook) {
+  const yearData = {}
+  const dataSheet = workbook.sheet("data")
+  const dataRange = dataSheet.usedRange()
+  const rows = dataRange.value()
+  rows.forEach(row => {
+    const date = row[0]       // excel serial date
+    const account = row[1]    // ex: 'Livret'
+    const label = row[2]
+    const amount = row[3]
+    const category = row[4] ? row[4] : '=== ERREUR ==='
+
+    if (date) {
+      const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
+      if (yearData[year] === undefined) {
+        yearData[year] = {}
+        yearData[year].category = {}
+      }
+      if (yearData[year].category[category] === undefined) {
+        yearData[year].category[category] = 0
+      }
+      yearData[year].category[category] += amount
+    }
+  })
+  return yearData
+}
+
 async function main() {
   const argv = process.argv
   if (argv.length < 3) {
@@ -214,12 +271,6 @@ async function main() {
   const dataSheet = workbook.sheet("data")
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
-  rows.forEach((row, index) => {
-    const date = row[0]
-    if (!date) {
-      row[0] = rows[index-1][0]
-    }
-  })
   rows.forEach(row => {
     const date = row[0]       // excel serial date
     const account = row[1]    // ex: 'Livret'
@@ -236,20 +287,13 @@ async function main() {
     }
   })
 
+  createResumeSheet(workbook, accounts)
+
   // check CCP solde if known
-  if (ccpSolde && accounts['CCP'].amount !== ccpSolde) {
-    console.log(`\x1b[31mPLEASE CHECK: CCP solde: ${accounts['CCP'].amount}€ (computed)  vs  ${ccpSolde}€ (provided)\x1b[0m`)
-  }
+  const yearData = perYear(workbook)
+  displayErrors(workbook, accounts, yearData, ccpSolde)
 
-  const amounts = {}
-  Object.keys(accounts).map(key => {
-    if (accounts[key].amount !==  accounts[key].lastAmount) {
-      amounts[key] = `${accounts[key].amount}€  vs  ${accounts[key].lastAmount}€ (expected)`
-    }
-  })
-  console.log(amounts)
 
-  createResume(workbook, accounts)
 
 
   await workbook.toFileAsync(compteResult);
