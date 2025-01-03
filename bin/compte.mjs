@@ -152,7 +152,7 @@ function frenchTextToFloat(text) {
   return parseFloat(text.replaceAll(',', '.'))
 }
 
-function readCCPTSV(filename) {
+function readLBPTSV(filename) {
   let rows = readTSV(filename)
 
   // look for solde in TSV
@@ -175,7 +175,7 @@ function readCCPTSV(filename) {
   return { solde, rows }
 }
 
-function insertCCPData(insRows, workbook) {
+function insertLBPData(insRows, insLabel, workbook) {
   const dataSheet = workbook.sheet("data")
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
@@ -183,36 +183,35 @@ function insertCCPData(insRows, workbook) {
   insRows.forEach(insRow => {
     let found = rows.some(row => (insRow[0]===row[0]) && (insRow[1]===row[2]) && (insRow[2]===row[3]))
     if (!found) {
-      console.log(`Not found: ${insRow}`)
-      addRows.push([ insRow[0], 'CCP', insRow[1], insRow[2], '=== ERREUR ===' ])
+      addRows.push([ insRow[0], insLabel, insRow[1], insRow[2], '=== ERREUR ===' ])
     }
   })
   if (addRows.length >= 1) {
-    console.log(`Inserting ${addRows.length} CCP data`)
+    console.log(`Inserting ${addRows.length} ${insLabel} data`)
     console.log(`${dataRange._maxRowNumber + 1} ${dataRange._minColNumber} $  ${dataRange._maxRowNumber + addRows.length} ${dataRange._maxColNumber}`)
     const addRange = dataSheet.range(dataRange._maxRowNumber + 1, dataRange._minColumnNumber, dataRange._maxRowNumber + addRows.length, dataRange._maxColumnNumber)
     addRange.value(addRows)
   }
 }
 
-function displayErrors(workbook, accounts, yearData, ccpSolde) {
+function displayErrors(workbook, accounts, yearData, lbpSolde, insLabel) {
   const errors = []
-  if (ccpSolde && accounts['CCP'].amount !== ccpSolde) {
-    errors.push(`PLEASE CHECK: CCP solde: ${accounts['CCP'].amount}€ (computed)  vs  ${ccpSolde}€ (provided)`)
+  if (lbpSolde && accounts[insLabel].amount !== lbpSolde) {
+    errors.push(`PLEASE CHECK: ${insLabel} solde: ${accounts[insLabel].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
   }
 
-  Object.keys(accounts).map(key => {
-    if (accounts[key].amount !==  accounts[key].lastAmount) {
-      errors.push(`${key}: ${accounts[key].amount}€ (computed) vs  ${accounts[key].lastAmount}€ (expected from tsv imported file)`)
-    }
-  })
+  // Object.keys(accounts).map(key => {
+  //   if (accounts[key].amount !==  accounts[key].lastAmount) {
+  //     errors.push(`${key}: ${accounts[key].amount}€ (computed) vs  ${accounts[key].lastAmount}€ (provided)`)
+  //   }
+  // })
 
   // check all labeled are categorized
   Object.keys(yearData).forEach(key => {
     if (yearData[key].category['=== ERREUR ==='] !== undefined) {
       errors.push(`${key}: contains not categorized values (alimentation,...)`)
     }
-    if (yearData[key].category['Virement'] !== 0) {
+    if ((yearData[key].category['Virement'] !== 0) && (yearData[key].category['Virement'] !== undefined)) {
       errors.push(`${key}: Virement are not null: ${yearData[key].category['Virement']}`)
     }
   })
@@ -279,19 +278,23 @@ async function save(compteName, workbook) {
 async function main() {
   const argv = process.argv
   if (argv.length < 3) {
-    helperJs.error('Usage: node bin/comptes.mjs /c/Users/pasca/Desktop/compte.xlsx')
+    helperJs.error('Usage: node bin/comptes.mjs /c/Users/pasca/Desktop/compte.xlsx file.txv CCP')
   }
 
   const compteName = argv[2]
   const insName = argv[3]
+  const insLabel = argv[4]
 
   const workbook = await xlsxPopulate.fromFileAsync(compteName)
-  let ccpSolde = undefined
+  let lbpSolde = undefined
 
   if (insName) {
-    const { solde, rows: insRows } = readCCPTSV(insName)
-    insertCCPData(insRows, workbook)
-    ccpSolde = solde  // the one provided form data transfer from the bank
+    if (!insLabel) {
+      helperJs.error('Usage: node bin/comptes.mjs /c/Users/pasca/Desktop/compte.xlsx file.txv CCP')
+    }
+    const { solde, rows: insRows } = readLBPTSV(insName)
+    insertLBPData(insRows, insLabel, workbook)
+    lbpSolde = solde  // the one provided form data transfer from the bank
   }
 
   updateCategories(workbook)
@@ -319,9 +322,9 @@ async function main() {
 
   createResumeSheet(workbook, accounts)
 
-  // check CCP solde if known
+  // check LBP solde if known
   const yearData = perYear(workbook)
-  displayErrors(workbook, accounts, yearData, ccpSolde)
+  displayErrors(workbook, accounts, yearData, lbpSolde, insLabel)
 
 
   await save(compteName, workbook)
