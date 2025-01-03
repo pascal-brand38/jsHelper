@@ -4,6 +4,7 @@
 // MIT License
 
 import fs from 'fs'
+import path from 'path'
 import xlsxPopulate from 'xlsx-populate'
 import { DateTime } from '../extend/luxon.mjs'
 
@@ -253,6 +254,21 @@ function perYear(workbook) {
   return yearData
 }
 
+async function save(compteName, workbook) {
+  // save a backup
+  const now = DateTime.now().setZone('Europe/Paris').toFormat('yyyyMMdd-HHmmss')
+  const dir = path.dirname(compteName)
+  const ext = path.extname(compteName)
+  const base = path.basename(compteName, ext)
+
+  const copyName = path.join(dir, base + '-' + now + ext)
+  console.log(dir, base, ext)
+  console.log(copyName)
+  fs.copyFileSync(compteName, copyName)
+  await workbook.toFileAsync(compteName);
+}
+
+
 async function main() {
   const argv = process.argv
   if (argv.length < 3) {
@@ -260,7 +276,6 @@ async function main() {
   }
 
   const compteName = argv[2]
-  const compteResult = 'C:/Users/pasca/Desktop/compte-copy.xlsx'
   const insName = argv[3]
 
   const workbook = await xlsxPopulate.fromFileAsync(compteName)
@@ -302,9 +317,9 @@ async function main() {
   displayErrors(workbook, accounts, yearData, ccpSolde)
 
 
+  await save(compteName, workbook)
 
 
-  await workbook.toFileAsync(compteResult);
 }
 
 await main();
