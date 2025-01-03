@@ -230,11 +230,11 @@ function perYear(workbook) {
   const dataSheet = workbook.sheet("data")
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
-  rows.forEach(row => {
+  rows.forEach((row, index) => {
     const date = row[0]       // excel serial date
     const account = row[1]    // ex: 'Livret'
     const label = row[2]
-    const amount = row[3]
+    const amount = row[3] ? row[3] : 0
     const category = row[4] ? row[4] : '=== ERREUR ==='
 
     if (date) {
@@ -244,11 +244,18 @@ function perYear(workbook) {
         yearData[year].category = {}
       }
       if (yearData[year].category[category] === undefined) {
+        if (category === '=== ERREUR ===') {
+          // display a warning
+          console.log('\x1b[33m' + `=== ERREUR === at line ${index+1}` + '\x1b[0m')
+        }
         yearData[year].category[category] = 0
       }
+      const wasNan = isNaN(yearData[year].category[category])
       yearData[year].category[category] += amount
       yearData[year].category[category] = Math.round(yearData[year].category[category] * 100) / 100
-
+      if (!wasNan && isNaN(yearData[year].category[category])) {
+        console.log('\x1b[33m' + `NaN at line ${index+1}` + '\x1b[0m')
+      }
     }
   })
   return yearData
