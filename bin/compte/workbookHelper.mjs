@@ -8,6 +8,20 @@
 export class workbookHelper {
   constructor(workbook) {
     this.workbook = workbook
+    this.errors = []             // list of strings of errors to check
+  }
+
+  setError(text) {
+    this.errors.push(text)
+  }
+
+  displayErrors() {
+    if (this.errors.length !== 0) {
+      console.log('\x1b[32m' + '******* ERRORS TO BE CHECKED' + '\x1b[0m')
+      this.errors.forEach(e => console.log('\x1b[31m' + e + '\x1b[0m'))
+    } else {
+      console.log('\x1b[32m' + '******* No detected errors' + '\x1b[0m')
+    }
   }
 
   // "data" sheet

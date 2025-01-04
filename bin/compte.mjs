@@ -147,10 +147,9 @@ function createResumeSheet(workbook, accounts) {
 }
 
 
-function displayErrors(workbook, accounts, yearData, lbpSolde, importAccountName) {
-  const errors = []
+function displayErrors(workbookHelp, accounts, yearData, lbpSolde, importAccountName) {
   if (lbpSolde && accounts[importAccountName].amount !== lbpSolde) {
-    errors.push(`PLEASE CHECK: ${importAccountName} solde: ${accounts[importAccountName].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
+    workbookHelp.setError(`PLEASE CHECK: ${importAccountName} solde: ${accounts[importAccountName].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
   }
 
   // Object.keys(accounts).map(key => {
@@ -162,22 +161,18 @@ function displayErrors(workbook, accounts, yearData, lbpSolde, importAccountName
   // check all labeled are categorized
   Object.keys(yearData).forEach(key => {
     if (yearData[key].category['=== ERREUR ==='] !== undefined) {
-      errors.push(`${key}: contains not categorized values (alimentation,...)`)
+      workbookHelp.setError(`${key}: contains not categorized values (alimentation,...)`)
     }
     if ((yearData[key].category['Virement'] !== 0) && (yearData[key].category['Virement'] !== undefined)) {
-      errors.push(`${key}: Virement are not null: ${yearData[key].category['Virement']}`)
+      workbookHelp.setError(`${key}: Virement are not null: ${yearData[key].category['Virement']}`)
     }
   })
 
-  if (errors.length !== 0) {
-    console.log('\x1b[32m' + '******* ERRORS TO BE CHECKED' + '\x1b[0m')
-    errors.forEach(e => console.log('\x1b[31m' + e + '\x1b[0m'))
-  } else {
-    console.log('\x1b[32m' + '******* No detected errors' + '\x1b[0m')
-  }
+  workbookHelp.displayErrors()
 }
 
-function perYear(workbook) {
+function perYear(workbookHelp) {
+  const workbook = workbookHelp.workbook
   const yearData = {}
   const dataSheet = workbook.sheet("data")
   const dataRange = dataSheet.usedRange()
@@ -199,7 +194,7 @@ function perYear(workbook) {
       if (yearData[year].category[category] === undefined) {
         if (category === '=== ERREUR ===') {
           // display a warning
-          console.log('\x1b[33m' + `=== ERREUR === at line ${index+1}` + '\x1b[0m')
+          workbookHelp.setError(`Year ${year}: === ERREUR === at line ${index+1}`)
         }
         yearData[year].category[category] = 0
       }
@@ -272,8 +267,8 @@ async function main() {
 
   createResumeSheet(workbook, accounts)
 
-  const yearData = perYear(workbook)
-  displayErrors(workbook, accounts, yearData, lbpSolde, importAccountName)
+  const yearData = perYear(workbookHelp)
+  displayErrors(workbookHelp, accounts, yearData, lbpSolde, importAccountName)
 
 
   // await save(compteName, workbook)
