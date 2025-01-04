@@ -3,13 +3,20 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
+// TODO: sort (but keep space between year data)
+// TODO: check account exist before import
+// TODO: check category exists
+// TODO: check remb.
+// TODO: args reader
+// TODO: refactor to have be able to change the xls format easily
+// TODO: console in green, red,... to be added in utils
+
 import fs from 'fs'
 import path from 'path'
 import xlsxPopulate from 'xlsx-populate'
 import { DateTime } from '../extend/luxon.mjs'
-
-
 import helperJs from '../helpers/helperJs.mjs'
+import { importLBPData } from './compte/import.mjs'
 
 function getLastAmounts(workbook, accounts) {
   const dataSheet = workbook.sheet("last")
@@ -138,66 +145,11 @@ function createResumeSheet(workbook, accounts) {
   dataRange.value(rows)
 }
 
-function readTSV(filename) {
-  const text = fs.readFileSync(filename, 'utf8')
-  const rows = []
-  text.split('\n').forEach(rowText => {
-    const row = rowText.trim().split('\t')
-    rows.push(row)
-  })
-  return rows
-}
 
-function frenchTextToFloat(text) {
-  return parseFloat(text.replaceAll(',', '.'))
-}
-
-function readLBPTSV(filename) {
-  let rows = readTSV(filename)
-
-  // look for solde in TSV
-  let solde = undefined
-  rows.forEach(row => {
-    if (row[0] && row[0].startsWith('Solde (EUROS)')) {
-      solde = frenchTextToFloat(row[1])
-    }
-  })
-
-  // leave only amount data, processed with date and value
-  rows = rows.filter(row => ((row.length === 3) && !isNaN(frenchTextToFloat(row[2]))))
-  rows.forEach(row => {
-    row[0] = DateTime.fromFormatStartOfDay(row[0]).toExcelSerial()
-    row[1] = row[1].replaceAll('"', '')
-    row[2] = frenchTextToFloat(row[2])
-  })
-  rows.sort((a, b) => a[0] - b[0])
-
-  return { solde, rows }
-}
-
-function insertLBPData(insRows, insLabel, workbook) {
-  const dataSheet = workbook.sheet("data")
-  const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
-  let addRows = []
-  insRows.forEach(insRow => {
-    let found = rows.some(row => (insRow[0]===row[0]) && (insRow[1]===row[2]) && (insRow[2]===row[3]))
-    if (!found) {
-      addRows.push([ insRow[0], insLabel, insRow[1], insRow[2], '=== ERREUR ===' ])
-    }
-  })
-  if (addRows.length >= 1) {
-    console.log(`Inserting ${addRows.length} ${insLabel} data`)
-    console.log(`${dataRange._maxRowNumber + 1} ${dataRange._minColNumber} $  ${dataRange._maxRowNumber + addRows.length} ${dataRange._maxColNumber}`)
-    const addRange = dataSheet.range(dataRange._maxRowNumber + 1, dataRange._minColumnNumber, dataRange._maxRowNumber + addRows.length, dataRange._maxColumnNumber)
-    addRange.value(addRows)
-  }
-}
-
-function displayErrors(workbook, accounts, yearData, lbpSolde, insLabel) {
+function displayErrors(workbook, accounts, yearData, lbpSolde, importAccountName) {
   const errors = []
-  if (lbpSolde && accounts[insLabel].amount !== lbpSolde) {
-    errors.push(`PLEASE CHECK: ${insLabel} solde: ${accounts[insLabel].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
+  if (lbpSolde && accounts[importAccountName].amount !== lbpSolde) {
+    errors.push(`PLEASE CHECK: ${importAccountName} solde: ${accounts[importAccountName].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
   }
 
   // Object.keys(accounts).map(key => {
@@ -230,8 +182,8 @@ function perYear(workbook) {
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
   rows.forEach((row, index) => {
-    const date = row[0]       // excel serial date
-    const account = row[1]    // ex: 'Livret'
+    const date = row[0]                     // excel serial date
+    const account = row[1]                  // ex: 'Livret'
     const label = row[2]
     const amount = row[3] ? row[3] : 0
     const category = row[4] ? row[4] : '=== ERREUR ==='
@@ -242,6 +194,7 @@ function perYear(workbook) {
         yearData[year] = {}
         yearData[year].category = {}
       }
+
       if (yearData[year].category[category] === undefined) {
         if (category === '=== ERREUR ===') {
           // display a warning
@@ -271,6 +224,8 @@ async function save(compteName, workbook) {
   console.log(dir, base, ext)
   console.log(copyName)
   fs.copyFileSync(compteName, copyName)
+
+  // save the updated execl file
   await workbook.toFileAsync(compteName);
 }
 
@@ -282,20 +237,16 @@ async function main() {
   }
 
   const compteName = argv[2]
-  const insName = argv[3]
-  const insLabel = argv[4]
-
-  const workbook = await xlsxPopulate.fromFileAsync(compteName)
-  let lbpSolde = undefined
-
-  if (insName) {
-    if (!insLabel) {
+  const importName = argv[3]
+  const importAccountName = argv[4]
+  if (importName) {
+    if (!importAccountName) {
       helperJs.error('Usage: node bin/comptes.mjs /c/Users/pasca/Desktop/compte.xlsx file.txv CCP')
     }
-    const { solde, rows: insRows } = readLBPTSV(insName)
-    insertLBPData(insRows, insLabel, workbook)
-    lbpSolde = solde  // the one provided form data transfer from the bank
   }
+
+  const workbook = await xlsxPopulate.fromFileAsync(compteName)
+  const lbpSolde = importLBPData(importName, importAccountName, workbook)
 
   updateCategories(workbook)
 
@@ -322,9 +273,8 @@ async function main() {
 
   createResumeSheet(workbook, accounts)
 
-  // check LBP solde if known
   const yearData = perYear(workbook)
-  displayErrors(workbook, accounts, yearData, lbpSolde, insLabel)
+  displayErrors(workbook, accounts, yearData, lbpSolde, importAccountName)
 
 
   await save(compteName, workbook)
