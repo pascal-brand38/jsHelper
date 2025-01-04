@@ -172,18 +172,11 @@ function displayErrors(workbookHelp, accounts, yearData, lbpSolde, importAccount
 }
 
 function perYear(workbookHelp) {
-  const workbook = workbookHelp.workbook
   const yearData = {}
-  const dataSheet = workbook.sheet("data")
-  const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
-  rows.forEach((row, index) => {
-    const date = row[0]                     // excel serial date
-    const account = row[1]                  // ex: 'Livret'
-    const label = row[2]
-    const amount = row[3] ? row[3] : 0
-    const category = row[4] ? row[4] : '=== ERREUR ==='
 
+  function process(index, date, account, label, amount, category) {
+    amount = amount ? amount : 0
+    category = category ? category : '=== ERREUR ==='
     if (date) {
       const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
       if (yearData[year] === undefined) {
@@ -202,10 +195,13 @@ function perYear(workbookHelp) {
       yearData[year].category[category] += amount
       yearData[year].category[category] = Math.round(yearData[year].category[category] * 100) / 100
       if (!wasNan && isNaN(yearData[year].category[category])) {
-        console.log('\x1b[33m' + `NaN at line ${index+1}` + '\x1b[0m')
+        workbookHelp.setError(`NaN at line ${index+1}`)
       }
     }
-  })
+  }
+
+  workbookHelp.dataSheetForEachRow(process)
+
   return yearData
 }
 
@@ -229,7 +225,7 @@ async function save(compteName, workbook) {
 function getAccounts(workbookHelp) {
   const accounts = initAccounts(workbookHelp.workbook)
 
-  function process(date, account, label, amount, category) {
+  function process(index, date, account, label, amount, category) {
     if (account && amount && (date > accounts[account].initDate)) {
       accounts[account].amount += amount
       accounts[account].amount = Math.round(accounts[account].amount * 100) / 100

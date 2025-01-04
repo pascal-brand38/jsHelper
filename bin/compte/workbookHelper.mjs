@@ -36,15 +36,15 @@ export class workbookHelper {
   }
 
   // callback is a function taking in arguments:
-  //    (date, account, label, amount, category)
+  //    (index, date, account, label, amount, category)
   dataSheetForEachRow(callback) {
     const dataSheet = this.workbook.sheet("data")
     const dataRange = dataSheet.usedRange()
     const rows = dataRange.value()
 
-    rows.forEach(row => {
+    rows.forEach((row, index) => {
       const { date, account, label, amount, category } = this.dataSheetExtractRow(row)
-      callback(date, account, label, amount, category)
+      callback(index, date, account, label, amount, category)
     })
   }
 }
