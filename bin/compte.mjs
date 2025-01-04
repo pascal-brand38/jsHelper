@@ -17,6 +17,7 @@ import xlsxPopulate from 'xlsx-populate'
 import { DateTime } from '../extend/luxon.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 import { importLBPData } from './compte/import.mjs'
+import { workbookHelper } from './compte/workbookHelper.mjs'
 
 function getLastAmounts(workbook, accounts) {
   const dataSheet = workbook.sheet("last")
@@ -230,6 +231,22 @@ async function save(compteName, workbook) {
 }
 
 
+function getAccounts(workbookHelp) {
+  const accounts = initAccounts(workbookHelp.workbook)
+
+  function process(date, account, label, amount, category) {
+    if (account && amount && (date > accounts[account].initDate)) {
+      accounts[account].amount += amount
+      accounts[account].amount = Math.round(accounts[account].amount * 100) / 100
+      if (accounts[account].lastUpdate < date) {
+        accounts[account].lastUpdate = date
+      }
+    }
+  }
+  workbookHelp.dataSheetForEachRow(process)
+  return accounts
+}
+
 async function main() {
   const argv = process.argv
   if (argv.length < 3) {
@@ -246,30 +263,12 @@ async function main() {
   }
 
   const workbook = await xlsxPopulate.fromFileAsync(compteName)
+  const workbookHelp = new workbookHelper(workbook)
+
   const lbpSolde = importLBPData(importName, importAccountName, workbook)
 
   updateCategories(workbook)
-
-  const accounts = initAccounts(workbook)
-
-  const dataSheet = workbook.sheet("data")
-  const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
-  rows.forEach(row => {
-    const date = row[0]       // excel serial date
-    const account = row[1]    // ex: 'Livret'
-    // row[2] = comment
-    const amount = row[3]
-    // row[4] = category
-
-    if (account && amount && (date > accounts[account].initDate)) {
-      accounts[account].amount += amount
-      accounts[account].amount = Math.round(accounts[account].amount * 100) / 100
-      if (accounts[account].lastUpdate < date) {
-        accounts[account].lastUpdate = date
-      }
-    }
-  })
+  const accounts = getAccounts(workbookHelp)
 
   createResumeSheet(workbook, accounts)
 
@@ -277,7 +276,7 @@ async function main() {
   displayErrors(workbook, accounts, yearData, lbpSolde, importAccountName)
 
 
-  await save(compteName, workbook)
+  // await save(compteName, workbook)
 
 
 }
