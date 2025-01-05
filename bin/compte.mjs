@@ -35,7 +35,7 @@ function getLastAmounts(workbook, accounts) {
 }
 
 
-function updateCategories(workbook) {
+function updateCategories(workbookHelp) {
   function initCategoryMatch(workbook) {
     const categoryMatchSheet = workbook.sheet("category")
     const categoryMatchRange = categoryMatchSheet.usedRange()
@@ -53,33 +53,23 @@ function updateCategories(workbook) {
     return rows
   }
 
-  const categoryMatchRows = initCategoryMatch(workbook)
+  const categoryMatchRows = initCategoryMatch(workbookHelp.workbook)
 
-  const dataSheet = workbook.sheet("data")
-  const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
-  let update = false
-  rows.forEach((row, index) => {
-    const label = row[2]
-    const category = row[4]
+  function process(index, date, account, label, amount, category) {
+    let newCategory = undefined
     if (label && (!category || category === '=== ERREUR ===')) {
-      // try to set the category
       categoryMatchRows.some(match => {
-        // let re = new RegExp(`^${match[0]}`, 'i');
         if (match[0].exec(label)) {
-        // if (label.startsWith(match[0])) {
-          row[4] = match[1]
-          update = true
+          newCategory = match[1]
           return true
         } else {
           return false
         }
       })
     }
-  })
-  if (update) {
-    dataRange.value(rows)
+    return { category: newCategory }
   }
+  workbookHelp.dataSheetForEachRow(process)
 }
 
 function initAccounts(workbook) {
@@ -258,7 +248,7 @@ async function main() {
 
   const lbpSolde = importLBPData(importName, importAccountName, workbook)
 
-  updateCategories(workbook)
+  updateCategories(workbookHelp)
   const accounts = getAccounts(workbookHelp)
 
   createResumeSheet(workbook, accounts)

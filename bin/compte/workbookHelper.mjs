@@ -35,16 +35,44 @@ export class workbookHelper {
     }
   }
 
+  dataSheetCreateRow({date, account, label, amount, category}) {
+    return [ date, account, label, amount, category, ]
+  }
+
   // callback is a function taking in arguments:
   //    (index, date, account, label, amount, category)
+  // and returns an array of new rows. If undefined, they should not be updated
   dataSheetForEachRow(callback) {
+    let update = false
     const dataSheet = this.workbook.sheet("data")
     const dataRange = dataSheet.usedRange()
     const rows = dataRange.value()
 
-    rows.forEach((row, index) => {
+    const updatedRows = rows.map((row, index) => {
       const { date, account, label, amount, category } = this.dataSheetExtractRow(row)
-      callback(index, date, account, label, amount, category)
+      const result = callback(index, date, account, label, amount, category)
+      // check it is coherent (always return, or never)
+      if (index >= 1) {
+        if (update !== (result !== undefined)) {
+          helperJs.error('Process() returns undefined and not undefined')
+        }
+      }
+
+      if (result !== undefined) {
+        update = true
+        return this.dataSheetCreateRow({
+          date: result.date ? result.date : date,
+          account: result.account ? result.account : account,
+          label: result.label ? result.label : label,
+          amount: result.amount ? result.amount : amount,
+          category: result.category ? result.category : category,
+        })
+      }
     })
+
+    if (update) {
+      // update the data sheet
+      dataRange.value(updatedRows)
+    }
   }
 }
