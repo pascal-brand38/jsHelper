@@ -58,7 +58,7 @@ export function importLBPData(importName, accountName, workbook) {
   const rows = dataRange.value()
   let addRows = []
   importRows.forEach(importRow => {
-    let found = rows.some(row => (importRow[0]===row[0]) && (importRow[1]===row[2]) && (importRow[2]===row[3]))
+    let found = rows.some(row => (importRow[0]===row[0]) && (accountName===row[1]) && (importRow[1]===row[2]) && (importRow[2]===row[3]))
     if (!found) {
       addRows.push([ importRow[0], accountName, importRow[1], importRow[2], '=== ERREUR ===' ])
     }

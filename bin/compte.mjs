@@ -16,23 +16,48 @@ import path from 'path'
 import xlsxPopulate from 'xlsx-populate'
 import { DateTime } from '../extend/luxon.mjs'
 import helperJs from '../helpers/helperJs.mjs'
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+
 import { importLBPData } from './compte/import.mjs'
 import { workbookHelper } from './compte/workbookHelper.mjs'
 
-function getLastAmounts(workbook, accounts) {
-  const dataSheet = workbook.sheet("last")
-  const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
+function getArgs(argv) {
+  console.log(argv)
+  let options = yargs(hideBin(argv))
+    .usage('Update compte.xlsx')
+    .help('help').alias('help', 'h')
+    .version('version', '1.0').alias('version', 'V')
+    .demandCommand(1, 1)   // exactly 1 arg without options, which is the xlsx file
+    .options({
+      "import-file": {
+        description: 'import a tsv file from LBP',
+        type: 'string',
+      },
+      "import-account": {
+        description: 'import account name, typically CCP',
+        type: 'string',
+      },
+      "save": {
+        description: 'Use --no-save to run, but do not save the result',
+        type: 'boolean',
+        default: true,
+      },
+    })
+    .check((argv) => {
+      if ((!argv['import-file']) && (argv['import-account'])) {
+        throw new Error('--import-file, but no --import-account')
+      } else if ((argv['import-file']) && (!argv['import-account'])) {
+        throw new Error('no --import-file, but --import-account');
+      } else {
+        return true;
+      }
+    }).strict()   // raise an error if an option is unknown
+    .argv;
 
-  rows.forEach(row => {
-    const account = row[0]
-    const lastAmount = row[2] ? row[2] : 0
-
-    if (account) {
-      accounts[account].lastAmount = lastAmount
-    }
-  })
+  return options;
 }
+
 
 
 function updateCategories(workbookHelp) {
@@ -95,14 +120,12 @@ function initAccounts(workbook) {
       accounts[account].initDate = initDate
       accounts[account].lastUpdate = initDate
       accounts[account].amount = initAmount
-      accounts[account].lastAmount = 0
       accounts[account].type1 = type1
       accounts[account].type2 = type2
       accounts[account].type3 = type3
     }
   })
 
-  getLastAmounts(workbook, accounts)
   return accounts
 }
 
@@ -138,15 +161,15 @@ function createResumeSheet(workbook, accounts) {
 
 
 function displayErrors(workbookHelp, accounts, yearData, lbpSolde, importAccountName) {
-  if (lbpSolde && accounts[importAccountName].amount !== lbpSolde) {
-    workbookHelp.setError(`PLEASE CHECK: ${importAccountName} solde: ${accounts[importAccountName].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
+  if (lbpSolde) {
+    // check, but raise an error and stop immediately s a problem in a import may corrupt the xlsx file
+    if (!accounts[importAccountName]) {
+      helperJs.error(`PLEASE CHECK: Import account ${importAccountName} not found`)
+    }
+    if (accounts[importAccountName].amount !== lbpSolde) {
+      helperJs.error(`PLEASE CHECK: ${importAccountName} solde: ${accounts[importAccountName].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
+    }
   }
-
-  // Object.keys(accounts).map(key => {
-  //   if (accounts[key].amount !==  accounts[key].lastAmount) {
-  //     errors.push(`${key}: ${accounts[key].amount}€ (computed) vs  ${accounts[key].lastAmount}€ (provided)`)
-  //   }
-  // })
 
   // check all labeled are categorized
   Object.keys(yearData).forEach(key => {
@@ -229,19 +252,11 @@ function getAccounts(workbookHelp) {
 }
 
 async function main() {
-  const argv = process.argv
-  if (argv.length < 3) {
-    helperJs.error('Usage: node bin/comptes.mjs /c/Users/pasca/Desktop/compte.xlsx file.txv CCP')
-  }
+  const options = getArgs(process.argv)
 
-  const compteName = argv[2]
-  const importName = argv[3]
-  const importAccountName = argv[4]
-  if (importName) {
-    if (!importAccountName) {
-      helperJs.error('Usage: node bin/comptes.mjs /c/Users/pasca/Desktop/compte.xlsx file.txv CCP')
-    }
-  }
+  const compteName = options['_'][0]
+  const importName = options.importFile
+  const importAccountName = options.importAccount
 
   const workbook = await xlsxPopulate.fromFileAsync(compteName)
   const workbookHelp = new workbookHelper(workbook)
@@ -257,9 +272,9 @@ async function main() {
   displayErrors(workbookHelp, accounts, yearData, lbpSolde, importAccountName)
 
 
-  // await save(compteName, workbook)
-
-
+  if (options.save) {
+    await save(compteName, workbook)
+  }
 }
 
 await main();
