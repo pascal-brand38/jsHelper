@@ -58,72 +58,42 @@ function getArgs(argv) {
   return options;
 }
 
-
-
-function updateCategories(workbookHelp) {
-  function initCategoryMatch(workbook) {
-    const categoryMatchSheet = workbook.sheet("category")
-    const categoryMatchRange = categoryMatchSheet.usedRange()
-    let rows = categoryMatchRange.value()
-    rows.shift()
-    rows.shift()
-    rows.shift()
-    rows.shift()
-    // rows.shift()
-
-    rows =  rows.filter(row => row[0])
-    rows.forEach((row, index) => {
-      rows[index][0] = new RegExp(`^${row[0]}`, 'i');
-    })
-    return rows
-  }
-
-  const categoryMatchRows = initCategoryMatch(workbookHelp.workbook)
-
+function updateCategories(workbookHelp, database) {
   function process(index, date, account, label, amount, category) {
     let newCategory = undefined
     if (label && (!category || category === '=== ERREUR ===')) {
-      categoryMatchRows.some(match => {
-        if (match[0].exec(label)) {
-          newCategory = match[1]
+      database.params.categoryMatches.some(match => {
+        if (match.regex.exec(label)) {
+          newCategory = match.category
           return true
         } else {
           return false
         }
       })
     }
+    if (category && !database.params.categories.includes(category)) {
+      workbookHelp.setError(`${category}: unknown category line ${index+1}`)
+    }
+    if (newCategory && !database.params.categories.includes(newCategory)) {
+      workbookHelp.setError(`${newCategory}: unknown category line ${index+1}`)
+    }
     return { category: newCategory }
   }
   workbookHelp.dataSheetForEachRow(process)
 }
 
-function initAccounts(workbook) {
+function initAccounts(database) {
   const accounts = {}
-  const dataSheet = workbook.sheet("init")
-  const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
 
-  rows.forEach((row, index) => {
-    if (index < 5) {
-      return    // title of columns
-    }
-    const account = row[0]
-    const initDate = row[1]   // all the same date
-    const initAmount = row[2] ? row[2] : 0
-    const type1 = row[3]    // immo / liquidites
-    const type2 = row[4]    // compte courant, livrets,...
-    const type3 = row[5]    // court terme, long terme,...
-
-    if (account) {
-      accounts[account] = {}
-      accounts[account].init = initAmount
-      accounts[account].initDate = initDate
-      accounts[account].lastUpdate = initDate
-      accounts[account].amount = initAmount
-      accounts[account].type1 = type1
-      accounts[account].type2 = type2
-      accounts[account].type3 = type3
-    }
+  database.params.accounts.forEach(account => {
+    accounts[account.name] = {}
+    accounts[account.name].init = account.initialAmount
+    accounts[account.name].initDate = database.params.startDate
+    accounts[account.name].lastUpdate = database.params.startDate
+    accounts[account.name].amount = account.initialAmount
+    accounts[account.name].type1 = account.type1
+    accounts[account.name].type2 = account.type2
+    accounts[account.name].type3 = account.type3
   })
 
   return accounts
@@ -231,8 +201,8 @@ async function save(compteName, workbook) {
 }
 
 
-function getAccounts(workbookHelp) {
-  const accounts = initAccounts(workbookHelp.workbook)
+function getAccounts(workbookHelp, database) {
+  const accounts = initAccounts(database)
 
   function process(index, date, account, label, amount, category) {
     if (account && amount && (date > accounts[account].initDate)) {
@@ -247,6 +217,33 @@ function getAccounts(workbookHelp) {
   return accounts
 }
 
+async function readParams(workbookHelp, database) {
+  const rows = workbookHelp.readSheet("params")
+  rows.forEach(row => {
+    if (row[0] === 'startDate') {
+      database.params.startDate = row[1]    // excel serial date, when the data starts (the year before, to have an init of all accounts)
+    } else if (row[0] === 'account') {
+      // adding an account, with its types (short-term,...) and initial amount at startDate
+      database.params.accounts.push({
+        name: row[1],
+        initialAmount: row[2] ? row[2] : 0,
+        type1: row[3],
+        type2: row[4],
+        type3: row[5],
+      })
+    } else if (row[0] === 'category') {
+      database.params.categories.push(row[1])
+    } else if (row[0] === 'categoryMatch') {
+      database.params.categoryMatches.push({
+        regex: new RegExp(`^${row[1]}`, 'i'),
+        category: row[2],
+      })
+    } else if (row[0] !== undefined) {
+      helperJs.error(`Internal Error: do not know param named ${row[0]}`)
+    }
+  })
+}
+
 async function main() {
   const options = getArgs(process.argv)
 
@@ -256,10 +253,11 @@ async function main() {
       importName: options.importFile,             // name of the file to import, from LBP. May be optional
       importAccountName: options.importAccount,   // account that is being imported, from LBP. Linked to importName
     },
-    list: {
-      years: [],                                  // all the years in this spreadsheet
-      accounts: [],                               // list of all the account names
+    params: {   // parameter of the xslx datas: startDate, account names, categories,...
+      startDate: undefined,
+      accounts: [],                               // list of all the account  { name, initialAmount, type1, type2, type3 }
       categories: [],                             // list of the categories
+      categoryMatches: [],                        // list of { regex, category }  to match LBP labels
     },
     histo: {  // historic data, per years
     }
@@ -268,10 +266,12 @@ async function main() {
   const workbook = await xlsxPopulate.fromFileAsync(database.input.compteName)
   const workbookHelp = new workbookHelper(workbook)
 
-  const lbpSolde = importLBPData(database.input.importName, database.input.importAccountName, workbook)
+  readParams(workbookHelp, database)
 
-  updateCategories(workbookHelp)
-  const accounts = getAccounts(workbookHelp)
+  const lbpSolde = importLBPData(database.input.importName, database.input.importAccountName, workbook)
+  updateCategories(workbookHelp, database)
+
+  const accounts = getAccounts(workbookHelp, database)
 
   createResumeSheet(workbook, accounts)
 

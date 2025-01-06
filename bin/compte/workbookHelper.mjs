@@ -24,6 +24,12 @@ export class workbookHelper {
     }
   }
 
+  readSheet(sheetName) {
+    const dataSheet = this.workbook.sheet(sheetName)
+    const dataRange = dataSheet.usedRange()
+    return dataRange.value()
+  }
+
   // "data" sheet
   dataSheetExtractRow(row) {
     return {
