@@ -190,7 +190,7 @@ function perYear(workbookHelp) {
   function process(index, date, account, label, amount, category) {
     amount = amount ? amount : 0
     category = category ? category : '=== ERREUR ==='
-    if (date) {
+    if (date && amount!==0) {
       const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
       if (yearData[year] === undefined) {
         yearData[year] = {}
@@ -204,12 +204,8 @@ function perYear(workbookHelp) {
         }
         yearData[year].category[category] = 0
       }
-      const wasNan = isNaN(yearData[year].category[category])
       yearData[year].category[category] += amount
       yearData[year].category[category] = Math.round(yearData[year].category[category] * 100) / 100
-      if (!wasNan && isNaN(yearData[year].category[category])) {
-        workbookHelp.setError(`NaN at line ${index+1}`)
-      }
     }
   }
 
@@ -254,14 +250,25 @@ function getAccounts(workbookHelp) {
 async function main() {
   const options = getArgs(process.argv)
 
-  const compteName = options['_'][0]
-  const importName = options.importFile
-  const importAccountName = options.importAccount
+  const database = {
+    input: {    // the inputs
+      compteName: options['_'][0],                // xslx file to be updated: categpry, importing new data,...
+      importName: options.importFile,             // name of the file to import, from LBP. May be optional
+      importAccountName: options.importAccount,   // account that is being imported, from LBP. Linked to importName
+    },
+    list: {
+      years: [],                                  // all the years in this spreadsheet
+      accounts: [],                               // list of all the account names
+      categories: [],                             // list of the categories
+    },
+    histo: {  // historic data, per years
+    }
+  }
 
-  const workbook = await xlsxPopulate.fromFileAsync(compteName)
+  const workbook = await xlsxPopulate.fromFileAsync(database.input.compteName)
   const workbookHelp = new workbookHelper(workbook)
 
-  const lbpSolde = importLBPData(importName, importAccountName, workbook)
+  const lbpSolde = importLBPData(database.input.importName, database.input.importAccountName, workbook)
 
   updateCategories(workbookHelp)
   const accounts = getAccounts(workbookHelp)
@@ -269,11 +276,11 @@ async function main() {
   createResumeSheet(workbook, accounts)
 
   const yearData = perYear(workbookHelp)
-  displayErrors(workbookHelp, accounts, yearData, lbpSolde, importAccountName)
+  displayErrors(workbookHelp, accounts, yearData, lbpSolde, database.input.importAccountName)
 
 
   if (options.save) {
-    await save(compteName, workbook)
+    await save(database.input.compteName, workbook)
   }
 }
 
