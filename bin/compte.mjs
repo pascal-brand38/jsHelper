@@ -5,7 +5,6 @@
 
 // TODO: sort (but keep space between year data)
 // TODO: check account exist before import
-// TODO: check category exists
 // TODO: check remb.
 // TODO: args reader
 // TODO: refactor to have be able to change the xls format easily
@@ -239,10 +238,57 @@ async function readParams(workbookHelp, database) {
         category: row[2],
       })
     } else if (row[0] !== undefined) {
-      helperJs.error(`Internal Error: do not know param named ${row[0]}`)
+      workbookHelp.setError(`Internal Error: do not know param named ${row[0]}`)
+    }
+
+    if (row[0] !== undefined && row[1] === undefined) {
+      workbookHelp.setError(`Internal Error: param ${row[0]} without args`)
     }
   })
 }
+
+function updateHisto(workbookHelp, database) {
+  const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year
+  const currentYear = DateTime.fromNowStartOfDay().toObject().year
+
+  // initialize the data structure (account and category per year) to 0
+  for (let year=startYear; year<=currentYear; year++) {
+    database.histo[year] = {
+      accounts: {},
+      categories: {}
+    }
+    database.params.accounts.forEach(account => database.histo[year].accounts[account.name] = 0)
+    database.params.categories.forEach(category => database.histo[year].categories[category] = 0)
+  }
+
+  // update the startDate of the histo
+  database.params.accounts.forEach(account => database.histo[startYear].accounts[account.name] = account.initialAmount)
+  console.log(database.histo[startYear])
+
+  //
+  function process(index, date, account, label, amount, category) {
+    if (date && amount) {
+      const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
+      category = category ? category : "=== ERREUR ==="
+      database.histo[year].accounts[account] += amount
+      database.histo[year].categories[category] += amount
+    }
+  }
+  workbookHelp.dataSheetForEachRow(process)
+
+  // accumulate and round
+  Object.keys(database.histo).forEach(year => {
+    // accumulate
+    if (year > startYear) {
+      Object.keys(database.histo[year].accounts).forEach(accountName => database.histo[year].accounts[accountName] += database.histo[year-1].accounts[accountName])
+    }
+
+    // round
+    Object.keys(database.histo[year].accounts).forEach(accountName => database.histo[year].accounts[accountName] = Math.round(database.histo[year].accounts[accountName] * 100) / 100)
+    Object.keys(database.histo[year].categories).forEach(category => database.histo[year].categories[category] = Math.round(database.histo[year].categories[category] * 100) / 100)
+  })
+}
+
 
 async function main() {
   const options = getArgs(process.argv)
@@ -270,6 +316,7 @@ async function main() {
 
   const lbpSolde = importLBPData(database.input.importName, database.input.importAccountName, workbook)
   updateCategories(workbookHelp, database)
+  updateHisto(workbookHelp, database)
 
   const accounts = getAccounts(workbookHelp, database)
 
