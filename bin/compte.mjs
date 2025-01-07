@@ -81,24 +81,7 @@ function updateCategories(workbookHelp, database) {
   workbookHelp.dataSheetForEachRow(process)
 }
 
-function initAccounts(database) {
-  const accounts = {}
-
-  database.params.accounts.forEach(account => {
-    accounts[account.name] = {}
-    accounts[account.name].init = account.initialAmount
-    accounts[account.name].initDate = database.params.startDate
-    accounts[account.name].lastUpdate = database.params.startDate
-    accounts[account.name].amount = account.initialAmount
-    accounts[account.name].type1 = account.type1
-    accounts[account.name].type2 = account.type2
-    accounts[account.name].type3 = account.type3
-  })
-
-  return accounts
-}
-
-function createResumeSheet(workbook, accounts) {
+function createResumeSheet(workbook, database) {
   const dataSheet = workbook.sheet("Résumé")
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
@@ -111,15 +94,19 @@ function createResumeSheet(workbook, accounts) {
     rows[index] = [ '', '', '' ]
   })
 
+  const accounts = database.histo[database.params.currentYear].accounts
+
   let currentRow = 4
   let lastType2 = undefined
-  Object.keys(accounts).map(key => {
-    if (accounts[key].amount !== 0) {
-      if (accounts[key].type2 !== lastType2) {
-        lastType2 = accounts[key].type2
+  Object.keys(accounts).map(accountName => {
+    if (accounts[accountName] !== 0) {
+      const params = database.getParamsAccount(accountName)
+      const type2 = params.type2
+      if (type2 !== lastType2) {
+        lastType2 = type2
         currentRow++
       }
-      rows[currentRow] = [ key, accounts[key].amount, accounts[key].lastUpdate ]
+      rows[currentRow] = [ accountName, accounts[accountName], params.lastUpdate ]
       currentRow++
     }
   })
@@ -129,58 +116,29 @@ function createResumeSheet(workbook, accounts) {
 }
 
 
-function displayErrors(workbookHelp, accounts, yearData, lbpSolde, importAccountName) {
+function displayErrors(workbookHelp, database, lbpSolde) {
   if (lbpSolde) {
-    // check, but raise an error and stop immediately s a problem in a import may corrupt the xlsx file
-    if (!accounts[importAccountName]) {
-      helperJs.error(`PLEASE CHECK: Import account ${importAccountName} not found`)
+    // check, but raise an error and stop immediately as a problem in a import may corrupt the xlsx file
+    const computed = database.histo[database.params.currentYear].accounts[database.inputs.importAccountName]
+    if (!computed) {
+      helperJs.error(`PLEASE CHECK: Import account ${database.inputs.importAccountName} not found`)
     }
-    if (accounts[importAccountName].amount !== lbpSolde) {
-      helperJs.error(`PLEASE CHECK: ${importAccountName} solde: ${accounts[importAccountName].amount}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
+    if (computed !== lbpSolde) {
+      helperJs.error(`PLEASE CHECK: ${database.inputs.importAccountName} solde: ${computed}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
     }
   }
 
   // check all labeled are categorized
-  Object.keys(yearData).forEach(key => {
-    if (yearData[key].category['=== ERREUR ==='] !== undefined) {
-      workbookHelp.setError(`${key}: contains not categorized values (alimentation,...)`)
+  Object.keys(database.histo).forEach(year => {
+    if (database.histo[year].categories['=== ERREUR ==='] !== 0) {
+      workbookHelp.setError(`${year}: contains not categorized values (alimentation,...)`)
     }
-    if ((yearData[key].category['Virement'] !== 0) && (yearData[key].category['Virement'] !== undefined)) {
-      workbookHelp.setError(`${key}: Virement are not null: ${yearData[key].category['Virement']}`)
+    if (database.histo[year].categories['Virement'] !== 0) {
+      workbookHelp.setError(`${year}: Virement are not zero: ${database.histo[year].categories['Virement']}`)
     }
   })
 
   workbookHelp.displayErrors()
-}
-
-function perYear(workbookHelp) {
-  const yearData = {}
-
-  function process(index, date, account, label, amount, category) {
-    amount = amount ? amount : 0
-    category = category ? category : '=== ERREUR ==='
-    if (date && amount!==0) {
-      const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
-      if (yearData[year] === undefined) {
-        yearData[year] = {}
-        yearData[year].category = {}
-      }
-
-      if (yearData[year].category[category] === undefined) {
-        if (category === '=== ERREUR ===') {
-          // display a warning
-          workbookHelp.setError(`Year ${year}: === ERREUR === at line ${index+1}`)
-        }
-        yearData[year].category[category] = 0
-      }
-      yearData[year].category[category] += amount
-      yearData[year].category[category] = Math.round(yearData[year].category[category] * 100) / 100
-    }
-  }
-
-  workbookHelp.dataSheetForEachRow(process)
-
-  return yearData
 }
 
 async function save(compteName, workbook) {
@@ -200,22 +158,6 @@ async function save(compteName, workbook) {
 }
 
 
-function getAccounts(workbookHelp, database) {
-  const accounts = initAccounts(database)
-
-  function process(index, date, account, label, amount, category) {
-    if (account && amount && (date > accounts[account].initDate)) {
-      accounts[account].amount += amount
-      accounts[account].amount = Math.round(accounts[account].amount * 100) / 100
-      if (accounts[account].lastUpdate < date) {
-        accounts[account].lastUpdate = date
-      }
-    }
-  }
-  workbookHelp.dataSheetForEachRow(process)
-  return accounts
-}
-
 async function readParams(workbookHelp, database) {
   const rows = workbookHelp.readSheet("params")
   rows.forEach(row => {
@@ -229,6 +171,7 @@ async function readParams(workbookHelp, database) {
         type1: row[3],
         type2: row[4],
         type3: row[5],
+        lastUpdate: undefined,
       })
     } else if (row[0] === 'category') {
       database.params.categories.push(row[1])
@@ -251,6 +194,9 @@ function updateHisto(workbookHelp, database) {
   const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year
   const currentYear = DateTime.fromNowStartOfDay().toObject().year
 
+  database.params.startYear = startYear
+  database.params.currentYear = currentYear
+
   // initialize the data structure (account and category per year) to 0
   for (let year=startYear; year<=currentYear; year++) {
     database.histo[year] = {
@@ -270,6 +216,7 @@ function updateHisto(workbookHelp, database) {
     if (date && amount) {
       const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
       category = category ? category : "=== ERREUR ==="
+      database.getParamsAccount(account).lastUpdate = date
       database.histo[year].accounts[account] += amount
       database.histo[year].categories[category] += amount
     }
@@ -294,40 +241,41 @@ async function main() {
   const options = getArgs(process.argv)
 
   const database = {
-    input: {    // the inputs
+    inputs: {    // the inputs
       compteName: options['_'][0],                // xslx file to be updated: categpry, importing new data,...
       importName: options.importFile,             // name of the file to import, from LBP. May be optional
       importAccountName: options.importAccount,   // account that is being imported, from LBP. Linked to importName
     },
     params: {   // parameter of the xslx datas: startDate, account names, categories,...
       startDate: undefined,
-      accounts: [],                               // list of all the account  { name, initialAmount, type1, type2, type3 }
+      startYear: undefined,
+      currentYear: undefined,
+
+      // TODO: make accounts as an object of accountName
+      accounts: [],                               // list of all the account  { name, initialAmount, type1, type2, type3, lastUpdate }
       categories: [],                             // list of the categories
       categoryMatches: [],                        // list of { regex, category }  to match LBP labels
     },
     histo: {  // historic data, per years
-    }
+    },
+    getParamsAccount: (accountName) => database.params.accounts.filter(account => (account.name === accountName))[0],
   }
 
-  const workbook = await xlsxPopulate.fromFileAsync(database.input.compteName)
+  const workbook = await xlsxPopulate.fromFileAsync(database.inputs.compteName)
   const workbookHelp = new workbookHelper(workbook)
 
   readParams(workbookHelp, database)
 
-  const lbpSolde = importLBPData(database.input.importName, database.input.importAccountName, workbook)
+  const lbpSolde = importLBPData(database.inputs.importName, database.inputs.importAccountName, workbook)
   updateCategories(workbookHelp, database)
   updateHisto(workbookHelp, database)
 
-  const accounts = getAccounts(workbookHelp, database)
+  createResumeSheet(workbook, database)
 
-  createResumeSheet(workbook, accounts)
-
-  const yearData = perYear(workbookHelp)
-  displayErrors(workbookHelp, accounts, yearData, lbpSolde, database.input.importAccountName)
-
+  displayErrors(workbookHelp, database, lbpSolde)
 
   if (options.save) {
-    await save(database.input.compteName, workbook)
+    await save(database.inputs.compteName, workbook)
   }
 }
 
