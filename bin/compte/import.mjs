@@ -64,7 +64,7 @@ export function importLBPData(importName, accountName, workbook) {
     }
   })
 
-  console.log(`Inserting ${addRows.length} ${accountName} data`)
+  console.log(`  Inserting ${addRows.length} ${accountName} data`)
   if (addRows.length >= 1) {
     const addRange = dataSheet.range(dataRange._maxRowNumber + 1, dataRange._minColumnNumber, dataRange._maxRowNumber + addRows.length, dataRange._maxColumnNumber)
     addRange.value(addRows)

@@ -7,12 +7,16 @@
 
 export class workbookHelper {
   constructor(workbook) {
-    this.workbook = workbook
+    this.workbook = undefined
     this.errors = []             // list of strings of errors to check
   }
 
+  info(text) { console.log('\x1b[34m' + text + '\x1b[0m') }
+
   setError(text) {
-    this.errors.push(text)
+    if (!this.errors.includes(text)) {
+      this.errors.push(text)
+    }
   }
 
   displayErrors() {

@@ -58,30 +58,35 @@ function getArgs(argv) {
 
 function updateCategories(workbookHelp, database) {
   function process(index, date, account, label, amount, category) {
-    let newCategory = undefined
-    if (label && (!category || category === '=== ERREUR ===')) {
-      database.params.categoryMatches.some(match => {
-        if (match.regex.exec(label)) {
-          newCategory = match.category
-          return true
-        } else {
-          return false
-        }
-      })
+    if (label) {
+      if ((!category || category === '=== ERREUR ===')) {
+        category = '=== ERREUR ==='
+        database.params.categoryMatches.some(match => {
+          if (match.regex.exec(label)) {
+            category = match.category
+            return true
+          } else {
+            return false
+          }
+        })
+      }
+
+      if (!(Object.keys(database.params.categories).includes(category))) {
+        workbookHelp.setError(`${category}: unknown category line ${index+1}`)
+      }
+
+      if (category === '=== ERREUR ===') {
+        const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
+        workbookHelp.setError(`${year}: there are some ${category}`)
+      }
     }
-    if (category && !(Object.keys(database.params.categories).includes(category))) {
-      workbookHelp.setError(`${category}: unknown category line ${index+1}`)
-    }
-    if (newCategory && !(Object.keys(database.params.categories).includes(newCategory))) {
-      workbookHelp.setError(`${newCategory}: unknown category line ${index+1}`)
-    }
-    return { category: newCategory }
+    return { category: category }
   }
   workbookHelp.dataSheetForEachRow(process)
 }
 
-function createResumeSheet(workbook, database) {
-  const dataSheet = workbook.sheet("Résumé")
+function createResumeSheet(workbookHelp, database) {
+  const dataSheet = workbookHelp.workbook.sheet("Résumé")
   const dataRange = dataSheet.usedRange()
   const rows = dataRange.value()
 
@@ -128,19 +133,24 @@ function displayErrors(workbookHelp, database, lbpSolde) {
   }
 
   // check all labeled are categorized
+  const sommeNulleCategory = []
+  Object.keys(database.params.categories).forEach(category => {
+    if (database.params.categories[category].type1 === 'Somme nulle') {
+      sommeNulleCategory.push(category)
+    }
+  })
   Object.keys(database.histo).forEach(year => {
-    if (database.histo[year].categories['=== ERREUR ==='] !== 0) {
-      workbookHelp.setError(`${year}: contains not categorized values (alimentation,...)`)
-    }
-    if (database.histo[year].categories['Virement'] !== 0) {
-      workbookHelp.setError(`${year}: Virement are not zero: ${database.histo[year].categories['Virement']}`)
-    }
+    sommeNulleCategory.forEach(category => {
+      if (database.histo[year].categories[category] !== 0) {
+        workbookHelp.setError(`${year}: Category ${category} is not zero-sum: ${database.histo[year].categories[category]}€`)
+      }
+    })
   })
 
   workbookHelp.displayErrors()
 }
 
-async function save(compteName, workbook) {
+async function save(compteName, workbookHelp) {
   // save a backup
   const now = DateTime.now().setZone('Europe/Paris').toFormat('yyyyMMdd-HHmmss')
   const dir = path.dirname(compteName)
@@ -153,12 +163,15 @@ async function save(compteName, workbook) {
   fs.copyFileSync(compteName, copyName)
 
   // save the updated execl file
-  await workbook.toFileAsync(compteName);
+  await workbookHelp.workbook.toFileAsync(compteName);
 }
 
 
 async function readParams(workbookHelp, database) {
   const rows = workbookHelp.readSheet("params")
+  if (rows.length >= 999999) {
+    helperJs.error(`Reading ${rows.length} in params - way too much!`)
+  }
   rows.forEach(row => {
     if (row[0] === 'startDate') {
       database.params.startDate = row[1]    // excel serial date, when the data starts (the year before, to have an init of all accounts)
@@ -284,22 +297,33 @@ async function main() {
     getParamsAccount: (accountName) => database.params.accounts.filter(account => (account.name === accountName))[0],
   }
 
-  const workbook = await xlsxPopulate.fromFileAsync(database.inputs.compteName)
-  const workbookHelp = new workbookHelper(workbook)
+  const workbookHelp = new workbookHelper()
+  workbookHelp.info(`Read ${database.inputs.compteName}`)
+  workbookHelp.workbook = await xlsxPopulate.fromFileAsync(database.inputs.compteName)
 
+  workbookHelp.info('readParams')
   readParams(workbookHelp, database)
 
-  const lbpSolde = importLBPData(database.inputs.importName, database.inputs.importAccountName, workbook)
+  workbookHelp.info('importLBPData')
+  const lbpSolde = importLBPData(database.inputs.importName, database.inputs.importAccountName, workbookHelp.workbook)
+
+  workbookHelp.info('Update Categories')
   updateCategories(workbookHelp, database)
+
+  workbookHelp.info('updateHisto')
   updateHisto(workbookHelp, database)
 
-  createResumeSheet(workbook, database)
+  workbookHelp.info('createResumeSheet')
+  createResumeSheet(workbookHelp, database)
+
+  workbookHelp.info('createHistoSheet')
   createHistoSheet(workbookHelp, database)
 
+  workbookHelp.info('displayErrors')
   displayErrors(workbookHelp, database, lbpSolde)
 
   if (options.save) {
-    await save(database.inputs.compteName, workbook)
+    await save(database.inputs.compteName, workbookHelp)
   }
 }
 
