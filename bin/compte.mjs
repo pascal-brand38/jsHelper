@@ -69,10 +69,10 @@ function updateCategories(workbookHelp, database) {
         }
       })
     }
-    if (category && !database.params.categories.includes(category)) {
+    if (category && !(Object.keys(database.params.categories).includes(category))) {
       workbookHelp.setError(`${category}: unknown category line ${index+1}`)
     }
-    if (newCategory && !database.params.categories.includes(newCategory)) {
+    if (newCategory && !(Object.keys(database.params.categories).includes(newCategory))) {
       workbookHelp.setError(`${newCategory}: unknown category line ${index+1}`)
     }
     return { category: newCategory }
@@ -173,7 +173,10 @@ async function readParams(workbookHelp, database) {
         lastUpdate: undefined,
       })
     } else if (row[0] === 'category') {
-      database.params.categories.push(row[1])
+      database.params.categories[row[1]] = {
+        type1: row[2],
+        type2: row[3],
+      }
     } else if (row[0] === 'categoryMatch') {
       database.params.categoryMatches.push({
         regex: new RegExp(`^${row[1]}`, 'i'),
@@ -203,12 +206,11 @@ function updateHisto(workbookHelp, database) {
       categories: {}
     }
     database.params.accounts.forEach(account => database.histo[year].accounts[account.name] = 0)
-    database.params.categories.forEach(category => database.histo[year].categories[category] = 0)
+    Object.keys(database.params.categories).forEach(category => database.histo[year].categories[category] = 0)
   }
 
   // update the startDate of the histo
   database.params.accounts.forEach(account => database.histo[startYear].accounts[account.name] = account.initialAmount)
-  console.log(database.histo[startYear])
 
   //
   function process(index, date, account, label, amount, category) {
@@ -272,8 +274,8 @@ async function main() {
       currentYear: undefined,
 
       // TODO: make accounts as an object of accountName
-      accounts: [],                               // list of all the account  { name, initialAmount, type1, type2, type3, lastUpdate }
-      categories: [],                             // list of the categories
+      accounts: [],                               // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
+      categories: {},                             // object of 'categoryName': { type1, type2 }
       categoryMatches: [],                        // list of { regex, category }  to match LBP labels
     },
     histo: {  // historic data, per years
