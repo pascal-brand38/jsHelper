@@ -56,7 +56,7 @@ function getArgs(argv) {
   return options;
 }
 
-function updateCategories(workbookHelp, database) {
+async function updateCategories(workbookHelp, database) {
   function process(index, date, account, label, amount, category) {
     if (label) {
       if ((!category || category === '=== ERREUR ===')) {
@@ -82,13 +82,13 @@ function updateCategories(workbookHelp, database) {
     }
     return { category: category }
   }
-  workbookHelp.dataSheetForEachRow(process)
+  await workbookHelp.dataSheetForEachRow(process)
 }
 
-function createResumeSheet(workbookHelp, database) {
+async function createResumeSheet(workbookHelp, database) {
   const dataSheet = workbookHelp.workbook.sheet("Résumé")
   const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
+  const rows = await dataRange.value()
 
   // clean the rows, apart the title
   rows.forEach((row, index) => {
@@ -115,8 +115,7 @@ function createResumeSheet(workbookHelp, database) {
     }
   })
 
-
-  dataRange.value(rows)
+  await dataRange.value(rows)
 }
 
 
@@ -168,7 +167,7 @@ async function save(compteName, workbookHelp) {
 
 
 async function readParams(workbookHelp, database) {
-  const rows = workbookHelp.readSheet("params")
+  const rows = await workbookHelp.readSheet("params")
   if (rows.length >= 999999) {
     helperJs.error(`Reading ${rows.length} in params - way too much!`)
   }
@@ -203,9 +202,14 @@ async function readParams(workbookHelp, database) {
       workbookHelp.setError(`Internal Error: param ${row[0]} without args`)
     }
   })
+
+  // sort the matches by length (longer before)
+  // so if there are the same prefix, the longer is checked before the smaller
+  database.params.categoryMatches.sort((a,b) => b.regex.toString().length - a.regex.toString().length)
+
 }
 
-function updateHisto(workbookHelp, database) {
+async function updateHisto(workbookHelp, database) {
   const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year
   const currentYear = DateTime.fromNowStartOfDay().toObject().year
 
@@ -235,7 +239,7 @@ function updateHisto(workbookHelp, database) {
       database.histo[year].categories[category] += amount
     }
   }
-  workbookHelp.dataSheetForEachRow(process)
+  await workbookHelp.dataSheetForEachRow(process)
 
   // accumulate and round
   Object.keys(database.histo).forEach(year => {
@@ -251,10 +255,10 @@ function updateHisto(workbookHelp, database) {
 }
 
 
-function createHistoSheet(workbookHelp, database) {
+async function createHistoSheet(workbookHelp, database) {
   const dataSheet = workbookHelp.workbook.sheet("Histo")
   const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
+  const rows = await dataRange.value()
 
   // clean the rows, apart the title
   rows.forEach((row, index) => {
@@ -267,7 +271,7 @@ function createHistoSheet(workbookHelp, database) {
     }
   })
 
-  dataRange.value(rows)
+  await dataRange.value(rows)
 }
 
 
@@ -302,22 +306,22 @@ async function main() {
   workbookHelp.workbook = await xlsxPopulate.fromFileAsync(database.inputs.compteName)
 
   helperJs.info('readParams')
-  readParams(workbookHelp, database)
+  await readParams(workbookHelp, database)
 
   helperJs.info('importLBPData')
-  const lbpSolde = importLBPData(database.inputs.importName, database.inputs.importAccountName, workbookHelp.workbook)
+  const lbpSolde = await importLBPData(database.inputs.importName, database.inputs.importAccountName, workbookHelp.workbook)
 
   helperJs.info('Update Categories')
-  updateCategories(workbookHelp, database)
+  await updateCategories(workbookHelp, database)
 
   helperJs.info('updateHisto')
-  updateHisto(workbookHelp, database)
+  await updateHisto(workbookHelp, database)
 
   helperJs.info('createResumeSheet')
-  createResumeSheet(workbookHelp, database)
+  await createResumeSheet(workbookHelp, database)
 
   helperJs.info('createHistoSheet')
-  createHistoSheet(workbookHelp, database)
+  await createHistoSheet(workbookHelp, database)
 
   helperJs.info('displayErrors')
   displayErrors(workbookHelp, database, lbpSolde)

@@ -47,7 +47,7 @@ function readLBPTSV(filename) {
   return { solde, rows }
 }
 
-export function importLBPData(importName, accountName, workbook) {
+export async function importLBPData(importName, accountName, workbook) {
   if (importName===undefined && accountName===undefined) {
     return undefined
   }
@@ -56,7 +56,7 @@ export function importLBPData(importName, accountName, workbook) {
 
   const dataSheet = workbook.sheet("data")
   const dataRange = dataSheet.usedRange()
-  const rows = dataRange.value()
+  const rows = await dataRange.value()
   let addRows = []
   importRows.forEach(importRow => {
     let found = rows.some(row => (importRow[0]===row[0]) && (accountName===row[1]) && (importRow[1]===row[2]) && (importRow[2]===row[3]))

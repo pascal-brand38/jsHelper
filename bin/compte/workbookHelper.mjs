@@ -50,7 +50,7 @@ export class workbookHelper {
   // callback is a function taking in arguments:
   //    (index, date, account, label, amount, category)
   // and returns an array of new rows. If undefined, they should not be updated
-  dataSheetForEachRow(callback) {
+  async dataSheetForEachRow(callback) {
     let update = false
     const dataSheet = this.workbook.sheet("data")
     const dataRange = dataSheet.usedRange()
@@ -80,7 +80,7 @@ export class workbookHelper {
 
     if (update) {
       // update the data sheet
-      dataRange.value(updatedRows)
+      await dataRange.value(updatedRows)
     }
   }
 }
