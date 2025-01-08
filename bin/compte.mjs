@@ -58,7 +58,7 @@ function getArgs(argv) {
 
 async function updateCategories(workbookHelp, database) {
   function process(index, date, account, label, amount, category) {
-    if (label) {
+    if (label && amount) {
       if ((!category || category === '=== ERREUR ===')) {
         category = '=== ERREUR ==='
         database.params.categoryMatches.some(match => {

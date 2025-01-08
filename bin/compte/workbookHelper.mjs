@@ -26,10 +26,10 @@ export class workbookHelper {
     }
   }
 
-  readSheet(sheetName) {
+  async readSheet(sheetName) {
     const dataSheet = this.workbook.sheet(sheetName)
     const dataRange = dataSheet.usedRange()
-    return dataRange.value()
+    return await dataRange.value()
   }
 
   // "data" sheet
@@ -54,7 +54,7 @@ export class workbookHelper {
     let update = false
     const dataSheet = this.workbook.sheet("data")
     const dataRange = dataSheet.usedRange()
-    const rows = dataRange.value()
+    const rows = await dataRange.value()
 
     const updatedRows = rows.map((row, index) => {
       const { date, account, label, amount, category } = this.dataSheetExtractRow(row)
