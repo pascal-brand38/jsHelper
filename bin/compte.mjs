@@ -298,28 +298,28 @@ async function main() {
   }
 
   const workbookHelp = new workbookHelper()
-  workbookHelp.info(`Read ${database.inputs.compteName}`)
+  helperJs.info(`Read ${database.inputs.compteName}`)
   workbookHelp.workbook = await xlsxPopulate.fromFileAsync(database.inputs.compteName)
 
-  workbookHelp.info('readParams')
+  helperJs.info('readParams')
   readParams(workbookHelp, database)
 
-  workbookHelp.info('importLBPData')
+  helperJs.info('importLBPData')
   const lbpSolde = importLBPData(database.inputs.importName, database.inputs.importAccountName, workbookHelp.workbook)
 
-  workbookHelp.info('Update Categories')
+  helperJs.info('Update Categories')
   updateCategories(workbookHelp, database)
 
-  workbookHelp.info('updateHisto')
+  helperJs.info('updateHisto')
   updateHisto(workbookHelp, database)
 
-  workbookHelp.info('createResumeSheet')
+  helperJs.info('createResumeSheet')
   createResumeSheet(workbookHelp, database)
 
-  workbookHelp.info('createHistoSheet')
+  helperJs.info('createHistoSheet')
   createHistoSheet(workbookHelp, database)
 
-  workbookHelp.info('displayErrors')
+  helperJs.info('displayErrors')
   displayErrors(workbookHelp, database, lbpSolde)
 
   if (options.save) {

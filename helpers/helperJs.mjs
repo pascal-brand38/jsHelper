@@ -175,6 +175,7 @@ export default {
     isInSha1List: sha1.isInSha1List,
   },
 
+  info: (text) => console.log('\x1b[34m' + text + '\x1b[0m'),
   warning,
   error,
 }

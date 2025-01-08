@@ -11,8 +11,6 @@ export class workbookHelper {
     this.errors = []             // list of strings of errors to check
   }
 
-  info(text) { console.log('\x1b[34m' + text + '\x1b[0m') }
-
   setError(text) {
     if (!this.errors.includes(text)) {
       this.errors.push(text)
