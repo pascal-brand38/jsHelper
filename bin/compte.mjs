@@ -3,12 +3,10 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
+// TODO: use TS
 // TODO: sort (but keep space between year data)
 // TODO: check account exist before import
 // TODO: check remb.
-// TODO: args reader
-// TODO: refactor to have be able to change the xls format easily
-// TODO: console in green, red,... to be added in utils
 
 import fs from 'fs'
 import path from 'path'
@@ -20,6 +18,7 @@ import { hideBin } from 'yargs/helpers'
 
 import { importLBPData } from './compte/import.mjs'
 import { workbookHelper } from './compte/workbookHelper.mjs'
+import databaseHooks from './compte/databaseHooks.mjs'
 
 function getArgs(argv) {
   console.log(argv)
@@ -237,6 +236,27 @@ function updateHisto(workbookHelp, database) {
 }
 
 
+function createHistoSheet(workbookHelp, database) {
+  const dataSheet = workbookHelp.workbook.sheet("Histo")
+  const dataRange = dataSheet.usedRange()
+  const rows = dataRange.value()
+
+  // clean the rows, apart the title
+  rows.forEach((row, index) => {
+    const hook = row[0]
+    if (hook && database.hooks[hook]) {
+      const newRows = database.hooks[hook](database, row)
+      rows[index] = [ undefined, undefined, undefined, undefined, ...newRows]
+    } else {
+      rows[index] = undefined // no change - important for formulas
+    }
+  })
+
+  dataRange.value(rows)
+}
+
+
+
 async function main() {
   const options = getArgs(process.argv)
 
@@ -258,6 +278,7 @@ async function main() {
     },
     histo: {  // historic data, per years
     },
+    hooks: databaseHooks,
     getParamsAccount: (accountName) => database.params.accounts.filter(account => (account.name === accountName))[0],
   }
 
@@ -271,6 +292,7 @@ async function main() {
   updateHisto(workbookHelp, database)
 
   createResumeSheet(workbook, database)
+  createHistoSheet(workbookHelp, database)
 
   displayErrors(workbookHelp, database, lbpSolde)
 
