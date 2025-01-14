@@ -3,8 +3,10 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
+// doc of xlsx-populate at
+//    https://github.com/dtjohnson/xlsx-populate#readme
+
 // TODO: use TS
-// TODO: sort (but keep space between year data)
 // TODO: check account exist before import
 // TODO: check remb.
 
@@ -84,6 +86,54 @@ async function updateCategories(workbookHelp, database) {
   }
   await workbookHelp.dataSheetForEachRow(process)
 }
+
+async function sortData(workbookHelp, database) {
+  function isNumber(value) {
+    return typeof value === 'number';
+  }
+
+  const workbook = workbookHelp.workbook
+  const dataSheet = workbook.sheet("data")
+  const dataRange = dataSheet.usedRange()
+  const rows = await dataRange.value()
+
+  // sort by date
+  rows.sort((row1, row2) => {
+    const date1 = row1[0]
+    const date2 = row2[0]
+    if (!isNumber(date1)) {
+      return +1
+    } else if (!isNumber(date2)) {
+      return -1
+    } else {
+      return (date1 - date2)
+    }
+  })
+
+
+  // add a new line when the year changes
+  let currentYear = database.params.startYear+1
+  rows.forEach((row, index) => {
+    const date = row[0]
+    if (isNumber(date)) {
+      const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
+      if (year !== currentYear) {
+        // add a new line
+        rows.splice(index, 0, undefined)
+        currentYear = year
+      }
+    }
+  })
+
+  // set new values
+  await dataRange.clear()
+  await dataRange.value(rows)
+
+  // set the last cell so that we ensure that addaing newlines do not make thing wrong
+  dataRange.endCell().value('END OF DATA - DO NOT REMOVE THIS CELL')
+
+}
+
 
 async function createResumeSheet(workbookHelp, database) {
   const dataSheet = workbookHelp.workbook.sheet("Résumé")
@@ -310,6 +360,9 @@ async function main() {
 
   helperJs.info('importLBPData')
   const lbpSolde = await importLBPData(database.inputs.importName, database.inputs.importAccountName, workbookHelp.workbook)
+
+  helperJs.info('Sort Data')
+  await sortData(workbookHelp, database)
 
   helperJs.info('Update Categories')
   await updateCategories(workbookHelp, database)
