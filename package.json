@@ -37,7 +37,7 @@
     "thanks": "bin/thanks.mjs"
   },
   "scripts": {
-    "build": "tsc bin/ts",
+    "build": "tsc --build tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

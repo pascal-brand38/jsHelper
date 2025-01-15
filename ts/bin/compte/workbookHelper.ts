@@ -5,7 +5,7 @@
 
 // import data from external account
 
-import databaseHooks from './databaseHooks.mts'
+import databaseHooks from './databaseHooks'
 import helperJs from '../../../helpers/helperJs.mjs'
 
 export class workbookHelper {

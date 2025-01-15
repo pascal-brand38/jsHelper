@@ -14,11 +14,12 @@
     "declaration": true,
 
     "target": "ES2021",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
     // "types": "module"
     // "moduleResolution": "NodeNext",
     // "module": "NodeNext"
+    "module": "ES6",
   },
-  "include": ["./ts/**/*.mts"],
+  "include": ["./ts/**/*.ts"],
   "exclude": [ ]
 }
