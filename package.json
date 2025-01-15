@@ -11,6 +11,8 @@
     "mv": "^2.1.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^3.10.111",
+    "tsc": "^2.0.4",
+    "typescript": "^5.7.3",
     "xlsx": "^0.18.5",
     "xlsx-populate": "^1.21.0",
     "xml-js": "^1.6.11",
@@ -35,6 +37,7 @@
     "thanks": "bin/thanks.mjs"
   },
   "scripts": {
+    "build": "tsc --build tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -46,5 +49,8 @@
   "bugs": {
     "url": "https://github.com/pascal-brand38/jsHelper/issues"
   },
-  "homepage": "https://github.com/pascal-brand38/jsHelper#readme"
+  "homepage": "https://github.com/pascal-brand38/jsHelper#readme",
+  "devDependencies": {
+    "@types/node": "^22.10.6"
+  }
 }

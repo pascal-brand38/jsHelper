@@ -4,15 +4,15 @@
 // MIT License
 
 // import data from external account
+// this is a TS
 
-import fs from 'fs'
-import { DateTime } from '../../extend/luxon.mjs'
-import helperJs from '../../helpers/helperJs.mjs'
+import * as fs from 'fs'
+import { DateTime } from '../../../extend/luxon.mjs'
+import helperJs from '../../../helpers/helperJs.mjs'
 
-
-function readTSV(filename) {
-  const text = fs.readFileSync(filename, 'utf8')
-  const rows = []
+function readTSV(filename: string) {
+  const text: string = fs.readFileSync(filename, 'utf8')
+  const rows: string[][] = []
   text.split('\n').forEach(rowText => {
     const row = rowText.trim().split('\t')
     rows.push(row)
@@ -20,15 +20,15 @@ function readTSV(filename) {
   return rows
 }
 
-function frenchTextToFloat(text) {
+function frenchTextToFloat(text: string) {
   return parseFloat(text.replaceAll(',', '.'))
 }
 
-function readLBPTSV(filename) {
+function readLBPTSV(filename: string) {
   let rows = readTSV(filename)
 
   // look for solde in TSV
-  let solde = undefined
+  let solde: number | undefined = undefined
   rows.forEach(row => {
     if (row[0] && row[0].startsWith('Solde (EUROS)')) {
       solde = frenchTextToFloat(row[1])
@@ -36,15 +36,20 @@ function readLBPTSV(filename) {
   })
 
   // leave only amount data, processed with date and value
+  // const resultRows: [ [ number, string, number ] ] | [] = []
+  const resultRows: { date: number, label: string, amount: number }[] = []
   rows = rows.filter(row => ((row.length === 3) && !isNaN(frenchTextToFloat(row[2]))))
   rows.forEach(row => {
-    row[0] = DateTime.fromFormatStartOfDay(row[0]).toExcelSerial()
-    row[1] = row[1].replaceAll('"', '')
-    row[2] = frenchTextToFloat(row[2])
+    const date: number = DateTime.fromFormatStartOfDay(row[0]).toExcelSerial()
+    resultRows.push({
+      date: date,
+      label: row[1].replaceAll('"', ''),
+      amount: frenchTextToFloat(row[2]),
+    })
   })
-  rows.sort((a, b) => a[0] - b[0])
+  resultRows.sort((a, b) => a[0] - b[0])
 
-  return { solde, rows }
+  return { solde, resultRows }
 }
 
 export async function importLBPData(workbookHelp) {
@@ -56,16 +61,16 @@ export async function importLBPData(workbookHelp) {
     return undefined
   }
 
-  const { solde: lbpSolde, rows: importRows } = readLBPTSV(importName)
+  const { solde: lbpSolde, resultRows: importRows } = readLBPTSV(importName)
 
   const dataSheet = workbook.sheet("data")
   const dataRange = dataSheet.usedRange()
   const rows = await dataRange.value()
-  let addRows = []
+  let addRows: any[] = []
   importRows.forEach(importRow => {
-    let found = rows.some(row => (importRow[0]===row[0]) && (accountName===row[1]) && (importRow[1]===row[2]) && (importRow[2]===row[3]))
+    let found = rows.some(row => (importRow.date===row[0]) && (accountName===row[1]) && (importRow.label===row[2]) && (importRow.amount===row[3]))
     if (!found) {
-      addRows.push([ importRow[0], accountName, importRow[1], importRow[2], '=== ERREUR ===' ])
+      addRows.push([ importRow.date, accountName, importRow.label, importRow.amount, '=== ERREUR ===' ])
     }
   })
 

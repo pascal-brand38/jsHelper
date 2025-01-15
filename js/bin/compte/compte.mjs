@@ -1,0 +1,320 @@
+#!/usr/bin/env node
+// Copyright (c) Pascal Brand
+// MIT License
+// doc of xlsx-populate at
+//    https://github.com/dtjohnson/xlsx-populate#readme
+// TODO: use TS
+// TODO: check account exist before import
+import * as fs from 'fs';
+import * as path from 'path';
+import xlsxPopulate from 'xlsx-populate';
+import { DateTime } from '../../../extend/luxon.mjs';
+import helperJs from '../../../helpers/helperJs.mjs';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { importLBPData } from './import.mjs';
+import { workbookHelper } from './workbookHelper.mjs';
+function getArgs(argv) {
+    console.log(argv);
+    let options = yargs(hideBin(argv))
+        .usage('Update compte.xlsx')
+        .help('help').alias('help', 'h')
+        .version('version', '1.0').alias('version', 'V')
+        .demandCommand(1, 1) // exactly 1 arg without options, which is the xlsx file
+        .options({
+        "import-file": {
+            description: 'import a tsv file from LBP',
+            type: 'string',
+        },
+        "import-account": {
+            description: 'import account name, typically CCP',
+            type: 'string',
+        },
+        "save": {
+            description: 'Use --no-save to run, but do not save the result',
+            type: 'boolean',
+            default: true,
+        },
+    })
+        .check((argv) => {
+        if ((!argv['import-file']) && (argv['import-account'])) {
+            throw new Error('--import-file, but no --import-account');
+        }
+        else if ((argv['import-file']) && (!argv['import-account'])) {
+            throw new Error('no --import-file, but --import-account');
+        }
+        else {
+            return true;
+        }
+    }).strict() // raise an error if an option is unknown
+        .argv;
+    return options;
+}
+async function updateCategories(workbookHelp) {
+    const database = workbookHelp.database;
+    function process(index, date, account, label, amount, category) {
+        if (label && amount) {
+            if ((!category || category === '=== ERREUR ===')) {
+                category = '=== ERREUR ===';
+                database.params.categoryMatches.some(match => {
+                    if (match.regex.exec(label)) {
+                        category = match.category;
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                });
+            }
+            if (!(Object.keys(database.params.categories).includes(category))) {
+                workbookHelp.setError(`${category}: unknown category line ${index + 1}`);
+            }
+            if (category === '=== ERREUR ===') {
+                const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
+                workbookHelp.setError(`${year}: there are some ${category}`);
+            }
+        }
+        return { category: category };
+    }
+    await workbookHelp.dataSheetForEachRow(process);
+}
+async function sortData(workbookHelp) {
+    const database = workbookHelp.database;
+    function isNumber(value) {
+        return typeof value === 'number';
+    }
+    const workbook = workbookHelp.workbook;
+    const dataSheet = workbook.sheet("data");
+    const dataRange = dataSheet.usedRange();
+    const rows = await dataRange.value();
+    // sort by date
+    rows.sort((row1, row2) => {
+        const date1 = row1[0];
+        const date2 = row2[0];
+        if (!isNumber(date1)) {
+            return +1;
+        }
+        else if (!isNumber(date2)) {
+            return -1;
+        }
+        else {
+            return (date1 - date2);
+        }
+    });
+    // add a new line when the year changes
+    let currentYear = database.params.startYear + 1;
+    rows.forEach((row, index) => {
+        const date = row[0];
+        if (isNumber(date)) {
+            const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
+            if (year !== currentYear) {
+                // add a new line
+                rows.splice(index, 0, undefined);
+                currentYear = year;
+            }
+        }
+    });
+    // set new values
+    await dataRange.clear();
+    await dataRange.value(rows);
+    // set the last cell so that we ensure that addaing newlines do not make thing wrong
+    dataRange.endCell().value('END OF DATA - DO NOT REMOVE THIS CELL');
+}
+async function createResumeSheet(workbookHelp) {
+    const database = workbookHelp.database;
+    const dataSheet = workbookHelp.workbook.sheet("Résumé");
+    const dataRange = dataSheet.usedRange();
+    const rows = await dataRange.value();
+    // clean the rows, apart the title
+    rows.forEach((row, index) => {
+        if (index < 5) {
+            return; // title of columns
+        }
+        rows[index] = ['', '', ''];
+    });
+    const accounts = database.histo[database.params.currentYear].accounts;
+    let currentRow = 4;
+    let lastType2 = undefined;
+    Object.keys(accounts).map(accountName => {
+        if (accounts[accountName] !== 0) {
+            const params = database.getParamsAccount(accountName);
+            const type2 = params.type2;
+            if (type2 !== lastType2) {
+                lastType2 = type2;
+                currentRow++;
+            }
+            rows[currentRow] = [accountName, accounts[accountName], params.lastUpdate];
+            currentRow++;
+        }
+    });
+    await dataRange.value(rows);
+}
+function displayErrors(workbookHelp, lbpSolde) {
+    const database = workbookHelp.database;
+    if (lbpSolde) {
+        // check, but raise an error and stop immediately as a problem in a import may corrupt the xlsx file
+        const computed = database.histo[database.params.currentYear].accounts[database.inputs.importAccountName];
+        if (!computed) {
+            helperJs.error(`PLEASE CHECK: Import account ${database.inputs.importAccountName} not found`);
+        }
+        if (computed !== lbpSolde) {
+            helperJs.error(`PLEASE CHECK: ${database.inputs.importAccountName} solde: ${computed}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`);
+        }
+    }
+    // check all labeled are categorized
+    const sommeNulleCategory = [];
+    Object.keys(database.params.categories).forEach(category => {
+        if (database.params.categories[category].type1 === 'Somme nulle') {
+            sommeNulleCategory.push(category);
+        }
+    });
+    Object.keys(database.histo).forEach(year => {
+        sommeNulleCategory.forEach(category => {
+            if (database.histo[year].categories[category] !== 0) {
+                workbookHelp.setError(`${year}: Category ${category} is not zero-sum: ${database.histo[year].categories[category]}€`);
+            }
+        });
+    });
+    workbookHelp.displayErrors();
+}
+async function save(workbookHelp) {
+    const compteName = workbookHelp.database.inputs.compteName;
+    // save a backup
+    const now = DateTime.now().setZone('Europe/Paris').toFormat('yyyyMMdd-HHmmss');
+    const dir = path.dirname(compteName);
+    const ext = path.extname(compteName);
+    const base = path.basename(compteName, ext);
+    const copyName = path.join(dir, base + '-' + now + ext);
+    console.log(dir, base, ext);
+    console.log(copyName);
+    fs.copyFileSync(compteName, copyName);
+    // save the updated execl file
+    await workbookHelp.workbook.toFileAsync(compteName);
+}
+async function readParams(workbookHelp) {
+    const database = workbookHelp.database;
+    const rows = await workbookHelp.readSheet("params");
+    if (rows.length >= 999999) {
+        helperJs.error(`Reading ${rows.length} in params - way too much!`);
+    }
+    rows.forEach(row => {
+        if (row[0] === 'startDate') {
+            database.params.startDate = row[1]; // excel serial date, when the data starts (the year before, to have an init of all accounts)
+        }
+        else if (row[0] === 'account') {
+            // adding an account, with its types (short-term,...) and initial amount at startDate
+            database.params.accounts.push({
+                name: row[1],
+                initialAmount: row[2] ? row[2] : 0,
+                type1: row[3],
+                type2: row[4],
+                type3: row[5],
+                lastUpdate: undefined,
+            });
+        }
+        else if (row[0] === 'category') {
+            database.params.categories[row[1]] = {
+                type1: row[2],
+                type2: row[3],
+            };
+        }
+        else if (row[0] === 'categoryMatch') {
+            database.params.categoryMatches.push({
+                regex: new RegExp(`^${row[1]}`, 'i'),
+                category: row[2],
+            });
+        }
+        else if (row[0] !== undefined) {
+            workbookHelp.setError(`Internal Error: do not know param named ${row[0]}`);
+        }
+        if (row[0] !== undefined && row[1] === undefined) {
+            workbookHelp.setError(`Internal Error: param ${row[0]} without args`);
+        }
+    });
+    // sort the matches by length (longer before)
+    // so if there are the same prefix, the longer is checked before the smaller
+    database.params.categoryMatches.sort((a, b) => b.regex.toString().length - a.regex.toString().length);
+}
+async function updateHisto(workbookHelp) {
+    const database = workbookHelp.database;
+    const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year;
+    const currentYear = DateTime.fromNowStartOfDay().toObject().year;
+    database.params.startYear = startYear;
+    database.params.currentYear = currentYear;
+    // initialize the data structure (account and category per year) to 0
+    for (let year = startYear; year <= currentYear; year++) {
+        database.histo[year] = {
+            accounts: {},
+            categories: {}
+        };
+        database.params.accounts.forEach(account => database.histo[year].accounts[account.name] = 0);
+        Object.keys(database.params.categories).forEach(category => database.histo[year].categories[category] = 0);
+    }
+    // update the startDate of the histo
+    database.params.accounts.forEach(account => database.histo[startYear].accounts[account.name] = account.initialAmount);
+    //
+    function process(index, date, account, label, amount, category) {
+        if (date && amount) {
+            const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
+            category = category ? category : "=== ERREUR ===";
+            database.getParamsAccount(account).lastUpdate = date;
+            database.histo[year].accounts[account] += amount;
+            database.histo[year].categories[category] += amount;
+        }
+    }
+    await workbookHelp.dataSheetForEachRow(process);
+    // accumulate and round
+    Object.keys(database.histo).forEach(year => {
+        const nYear = parseInt(year);
+        // accumulate
+        if (nYear > startYear) {
+            Object.keys(database.histo[year].accounts).forEach(accountName => database.histo[nYear].accounts[accountName] += database.histo[nYear - 1].accounts[accountName]);
+        }
+        // round
+        Object.keys(database.histo[year].accounts).forEach(accountName => database.histo[year].accounts[accountName] = Math.round(database.histo[year].accounts[accountName] * 100) / 100);
+        Object.keys(database.histo[year].categories).forEach(category => database.histo[year].categories[category] = Math.round(database.histo[year].categories[category] * 100) / 100);
+    });
+}
+async function createHistoSheet(workbookHelp) {
+    const database = workbookHelp.database;
+    const dataSheet = workbookHelp.workbook.sheet("Histo");
+    const dataRange = dataSheet.usedRange();
+    const rows = await dataRange.value();
+    // clean the rows, apart the title
+    rows.forEach((row, index) => {
+        const hook = row[0];
+        if (hook && database.hooks[hook]) {
+            const newRows = database.hooks[hook](database, row);
+            rows[index] = [undefined, undefined, undefined, undefined, ...newRows];
+        }
+        else {
+            rows[index] = undefined; // no change - important for formulas
+        }
+    });
+    await dataRange.value(rows);
+}
+export async function compte() {
+    const options = getArgs(process.argv);
+    const workbookHelp = new workbookHelper(options['_'][0], options.importFile, options.importAccount);
+    helperJs.info(`Read ${workbookHelp.database.inputs.compteName}`);
+    workbookHelp.workbook = await xlsxPopulate.fromFileAsync(workbookHelp.database.inputs.compteName);
+    helperJs.info('readParams');
+    await readParams(workbookHelp);
+    helperJs.info('importLBPData');
+    const lbpSolde = await importLBPData(workbookHelp);
+    helperJs.info('Sort Data');
+    await sortData(workbookHelp);
+    helperJs.info('Update Categories');
+    await updateCategories(workbookHelp);
+    helperJs.info('updateHisto');
+    await updateHisto(workbookHelp);
+    helperJs.info('createResumeSheet');
+    await createResumeSheet(workbookHelp);
+    helperJs.info('createHistoSheet');
+    await createHistoSheet(workbookHelp);
+    helperJs.info('displayErrors');
+    displayErrors(workbookHelp, lbpSolde);
+    if (options.save) {
+        await save(workbookHelp);
+    }
+}

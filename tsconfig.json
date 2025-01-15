@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "js",
+    "rootDir": "ts",
+    // "allowJs": true,
+    "strict": true,
+    "noImplicitAny": false,
+
+    "incremental": false,
+    "composite": false,
+
+    // emit dist files
+    // "allowImportingTsExtensions": false,
+    // "emitDeclarationOnly": false,
+    "noEmit": false,
+    "declaration": true,
+
+    "target": "ES2021",
+    "moduleResolution": "node",
+    // "types": "module"
+    // "moduleResolution": "NodeNext",
+    // "module": "NodeNext"
+    "module": "ES2022",
+
+  },
+  "include": ["./ts/**/*.mts"],
+  "exclude": ["*.mjs" ]
+}

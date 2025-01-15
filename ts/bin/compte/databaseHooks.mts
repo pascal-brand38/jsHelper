@@ -9,8 +9,8 @@ const _round = (number => Math.round(number * 100) / 100)
 
 // return an array of years
 function getYears(database) {
-  let years = []
-  for (let year=database.params.startYear; year<=database.params.currentYear; year++) {
+  let years: number[] = []
+  for (let year: number=database.params.startYear; year<=database.params.currentYear; year++) {
     years.push(year)
   }
   return years
