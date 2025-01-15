@@ -1,8 +1,6 @@
 #!/usr/bin/env node
-"use strict";
 // Copyright (c) Pascal Brand
 // MIT License
-Object.defineProperty(exports, "__esModule", { value: true });
 const _round = (number => Math.round(number * 100) / 100);
 // hooks on database
 // return an array of years
@@ -70,4 +68,4 @@ const databaseHooks = {
     getEconomieCourantes,
     getCategoryByType,
 };
-exports.default = databaseHooks;
+export default databaseHooks;

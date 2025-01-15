@@ -1,16 +1,10 @@
 #!/usr/bin/env node
-"use strict";
 // Copyright (c) Pascal Brand
 // MIT License
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.workbookHelper = void 0;
 // import data from external account
-const databaseHooks_1 = __importDefault(require("./databaseHooks"));
-const helperJs_mjs_1 = __importDefault(require("helpers/helperJs.mjs"));
-class workbookHelper {
+import databaseHooks from './databaseHooks';
+import helperJs from '../../../helpers/helperJs.mjs';
+export class workbookHelper {
     constructor(compteName, importFile, importAccount) {
         this.workbook = undefined;
         this.errors = []; // list of strings of errors to check
@@ -31,7 +25,7 @@ class workbookHelper {
             },
             histo: { // historic data, per years
             },
-            hooks: databaseHooks_1.default,
+            hooks: databaseHooks,
             getParamsAccount: (accountName) => this.database.params.accounts.filter(account => (account.name === accountName))[0],
         };
     }
@@ -81,7 +75,7 @@ class workbookHelper {
             // check it is coherent (always return, or never)
             if (index >= 1) {
                 if (update !== (result !== undefined)) {
-                    helperJs_mjs_1.default.error('Process() returns undefined and not undefined');
+                    helperJs.error('Process() returns undefined and not undefined');
                 }
             }
             if (result !== undefined) {
@@ -101,4 +95,3 @@ class workbookHelper {
         }
     }
 }
-exports.workbookHelper = workbookHelper;

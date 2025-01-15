@@ -1,18 +1,13 @@
 #!/usr/bin/env node
-"use strict";
 // Copyright (c) Pascal Brand
 // MIT License
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.importLBPData = importLBPData;
 // import data from external account
-const fs_1 = __importDefault(require("fs"));
-const luxon_mjs_1 = require("../../../extend/luxon.mjs");
-const helperJs_1 = __importDefault(require("helpers/helperJs"));
+// this is a TS
+import * as fs from 'fs';
+import { DateTime } from '../../../extend/luxon.mjs';
+import helperJs from '../../../helpers/helperJs.mjs';
 function readTSV(filename) {
-    const text = fs_1.default.readFileSync(filename, 'utf8');
+    const text = fs.readFileSync(filename, 'utf8');
     const rows = [];
     text.split('\n').forEach(rowText => {
         const row = rowText.trim().split('\t');
@@ -37,7 +32,7 @@ function readLBPTSV(filename) {
     const resultRows = [];
     rows = rows.filter(row => ((row.length === 3) && !isNaN(frenchTextToFloat(row[2]))));
     rows.forEach(row => {
-        const date = luxon_mjs_1.DateTime.fromFormatStartOfDay(row[0]).toExcelSerial();
+        const date = DateTime.fromFormatStartOfDay(row[0]).toExcelSerial();
         resultRows.push({
             date: date,
             label: row[1].replaceAll('"', ''),
@@ -47,7 +42,7 @@ function readLBPTSV(filename) {
     resultRows.sort((a, b) => a[0] - b[0]);
     return { solde, resultRows };
 }
-async function importLBPData(workbookHelp) {
+export async function importLBPData(workbookHelp) {
     const importName = workbookHelp.database.inputs.importName;
     const accountName = workbookHelp.database.inputs.importAccountName;
     const workbook = workbookHelp.workbook;
@@ -65,7 +60,7 @@ async function importLBPData(workbookHelp) {
             addRows.push([importRow.date, accountName, importRow.label, importRow.amount, '=== ERREUR ===']);
         }
     });
-    helperJs_1.default.info(`  Inserting ${addRows.length} ${accountName} data`);
+    helperJs.info(`  Inserting ${addRows.length} ${accountName} data`);
     if (addRows.length >= 1) {
         const addRange = dataSheet.range(dataRange._maxRowNumber + 1, dataRange._minColumnNumber, dataRange._maxRowNumber + addRows.length, dataRange._maxColumnNumber);
         addRange.value(addRows);
