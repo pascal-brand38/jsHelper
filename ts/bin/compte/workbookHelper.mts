@@ -5,9 +5,14 @@
 
 // import data from external account
 
-import databaseHooks from './databaseHooks.mjs'
+import databaseHooks from './databaseHooks.mts'
+import helperJs from '../../../helpers/helperJs.mjs'
 
 export class workbookHelper {
+  workbook: any
+  errors: string[]
+  database: any
+
   constructor(compteName, importFile, importAccount) {
     this.workbook = undefined
     this.errors = []             // list of strings of errors to check

@@ -17,8 +17,8 @@ import helperJs from '../helpers/helperJs.mjs'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import { importLBPData } from './compte/import.mjs'
-import { workbookHelper } from './compte/workbookHelper.mjs'
+import { importLBPData } from './compte/import.js'
+import { workbookHelper } from './compte/workbookHelper.js'
 
 function getArgs(argv) {
   console.log(argv)
