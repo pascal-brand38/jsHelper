@@ -5,10 +5,33 @@
 
 // import data from external account
 
+import databaseHooks from './databaseHooks.mjs'
+
 export class workbookHelper {
-  constructor(workbook) {
+  constructor(compteName, importFile, importAccount) {
     this.workbook = undefined
     this.errors = []             // list of strings of errors to check
+    this.database = {
+      inputs: {    // the inputs
+        compteName: compteName,             // xslx file to be updated: categpry, importing new data,...
+        importName: importFile,             // name of the file to import, from LBP. May be optional
+        importAccountName: importAccount,   // account that is being imported, from LBP. Linked to importName
+      },
+      params: {   // parameter of the xslx datas: startDate, account names, categories,...
+        startDate: undefined,
+        startYear: undefined,
+        currentYear: undefined,
+
+        // TODO: make accounts as an object of accountName
+        accounts: [],                               // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
+        categories: {},                             // object of 'categoryName': { type1, type2 }
+        categoryMatches: [],                        // list of { regex, category }  to match LBP labels
+      },
+      histo: {  // historic data, per years
+      },
+      hooks: databaseHooks,
+      getParamsAccount: (accountName) => this.database.params.accounts.filter(account => (account.name === accountName))[0],
+    }
   }
 
   setError(text) {

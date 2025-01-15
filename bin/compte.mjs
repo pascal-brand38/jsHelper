@@ -8,7 +8,6 @@
 
 // TODO: use TS
 // TODO: check account exist before import
-// TODO: check remb.
 
 import fs from 'fs'
 import path from 'path'
@@ -20,7 +19,6 @@ import { hideBin } from 'yargs/helpers'
 
 import { importLBPData } from './compte/import.mjs'
 import { workbookHelper } from './compte/workbookHelper.mjs'
-import databaseHooks from './compte/databaseHooks.mjs'
 
 function getArgs(argv) {
   console.log(argv)
@@ -58,7 +56,8 @@ function getArgs(argv) {
   return options;
 }
 
-async function updateCategories(workbookHelp, database) {
+async function updateCategories(workbookHelp) {
+  const database = workbookHelp.database
   function process(index, date, account, label, amount, category) {
     if (label && amount) {
       if ((!category || category === '=== ERREUR ===')) {
@@ -87,7 +86,8 @@ async function updateCategories(workbookHelp, database) {
   await workbookHelp.dataSheetForEachRow(process)
 }
 
-async function sortData(workbookHelp, database) {
+async function sortData(workbookHelp) {
+  const database = workbookHelp.database
   function isNumber(value) {
     return typeof value === 'number';
   }
@@ -135,7 +135,9 @@ async function sortData(workbookHelp, database) {
 }
 
 
-async function createResumeSheet(workbookHelp, database) {
+async function createResumeSheet(workbookHelp) {
+  const database = workbookHelp.database
+
   const dataSheet = workbookHelp.workbook.sheet("Résumé")
   const dataRange = dataSheet.usedRange()
   const rows = await dataRange.value()
@@ -169,7 +171,9 @@ async function createResumeSheet(workbookHelp, database) {
 }
 
 
-function displayErrors(workbookHelp, database, lbpSolde) {
+function displayErrors(workbookHelp, lbpSolde) {
+  const database = workbookHelp.database
+
   if (lbpSolde) {
     // check, but raise an error and stop immediately as a problem in a import may corrupt the xlsx file
     const computed = database.histo[database.params.currentYear].accounts[database.inputs.importAccountName]
@@ -199,7 +203,9 @@ function displayErrors(workbookHelp, database, lbpSolde) {
   workbookHelp.displayErrors()
 }
 
-async function save(compteName, workbookHelp) {
+async function save(workbookHelp) {
+  const compteName = workbookHelp.database.inputs.compteName
+
   // save a backup
   const now = DateTime.now().setZone('Europe/Paris').toFormat('yyyyMMdd-HHmmss')
   const dir = path.dirname(compteName)
@@ -216,7 +222,8 @@ async function save(compteName, workbookHelp) {
 }
 
 
-async function readParams(workbookHelp, database) {
+async function readParams(workbookHelp) {
+  const database = workbookHelp.database
   const rows = await workbookHelp.readSheet("params")
   if (rows.length >= 999999) {
     helperJs.error(`Reading ${rows.length} in params - way too much!`)
@@ -259,7 +266,9 @@ async function readParams(workbookHelp, database) {
 
 }
 
-async function updateHisto(workbookHelp, database) {
+async function updateHisto(workbookHelp) {
+  const database = workbookHelp.database
+
   const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year
   const currentYear = DateTime.fromNowStartOfDay().toObject().year
 
@@ -305,7 +314,9 @@ async function updateHisto(workbookHelp, database) {
 }
 
 
-async function createHistoSheet(workbookHelp, database) {
+async function createHistoSheet(workbookHelp) {
+  const database = workbookHelp.database
+
   const dataSheet = workbookHelp.workbook.sheet("Histo")
   const dataRange = dataSheet.usedRange()
   const rows = await dataRange.value()
@@ -329,58 +340,37 @@ async function createHistoSheet(workbookHelp, database) {
 async function main() {
   const options = getArgs(process.argv)
 
-  const database = {
-    inputs: {    // the inputs
-      compteName: options['_'][0],                // xslx file to be updated: categpry, importing new data,...
-      importName: options.importFile,             // name of the file to import, from LBP. May be optional
-      importAccountName: options.importAccount,   // account that is being imported, from LBP. Linked to importName
-    },
-    params: {   // parameter of the xslx datas: startDate, account names, categories,...
-      startDate: undefined,
-      startYear: undefined,
-      currentYear: undefined,
+  const workbookHelp = new workbookHelper(options['_'][0], options.importFile, options.importAccount)
 
-      // TODO: make accounts as an object of accountName
-      accounts: [],                               // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
-      categories: {},                             // object of 'categoryName': { type1, type2 }
-      categoryMatches: [],                        // list of { regex, category }  to match LBP labels
-    },
-    histo: {  // historic data, per years
-    },
-    hooks: databaseHooks,
-    getParamsAccount: (accountName) => database.params.accounts.filter(account => (account.name === accountName))[0],
-  }
-
-  const workbookHelp = new workbookHelper()
-  helperJs.info(`Read ${database.inputs.compteName}`)
-  workbookHelp.workbook = await xlsxPopulate.fromFileAsync(database.inputs.compteName)
+  helperJs.info(`Read ${workbookHelp.database.inputs.compteName}`)
+  workbookHelp.workbook = await xlsxPopulate.fromFileAsync(workbookHelp.database.inputs.compteName)
 
   helperJs.info('readParams')
-  await readParams(workbookHelp, database)
+  await readParams(workbookHelp)
 
   helperJs.info('importLBPData')
-  const lbpSolde = await importLBPData(database.inputs.importName, database.inputs.importAccountName, workbookHelp.workbook)
+  const lbpSolde = await importLBPData(workbookHelp)
 
   helperJs.info('Sort Data')
-  await sortData(workbookHelp, database)
+  await sortData(workbookHelp)
 
   helperJs.info('Update Categories')
-  await updateCategories(workbookHelp, database)
+  await updateCategories(workbookHelp)
 
   helperJs.info('updateHisto')
-  await updateHisto(workbookHelp, database)
+  await updateHisto(workbookHelp)
 
   helperJs.info('createResumeSheet')
-  await createResumeSheet(workbookHelp, database)
+  await createResumeSheet(workbookHelp)
 
   helperJs.info('createHistoSheet')
-  await createHistoSheet(workbookHelp, database)
+  await createHistoSheet(workbookHelp)
 
   helperJs.info('displayErrors')
-  displayErrors(workbookHelp, database, lbpSolde)
+  displayErrors(workbookHelp, lbpSolde)
 
   if (options.save) {
-    await save(database.inputs.compteName, workbookHelp)
+    await save(workbookHelp)
   }
 }
 
