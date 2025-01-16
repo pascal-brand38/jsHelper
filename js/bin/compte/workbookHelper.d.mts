@@ -18,8 +18,7 @@ interface dataSheetRowObjectType {
     amount: number | undefined;
     category: string | undefined;
 }
-interface accountType {
-    name: string;
+interface accountParamType {
     initialAmount: 0;
     type1: string;
     type2: string;
@@ -48,7 +47,9 @@ export interface databaseType {
         startDate: number;
         startYear: number;
         currentYear: number;
-        accounts: accountType[];
+        accounts: {
+            [name: string]: accountParamType;
+        };
         categories: {
             [category: string]: categoryParamType;
         };
@@ -58,7 +59,7 @@ export interface databaseType {
         [year: string]: histoYearType;
     };
     hooks: databaseHooksType;
-    getParamsAccount: (accountName: string) => accountType;
+    getParamsAccount: (accountName: string) => accountParamType;
 }
 export declare class workbookHelper {
     workbook: any;

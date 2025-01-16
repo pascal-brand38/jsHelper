@@ -19,15 +19,14 @@ export class workbookHelper {
                 startDate: 0,
                 startYear: 0,
                 currentYear: 0,
-                // TODO: make accounts as an object of accountName
-                accounts: [], // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
+                accounts: {}, // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
                 categories: {}, // object of 'categoryName': { type1, type2 }
                 categoryMatches: [], // list of { regex, category }  to match LBP labels
             },
             histo: { // historic data, per years
             },
             hooks: databaseHooks,
-            getParamsAccount: (accountName) => this.database.params.accounts.filter(account => (account.name === accountName))[0],
+            getParamsAccount: (accountName) => this.database.params.accounts[accountName],
         };
     }
     setError(text) {

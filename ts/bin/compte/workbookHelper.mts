@@ -29,8 +29,7 @@ interface dataSheetRowObjectType {
   category: string | undefined,
 }
 
-interface accountType {   // list of all the accounts
-  name: string,
+interface accountParamType {   // list of all the accounts
   initialAmount: 0,
   type1: string,
   type2: string,
@@ -59,8 +58,7 @@ export interface databaseType  {
     startYear: number,
     currentYear: number,
 
-    // TODO: make accounts as an object of accountName
-    accounts: accountType[],
+    accounts: { [ name: string]: accountParamType},   // the key is the category name
     categories: { [ category: string]: categoryParamType},   // the key is the category name
     categoryMatches: categoryMatchType[],  // list of { regex, category }  to match LBP labels
   },
@@ -68,7 +66,7 @@ export interface databaseType  {
     [year: string]: histoYearType    // the key is the year, and the values are the data for this year
   },
   hooks: databaseHooksType,
-  getParamsAccount: (accountName: string) => accountType
+  getParamsAccount: (accountName: string) => accountParamType
 
 }
 
@@ -91,15 +89,14 @@ export class workbookHelper {
         startYear: 0,
         currentYear: 0,
 
-        // TODO: make accounts as an object of accountName
-        accounts: [],                               // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
+        accounts: {},                               // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
         categories: {},                             // object of 'categoryName': { type1, type2 }
         categoryMatches: [],                        // list of { regex, category }  to match LBP labels
       },
       histo: {  // historic data, per years
       },
       hooks: databaseHooks,
-      getParamsAccount: (accountName) => this.database.params.accounts.filter(account => (account.name === accountName))[0],
+      getParamsAccount: (accountName) => this.database.params.accounts[accountName],
     }
   }
 

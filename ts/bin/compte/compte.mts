@@ -246,14 +246,13 @@ async function readParams(workbookHelp: workbookHelper) {
       database.params.startDate = row[1]    // excel serial date, when the data starts (the year before, to have an init of all accounts)
     } else if (row[0] === 'account') {
       // adding an account, with its types (short-term,...) and initial amount at startDate
-      database.params.accounts.push({
-        name: row[1],
+      database.params.accounts[row[1]] = {
         initialAmount: row[2] ? row[2] : 0,
         type1: row[3],
         type2: row[4],
         type3: row[5],
         lastUpdate: undefined,
-      })
+      }
     } else if (row[0] === 'category') {
       database.params.categories[row[1]] = {
         type1: row[2],
@@ -294,12 +293,12 @@ async function updateHisto(workbookHelp: workbookHelper) {
       accounts: {},
       categories: {}
     }
-    database.params.accounts.forEach((account: any) => database.histo[year].accounts[account.name] = 0)
+    Object.keys(database.params.accounts).forEach(account => database.histo[year].accounts[account] = 0)
     Object.keys(database.params.categories).forEach(category => database.histo[year].categories[category] = 0)
   }
 
   // update the startDate of the histo
-  database.params.accounts.forEach((account: any) => database.histo[startYear].accounts[account.name] = account.initialAmount)
+  Object.keys(database.params.accounts).forEach(account => database.histo[startYear].accounts[account] = database.params.accounts[account].initialAmount)
 
   //
   function process(index: number, date: number|undefined, account: string|undefined, label: string|undefined, amount: number|undefined, category: string|undefined) {
