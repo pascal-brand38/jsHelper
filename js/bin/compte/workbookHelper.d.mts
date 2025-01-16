@@ -1,12 +1,16 @@
 #!/usr/bin/env node
-import databaseHooks from './databaseHooks.mjs';
+import { databaseHooksType } from './databaseHooks.mjs';
+export type categoryMatchType = {
+    regex: RegExp;
+    category: string;
+};
 export type dataSheetRowType = [
     number,
     string,
     string,
     number,
     string
-];
+] | undefined;
 interface dataSheetRowObjectType {
     date: number | undefined;
     account: string | undefined;
@@ -20,7 +24,7 @@ interface accountType {
     type1: string;
     type2: string;
     type3: string;
-    lastUpdate: number;
+    lastUpdate: number | undefined;
 }
 interface categoryParamType {
     type1: string;
@@ -28,10 +32,10 @@ interface categoryParamType {
 }
 interface histoYearType {
     accounts: {
-        [key: string]: number;
+        [name: string]: number;
     };
     categories: {
-        [key: string]: number;
+        [name: string]: number;
     };
 }
 export interface databaseType {
@@ -46,14 +50,14 @@ export interface databaseType {
         currentYear: number;
         accounts: accountType[];
         categories: {
-            [key: string]: categoryParamType;
+            [category: string]: categoryParamType;
         };
-        categoryMatches: [];
+        categoryMatches: categoryMatchType[];
     };
     histo: {
-        [key: string]: histoYearType;
+        [year: string]: histoYearType;
     };
-    hooks: typeof databaseHooks;
+    hooks: databaseHooksType;
     getParamsAccount: (accountName: string) => accountType;
 }
 export declare class workbookHelper {
@@ -70,8 +74,14 @@ export declare class workbookHelper {
         label: string;
         amount: number;
         category: string;
+    } | {
+        date: undefined;
+        account: undefined;
+        label: undefined;
+        amount: undefined;
+        category: undefined;
     };
     dataSheetCreateRow(data: dataSheetRowObjectType): (string | number | undefined)[];
-    dataSheetForEachRow(callback: (index: number, date: number, account: string, label: string, amount: number, category: string) => dataSheetRowObjectType): Promise<void>;
+    dataSheetForEachRow(callback: (index: number, date: number | undefined, account: string | undefined, label: string | undefined, amount: number | undefined, category: string | undefined) => dataSheetRowObjectType | undefined): Promise<void>;
 }
 export {};

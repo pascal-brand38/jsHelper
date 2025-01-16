@@ -5,10 +5,12 @@
 
 // import data from external account
 
-import databaseHooks from './databaseHooks.mjs'
+import {databaseHooks, databaseHooksType } from './databaseHooks.mjs'
 
 // @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs'
+
+export type categoryMatchType = {regex: RegExp , category: string }
 
 export type dataSheetRowType = [
   number,   // the date, as an excel serial value
@@ -17,7 +19,7 @@ export type dataSheetRowType = [
   number,   // the amount
   string,   // the category
   // then the others are string or numbers
-]
+] | undefined   // can be undefined for a new empty line
 
 interface dataSheetRowObjectType {
   date: number | undefined,
@@ -33,7 +35,7 @@ interface accountType {   // list of all the accounts
   type1: string,
   type2: string,
   type3: string,
-  lastUpdate: number,
+  lastUpdate: number | undefined,
 }
 
 interface categoryParamType {
@@ -42,8 +44,8 @@ interface categoryParamType {
 }
 
 interface histoYearType {
-  accounts: { [key: string]: number },    // the key is the account name, the number is the amount
-  categories: { [key: string]: number },  // the key is the category name, the number is the amount of this category
+  accounts: { [name: string]: number },    // the key is the account name, the number is the amount
+  categories: { [name: string]: number },  // the key is the category name, the number is the amount of this category
 }
 
 export interface databaseType  {
@@ -59,13 +61,13 @@ export interface databaseType  {
 
     // TODO: make accounts as an object of accountName
     accounts: accountType[],
-    categories: { [ key: string]: categoryParamType},   // the key is the category name
-    categoryMatches: [],                        // list of { regex, category }  to match LBP labels
+    categories: { [ category: string]: categoryParamType},   // the key is the category name
+    categoryMatches: categoryMatchType[],  // list of { regex, category }  to match LBP labels
   },
   histo: {  // historic data, per years
-    [key: string]: histoYearType    // the key is the year, and the values are the data for this year
+    [year: string]: histoYearType    // the key is the year, and the values are the data for this year
   },
-  hooks: typeof databaseHooks,
+  hooks: databaseHooksType,
   getParamsAccount: (accountName: string) => accountType
 
 }
@@ -124,12 +126,22 @@ export class workbookHelper {
 
   // "data" sheet
   dataSheetExtractRow(row: dataSheetRowType) {
-    return {
-      date: row[0],       // excel serial date
-      account: row[1],    // Livret
-      label: row[2],      // I bought a present
-      amount: row[3],     // 100
-      category: row[4],   // Alimentation
+    if (row) {
+      return {
+        date: row[0],       // excel serial date
+        account: row[1],    // Livret
+        label: row[2],      // I bought a present
+        amount: row[3],     // 100
+        category: row[4],   // Alimentation
+      }
+    } else {
+      return {
+        date: undefined,
+        account: undefined,
+        label: undefined,
+        amount: undefined,
+        category: undefined,
+      }
     }
   }
 
@@ -140,7 +152,7 @@ export class workbookHelper {
   // callback is a function taking in arguments:
   //    (index, date, account, label, amount, category)
   // and returns an array of new rows. If undefined, they should not be updated
-  async dataSheetForEachRow(callback: (index: number, date: number, account: string, label: string, amount: number, category: string) => dataSheetRowObjectType) {
+  async dataSheetForEachRow(callback: (index: number, date: number|undefined, account: string|undefined, label: string|undefined, amount: number|undefined, category: string|undefined) => dataSheetRowObjectType | undefined) {
     let update = false
     const dataSheet = this.workbook.sheet("data")
     const dataRange = dataSheet.usedRange()

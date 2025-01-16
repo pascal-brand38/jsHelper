@@ -2,7 +2,7 @@
 // Copyright (c) Pascal Brand
 // MIT License
 // import data from external account
-import databaseHooks from './databaseHooks.mjs';
+import { databaseHooks } from './databaseHooks.mjs';
 // @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs';
 export class workbookHelper {
@@ -51,13 +51,24 @@ export class workbookHelper {
     }
     // "data" sheet
     dataSheetExtractRow(row) {
-        return {
-            date: row[0], // excel serial date
-            account: row[1], // Livret
-            label: row[2], // I bought a present
-            amount: row[3], // 100
-            category: row[4], // Alimentation
-        };
+        if (row) {
+            return {
+                date: row[0], // excel serial date
+                account: row[1], // Livret
+                label: row[2], // I bought a present
+                amount: row[3], // 100
+                category: row[4], // Alimentation
+            };
+        }
+        else {
+            return {
+                date: undefined,
+                account: undefined,
+                label: undefined,
+                amount: undefined,
+                category: undefined,
+            };
+        }
     }
     dataSheetCreateRow(data) {
         return [data.date, data.account, data.label, data.amount, data.category,];

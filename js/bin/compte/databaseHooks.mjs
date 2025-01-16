@@ -61,11 +61,10 @@ function getCategoryByType(database, row) {
         return _round(total);
     });
 }
-const databaseHooks = {
+export const databaseHooks = {
     getYears,
     getSumAccounts,
     getCategory,
     getEconomieCourantes,
     getCategoryByType,
 };
-export default databaseHooks;

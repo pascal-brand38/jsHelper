@@ -73,12 +73,11 @@ function getCategoryByType(database: databaseType, row: string[]) {
   })
 }
 
-const databaseHooks = {
+export type databaseHooksType = { [functionName: string]: Function }
+export const databaseHooks: databaseHooksType = {
   getYears,
   getSumAccounts,
   getCategory,
   getEconomieCourantes,
   getCategoryByType,
 }
-
-export default databaseHooks

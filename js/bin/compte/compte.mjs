@@ -22,7 +22,7 @@ import { workbookHelper } from './workbookHelper.mjs';
 function getArgs(argv) {
     console.log(argv);
     let options = yargs(hideBin(argv))
-        .usage('Update compte.xlsx')
+        .usage('node bin/compte.mjs /c/Users/pasca/Mon\ Drive/coffre-fort/comptes/new/compte.xlsx  --import-file /c/Users/pasca/Downloads/00000.tsv --import-account "CCP"')
         .help('help').alias('help', 'h')
         .version('version', '1.0').alias('version', 'V')
         .demandCommand(1, 1) // exactly 1 arg without options, which is the xlsx file
@@ -79,7 +79,13 @@ async function updateCategories(workbookHelp) {
                 workbookHelp.setError(`${year}: there are some ${category}`);
             }
         }
-        return { category: category };
+        return {
+            date: undefined,
+            account: undefined,
+            label: undefined,
+            amount: undefined,
+            category: category,
+        };
     }
     await workbookHelp.dataSheetForEachRow(process);
 }
@@ -94,8 +100,8 @@ async function sortData(workbookHelp) {
     const rows = await dataRange.value();
     // sort by date
     rows.sort((row1, row2) => {
-        const date1 = row1[0];
-        const date2 = row2[0];
+        const date1 = (row1 ? row1[0] : undefined);
+        const date2 = (row2 ? row2[0] : undefined);
         if (!isNumber(date1)) {
             return +1;
         }
@@ -109,13 +115,15 @@ async function sortData(workbookHelp) {
     // add a new line when the year changes
     let currentYear = database.params.startYear + 1;
     rows.forEach((row, index) => {
-        const date = row[0];
-        if (isNumber(date)) {
-            const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
-            if (year !== currentYear) {
-                // add a new line
-                rows.splice(index, 0, undefined);
-                currentYear = year;
+        if (row) {
+            const date = row[0];
+            if (isNumber(date)) {
+                const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
+                if (year !== currentYear) {
+                    // add a new line
+                    rows.splice(index, 0, undefined);
+                    currentYear = year;
+                }
             }
         }
     });
@@ -135,7 +143,7 @@ async function createResumeSheet(workbookHelp) {
         if (index < 5) {
             return; // title of columns
         }
-        rows[index] = ['', '', ''];
+        rows[index] = ['', '', '',];
     });
     const accounts = database.histo[database.params.currentYear].accounts;
     let currentRow = 4;
@@ -156,7 +164,7 @@ async function createResumeSheet(workbookHelp) {
 }
 function displayErrors(workbookHelp, lbpSolde) {
     const database = workbookHelp.database;
-    if (lbpSolde) {
+    if (lbpSolde && database.inputs.importAccountName) {
         // check, but raise an error and stop immediately as a problem in a import may corrupt the xlsx file
         const computed = database.histo[database.params.currentYear].accounts[database.inputs.importAccountName];
         if (!computed) {
@@ -259,13 +267,14 @@ async function updateHisto(workbookHelp) {
     database.params.accounts.forEach((account) => database.histo[startYear].accounts[account.name] = account.initialAmount);
     //
     function process(index, date, account, label, amount, category) {
-        if (date && amount) {
+        if (date && amount && account) {
             const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
             category = category ? category : "=== ERREUR ===";
             database.getParamsAccount(account).lastUpdate = date;
             database.histo[year].accounts[account] += amount;
             database.histo[year].categories[category] += amount;
         }
+        return undefined;
     }
     await workbookHelp.dataSheetForEachRow(process);
     // accumulate and round
