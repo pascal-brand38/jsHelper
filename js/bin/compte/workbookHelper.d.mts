@@ -14,6 +14,18 @@ interface accountType {
     type3: string;
     lastUpdate: number;
 }
+interface categoryParamType {
+    type1: string;
+    type2: string;
+}
+interface histoYearType {
+    accounts: {
+        [key: string]: number;
+    };
+    categories: {
+        [key: string]: number;
+    };
+}
 export interface databaseType {
     inputs: {
         compteName: string;
@@ -25,10 +37,14 @@ export interface databaseType {
         startYear: number;
         currentYear: number;
         accounts: accountType[];
-        categories: {};
+        categories: {
+            [key: string]: categoryParamType;
+        };
         categoryMatches: [];
     };
-    histo: {};
+    histo: {
+        [key: string]: histoYearType;
+    };
     hooks: any;
     getParamsAccount: (accountName: string) => accountType;
 }

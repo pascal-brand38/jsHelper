@@ -19,7 +19,7 @@ function getYears(database: databaseType) {
 }
 
 // return an array of sum of accounts per year
-function getSumAccounts(database: any, row: any) {
+function getSumAccounts(database: databaseType, row: string[]) {
   const histo = database.histo
   return Object.keys(histo).map(year => {
     let total = 0
@@ -29,7 +29,7 @@ function getSumAccounts(database: any, row: any) {
   })
 }
 
-function getCategory(database: any, row: any) {
+function getCategory(database: databaseType, row: string[]) {
   const histo = database.histo
   const category = row[3]
   return Object.keys(histo).map(year => histo[year].categories[category])
@@ -37,7 +37,7 @@ function getCategory(database: any, row: any) {
 
 
 // Revenus - Depenses pour tout ce qui est courant
-function getEconomieCourantes(database: any, row: any) {
+function getEconomieCourantes(database: databaseType, row: string[]) {
   const histo = database.histo
   return Object.keys(histo).map(year => {
     let depenses = 0
@@ -57,7 +57,7 @@ function getEconomieCourantes(database: any, row: any) {
 }
 
 // par type (type1===row[1]  and type2===row[2])
-function getCategoryByType(database: any, row: any) {
+function getCategoryByType(database: databaseType, row: string[]) {
   const histo = database.histo
   const type1 = row[1]
   const type2 = row[2]

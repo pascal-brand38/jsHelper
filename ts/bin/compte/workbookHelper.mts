@@ -27,6 +27,16 @@ interface accountType {   // list of all the accounts
   lastUpdate: number,
 }
 
+interface categoryParamType {
+  type1: string,      // Dépenses, Revenus, Somme nulle
+  type2: string,      // Courant, Exceptionnel
+}
+
+interface histoYearType {
+  accounts: { [key: string]: number },    // the key is the account name, the number is the amount
+  categories: { [key: string]: number },  // the key is the category name, the number is the amount of this category
+}
+
 export interface databaseType  {
   inputs: {
     compteName: string,             // xslx file to be updated: categpry, importing new data,...
@@ -40,10 +50,11 @@ export interface databaseType  {
 
     // TODO: make accounts as an object of accountName
     accounts: accountType[],
-    categories: {},                             // object of 'categoryName': { type1, type2 }
+    categories: { [ key: string]: categoryParamType},   // the key is the category name
     categoryMatches: [],                        // list of { regex, category }  to match LBP labels
   },
   histo: {  // historic data, per years
+    [key: string]: histoYearType    // the key is the year, and the values are the data for this year
   },
   hooks: any,
   getParamsAccount: (accountName: string) => accountType
