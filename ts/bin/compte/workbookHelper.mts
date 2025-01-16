@@ -10,12 +10,21 @@ import databaseHooks from './databaseHooks.mjs'
 // @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs'
 
-interface dataSheetRowType {
-  date: string,
-  account: string,
-  label: string,
-  amount: string,
-  category: string,
+export type dataSheetRowType = [
+  number,   // the date, as an excel serial value
+  string,   // the account
+  string,   // the label
+  number,   // the amount
+  string,   // the category
+  // then the others are string or numbers
+]
+
+interface dataSheetRowObjectType {
+  date: number | undefined,
+  account: string | undefined,
+  label: string | undefined,
+  amount: number | undefined,
+  category: string | undefined,
 }
 
 interface accountType {   // list of all the accounts
@@ -56,7 +65,7 @@ export interface databaseType  {
   histo: {  // historic data, per years
     [key: string]: histoYearType    // the key is the year, and the values are the data for this year
   },
-  hooks: any,
+  hooks: typeof databaseHooks,
   getParamsAccount: (accountName: string) => accountType
 
 }
@@ -114,7 +123,7 @@ export class workbookHelper {
   }
 
   // "data" sheet
-  dataSheetExtractRow(row: string[]) {
+  dataSheetExtractRow(row: dataSheetRowType) {
     return {
       date: row[0],       // excel serial date
       account: row[1],    // Livret
@@ -124,20 +133,20 @@ export class workbookHelper {
     }
   }
 
-  dataSheetCreateRow(data: dataSheetRowType) {
+  dataSheetCreateRow(data: dataSheetRowObjectType) {
     return [ data.date, data.account, data.label, data.amount, data.category, ]
   }
 
   // callback is a function taking in arguments:
   //    (index, date, account, label, amount, category)
   // and returns an array of new rows. If undefined, they should not be updated
-  async dataSheetForEachRow(callback: (index: number, date: string, account: string, label: string, amount: string, category: string) => dataSheetRowType) {
+  async dataSheetForEachRow(callback: (index: number, date: number, account: string, label: string, amount: number, category: string) => dataSheetRowObjectType) {
     let update = false
     const dataSheet = this.workbook.sheet("data")
     const dataRange = dataSheet.usedRange()
     const rows = await dataRange.value()
 
-    const updatedRows = rows.map((row: string[], index: number) => {
+    const updatedRows = rows.map((row: dataSheetRowType, index: number) => {
       const { date, account, label, amount, category } = this.dataSheetExtractRow(row)
       const result = callback(index, date, account, label, amount, category)
       // check it is coherent (always return, or never)

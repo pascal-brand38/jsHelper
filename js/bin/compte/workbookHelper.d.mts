@@ -1,10 +1,18 @@
 #!/usr/bin/env node
-interface dataSheetRowType {
-    date: string;
-    account: string;
-    label: string;
-    amount: string;
-    category: string;
+import databaseHooks from './databaseHooks.mjs';
+export type dataSheetRowType = [
+    number,
+    string,
+    string,
+    number,
+    string
+];
+interface dataSheetRowObjectType {
+    date: number | undefined;
+    account: string | undefined;
+    label: string | undefined;
+    amount: number | undefined;
+    category: string | undefined;
 }
 interface accountType {
     name: string;
@@ -45,7 +53,7 @@ export interface databaseType {
     histo: {
         [key: string]: histoYearType;
     };
-    hooks: any;
+    hooks: typeof databaseHooks;
     getParamsAccount: (accountName: string) => accountType;
 }
 export declare class workbookHelper {
@@ -56,14 +64,14 @@ export declare class workbookHelper {
     setError(text: string): void;
     displayErrors(): void;
     readSheet(sheetName: string): Promise<any>;
-    dataSheetExtractRow(row: string[]): {
-        date: string;
+    dataSheetExtractRow(row: dataSheetRowType): {
+        date: number;
         account: string;
         label: string;
-        amount: string;
+        amount: number;
         category: string;
     };
-    dataSheetCreateRow(data: dataSheetRowType): string[];
-    dataSheetForEachRow(callback: (index: number, date: string, account: string, label: string, amount: string, category: string) => dataSheetRowType): Promise<void>;
+    dataSheetCreateRow(data: dataSheetRowObjectType): (string | number | undefined)[];
+    dataSheetForEachRow(callback: (index: number, date: number, account: string, label: string, amount: number, category: string) => dataSheetRowObjectType): Promise<void>;
 }
 export {};

@@ -48,7 +48,10 @@ export async function importLBPData(workbookHelp) {
     const importName = workbookHelp.database.inputs.importName;
     const accountName = workbookHelp.database.inputs.importAccountName;
     const workbook = workbookHelp.workbook;
-    if (importName === undefined && accountName === undefined) {
+    if (importName === undefined) {
+        return undefined;
+    }
+    if (accountName === undefined) {
         return undefined;
     }
     const { solde: lbpSolde, resultRows: importRows } = readLBPTSV(importName);

@@ -7,6 +7,8 @@
 // this is a TS
 
 import * as fs from 'fs'
+import { workbookHelper, dataSheetRowType } from './workbookHelper.mjs'
+
 // @ts-ignore
 import { DateTime } from '../../../extend/luxon.mjs'
 // @ts-ignore
@@ -54,12 +56,15 @@ function readLBPTSV(filename: string) {
   return { solde, resultRows }
 }
 
-export async function importLBPData(workbookHelp: any) {
+export async function importLBPData(workbookHelp: workbookHelper) {
   const importName = workbookHelp.database.inputs.importName
   const accountName = workbookHelp.database.inputs.importAccountName
   const workbook = workbookHelp.workbook
 
-  if (importName===undefined && accountName===undefined) {
+  if (importName===undefined) {
+    return undefined
+  }
+  if (accountName===undefined) {
     return undefined
   }
 
@@ -68,9 +73,9 @@ export async function importLBPData(workbookHelp: any) {
   const dataSheet = workbook.sheet("data")
   const dataRange = dataSheet.usedRange()
   const rows = await dataRange.value()
-  let addRows: any[] = []
+  let addRows: dataSheetRowType[] = []
   importRows.forEach(importRow => {
-    let found = rows.some((row: any) => (importRow.date===row[0]) && (accountName===row[1]) && (importRow.label===row[2]) && (importRow.amount===row[3]))
+    let found = rows.some((row: dataSheetRowType) => (importRow.date===row[0]) && (accountName===row[1]) && (importRow.label===row[2]) && (importRow.amount===row[3]))
     if (!found) {
       addRows.push([ importRow.date, accountName, importRow.label, importRow.amount, '=== ERREUR ===' ])
     }

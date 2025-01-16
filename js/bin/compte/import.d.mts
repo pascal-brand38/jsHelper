@@ -1,2 +1,3 @@
 #!/usr/bin/env node
-export declare function importLBPData(workbookHelp: any): Promise<undefined>;
+import { workbookHelper } from './workbookHelper.mjs';
+export declare function importLBPData(workbookHelp: workbookHelper): Promise<undefined>;
