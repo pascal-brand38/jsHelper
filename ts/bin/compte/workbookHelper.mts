@@ -6,14 +6,56 @@
 // import data from external account
 
 import databaseHooks from './databaseHooks.mjs'
+
+// @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs'
+
+interface dataSheetRowType {
+  date: string,
+  account: string,
+  label: string,
+  amount: string,
+  category: string,
+}
+
+interface accountType {   // list of all the accounts
+  name: string,
+  initialAmount: 0,
+  type1: string,
+  type2: string,
+  type3: string,
+  lastUpdate: number,
+}
+
+export interface databaseType  {
+  inputs: {
+    compteName: string,             // xslx file to be updated: categpry, importing new data,...
+    importName: string|undefined,             // name of the file to import, from LBP. May be optional
+    importAccountName: string|undefined,   // account that is being imported, from LBP. Linked to importName
+  },
+  params: {   // parameter of the xslx datas: startDate, account names, categories,...
+    startDate: number,
+    startYear: number,
+    currentYear: number,
+
+    // TODO: make accounts as an object of accountName
+    accounts: accountType[],
+    categories: {},                             // object of 'categoryName': { type1, type2 }
+    categoryMatches: [],                        // list of { regex, category }  to match LBP labels
+  },
+  histo: {  // historic data, per years
+  },
+  hooks: any,
+  getParamsAccount: (accountName: string) => accountType
+
+}
 
 export class workbookHelper {
   workbook: any
   errors: string[]
-  database: any
+  database: databaseType
 
-  constructor(compteName, importFile, importAccount) {
+  constructor(compteName: string, importFile: string|undefined, importAccount: string|undefined) {
     this.workbook = undefined
     this.errors = []             // list of strings of errors to check
     this.database = {
@@ -23,9 +65,9 @@ export class workbookHelper {
         importAccountName: importAccount,   // account that is being imported, from LBP. Linked to importName
       },
       params: {   // parameter of the xslx datas: startDate, account names, categories,...
-        startDate: undefined,
-        startYear: undefined,
-        currentYear: undefined,
+        startDate: 0,
+        startYear: 0,
+        currentYear: 0,
 
         // TODO: make accounts as an object of accountName
         accounts: [],                               // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
@@ -39,7 +81,7 @@ export class workbookHelper {
     }
   }
 
-  setError(text) {
+  setError(text: string) {
     if (!this.errors.includes(text)) {
       this.errors.push(text)
     }
@@ -54,14 +96,14 @@ export class workbookHelper {
     }
   }
 
-  async readSheet(sheetName) {
+  async readSheet(sheetName: string) {
     const dataSheet = this.workbook.sheet(sheetName)
     const dataRange = dataSheet.usedRange()
     return await dataRange.value()
   }
 
   // "data" sheet
-  dataSheetExtractRow(row) {
+  dataSheetExtractRow(row: string[]) {
     return {
       date: row[0],       // excel serial date
       account: row[1],    // Livret
@@ -71,20 +113,20 @@ export class workbookHelper {
     }
   }
 
-  dataSheetCreateRow({date, account, label, amount, category}) {
-    return [ date, account, label, amount, category, ]
+  dataSheetCreateRow(data: dataSheetRowType) {
+    return [ data.date, data.account, data.label, data.amount, data.category, ]
   }
 
   // callback is a function taking in arguments:
   //    (index, date, account, label, amount, category)
   // and returns an array of new rows. If undefined, they should not be updated
-  async dataSheetForEachRow(callback) {
+  async dataSheetForEachRow(callback: (index: number, date: string, account: string, label: string, amount: string, category: string) => dataSheetRowType) {
     let update = false
     const dataSheet = this.workbook.sheet("data")
     const dataRange = dataSheet.usedRange()
     const rows = await dataRange.value()
 
-    const updatedRows = rows.map((row, index) => {
+    const updatedRows = rows.map((row: string[], index: number) => {
       const { date, account, label, amount, category } = this.dataSheetExtractRow(row)
       const result = callback(index, date, account, label, amount, category)
       // check it is coherent (always return, or never)

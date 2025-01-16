@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-declare function getYears(database: any): number[];
+import type { databaseType } from './workbookHelper.mts';
+declare function getYears(database: databaseType): number[];
 declare function getSumAccounts(database: any, row: any): number[];
 declare function getCategory(database: any, row: any): any[];
 declare function getEconomieCourantes(database: any, row: any): number[];

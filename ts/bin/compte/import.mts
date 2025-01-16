@@ -7,7 +7,9 @@
 // this is a TS
 
 import * as fs from 'fs'
+// @ts-ignore
 import { DateTime } from '../../../extend/luxon.mjs'
+// @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs'
 
 function readTSV(filename: string) {
@@ -47,12 +49,12 @@ function readLBPTSV(filename: string) {
       amount: frenchTextToFloat(row[2]),
     })
   })
-  resultRows.sort((a, b) => a[0] - b[0])
+  resultRows.sort((a, b) => a.date - b.date)
 
   return { solde, resultRows }
 }
 
-export async function importLBPData(workbookHelp) {
+export async function importLBPData(workbookHelp: any) {
   const importName = workbookHelp.database.inputs.importName
   const accountName = workbookHelp.database.inputs.importAccountName
   const workbook = workbookHelp.workbook
@@ -68,7 +70,7 @@ export async function importLBPData(workbookHelp) {
   const rows = await dataRange.value()
   let addRows: any[] = []
   importRows.forEach(importRow => {
-    let found = rows.some(row => (importRow.date===row[0]) && (accountName===row[1]) && (importRow.label===row[2]) && (importRow.amount===row[3]))
+    let found = rows.some((row: any) => (importRow.date===row[0]) && (accountName===row[1]) && (importRow.label===row[2]) && (importRow.amount===row[3]))
     if (!found) {
       addRows.push([ importRow.date, accountName, importRow.label, importRow.amount, '=== ERREUR ===' ])
     }

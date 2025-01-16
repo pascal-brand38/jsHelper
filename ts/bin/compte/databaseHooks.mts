@@ -3,12 +3,14 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
-const _round = (number => Math.round(number * 100) / 100)
+import type { databaseType } from './workbookHelper.mts'
+
+const _round = ((number: number) => Math.round(number * 100) / 100)
 
 // hooks on database
 
 // return an array of years
-function getYears(database) {
+function getYears(database: databaseType) {
   let years: number[] = []
   for (let year: number=database.params.startYear; year<=database.params.currentYear; year++) {
     years.push(year)
@@ -17,7 +19,7 @@ function getYears(database) {
 }
 
 // return an array of sum of accounts per year
-function getSumAccounts(database, row) {
+function getSumAccounts(database: any, row: any) {
   const histo = database.histo
   return Object.keys(histo).map(year => {
     let total = 0
@@ -27,7 +29,7 @@ function getSumAccounts(database, row) {
   })
 }
 
-function getCategory(database, row) {
+function getCategory(database: any, row: any) {
   const histo = database.histo
   const category = row[3]
   return Object.keys(histo).map(year => histo[year].categories[category])
@@ -35,7 +37,7 @@ function getCategory(database, row) {
 
 
 // Revenus - Depenses pour tout ce qui est courant
-function getEconomieCourantes(database, row) {
+function getEconomieCourantes(database: any, row: any) {
   const histo = database.histo
   return Object.keys(histo).map(year => {
     let depenses = 0
@@ -55,7 +57,7 @@ function getEconomieCourantes(database, row) {
 }
 
 // par type (type1===row[1]  and type2===row[2])
-function getCategoryByType(database, row) {
+function getCategoryByType(database: any, row: any) {
   const histo = database.histo
   const type1 = row[1]
   const type2 = row[2]

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Copyright (c) Pascal Brand
 // MIT License
-const _round = (number => Math.round(number * 100) / 100);
+const _round = ((number) => Math.round(number * 100) / 100);
 // hooks on database
 // return an array of years
 function getYears(database) {

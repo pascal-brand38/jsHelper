@@ -7,10 +7,15 @@
 // TODO: check account exist before import
 import * as fs from 'fs';
 import * as path from 'path';
+// @ts-ignore
 import xlsxPopulate from 'xlsx-populate';
+// @ts-ignore
 import { DateTime } from '../../../extend/luxon.mjs';
+// @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs';
+// @ts-ignore
 import yargs from 'yargs';
+// @ts-ignore
 import { hideBin } from 'yargs/helpers';
 import { importLBPData } from './import.mjs';
 import { workbookHelper } from './workbookHelper.mjs';
@@ -56,7 +61,7 @@ async function updateCategories(workbookHelp) {
         if (label && amount) {
             if ((!category || category === '=== ERREUR ===')) {
                 category = '=== ERREUR ===';
-                database.params.categoryMatches.some(match => {
+                database.params.categoryMatches.some((match) => {
                     if (match.regex.exec(label)) {
                         category = match.category;
                         return true;
@@ -197,7 +202,7 @@ async function readParams(workbookHelp) {
     if (rows.length >= 999999) {
         helperJs.error(`Reading ${rows.length} in params - way too much!`);
     }
-    rows.forEach(row => {
+    rows.forEach((row) => {
         if (row[0] === 'startDate') {
             database.params.startDate = row[1]; // excel serial date, when the data starts (the year before, to have an init of all accounts)
         }
@@ -247,11 +252,11 @@ async function updateHisto(workbookHelp) {
             accounts: {},
             categories: {}
         };
-        database.params.accounts.forEach(account => database.histo[year].accounts[account.name] = 0);
+        database.params.accounts.forEach((account) => database.histo[year].accounts[account.name] = 0);
         Object.keys(database.params.categories).forEach(category => database.histo[year].categories[category] = 0);
     }
     // update the startDate of the histo
-    database.params.accounts.forEach(account => database.histo[startYear].accounts[account.name] = account.initialAmount);
+    database.params.accounts.forEach((account) => database.histo[startYear].accounts[account.name] = account.initialAmount);
     //
     function process(index, date, account, label, amount, category) {
         if (date && amount) {

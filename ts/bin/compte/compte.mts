@@ -11,16 +11,22 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
+
+// @ts-ignore
 import xlsxPopulate from 'xlsx-populate'
+// @ts-ignore
 import { DateTime } from '../../../extend/luxon.mjs'
+// @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs'
+// @ts-ignore
 import yargs from 'yargs'
+// @ts-ignore
 import { hideBin } from 'yargs/helpers'
 
 import { importLBPData } from './import.mjs'
 import { workbookHelper } from './workbookHelper.mjs'
 
-function getArgs(argv) {
+function getArgs(argv: string[]) {
   console.log(argv)
   let options = yargs(hideBin(argv))
     .usage('Update compte.xlsx')
@@ -42,7 +48,7 @@ function getArgs(argv) {
         default: true,
       },
     })
-    .check((argv) => {
+    .check((argv: any) => {
       if ((!argv['import-file']) && (argv['import-account'])) {
         throw new Error('--import-file, but no --import-account')
       } else if ((argv['import-file']) && (!argv['import-account'])) {
@@ -56,13 +62,13 @@ function getArgs(argv) {
   return options;
 }
 
-async function updateCategories(workbookHelp) {
+async function updateCategories(workbookHelp: any) {
   const database = workbookHelp.database
-  function process(index, date, account, label, amount, category) {
+  function process(index: any, date: any, account: any, label: any, amount: any, category: any) {
     if (label && amount) {
       if ((!category || category === '=== ERREUR ===')) {
         category = '=== ERREUR ==='
-        database.params.categoryMatches.some(match => {
+        database.params.categoryMatches.some((match: any) => {
           if (match.regex.exec(label)) {
             category = match.category
             return true
@@ -86,9 +92,9 @@ async function updateCategories(workbookHelp) {
   await workbookHelp.dataSheetForEachRow(process)
 }
 
-async function sortData(workbookHelp) {
+async function sortData(workbookHelp: any) {
   const database = workbookHelp.database
-  function isNumber(value) {
+  function isNumber(value: any) {
     return typeof value === 'number';
   }
 
@@ -98,7 +104,7 @@ async function sortData(workbookHelp) {
   const rows = await dataRange.value()
 
   // sort by date
-  rows.sort((row1, row2) => {
+  rows.sort((row1: any, row2: any) => {
     const date1 = row1[0]
     const date2 = row2[0]
     if (!isNumber(date1)) {
@@ -113,7 +119,7 @@ async function sortData(workbookHelp) {
 
   // add a new line when the year changes
   let currentYear = database.params.startYear+1
-  rows.forEach((row, index) => {
+  rows.forEach((row: any, index: any) => {
     const date = row[0]
     if (isNumber(date)) {
       const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
@@ -135,7 +141,7 @@ async function sortData(workbookHelp) {
 }
 
 
-async function createResumeSheet(workbookHelp) {
+async function createResumeSheet(workbookHelp: any) {
   const database = workbookHelp.database
 
   const dataSheet = workbookHelp.workbook.sheet("Résumé")
@@ -143,7 +149,7 @@ async function createResumeSheet(workbookHelp) {
   const rows = await dataRange.value()
 
   // clean the rows, apart the title
-  rows.forEach((row, index) => {
+  rows.forEach((row: any, index: any) => {
     if (index < 5) {
       return    // title of columns
     }
@@ -153,7 +159,7 @@ async function createResumeSheet(workbookHelp) {
   const accounts = database.histo[database.params.currentYear].accounts
 
   let currentRow = 4
-  let lastType2 = undefined
+  let lastType2: any = undefined
   Object.keys(accounts).map(accountName => {
     if (accounts[accountName] !== 0) {
       const params = database.getParamsAccount(accountName)
@@ -171,7 +177,7 @@ async function createResumeSheet(workbookHelp) {
 }
 
 
-function displayErrors(workbookHelp, lbpSolde) {
+function displayErrors(workbookHelp: any, lbpSolde: any) {
   const database = workbookHelp.database
 
   if (lbpSolde) {
@@ -203,7 +209,7 @@ function displayErrors(workbookHelp, lbpSolde) {
   workbookHelp.displayErrors()
 }
 
-async function save(workbookHelp) {
+async function save(workbookHelp: any) {
   const compteName = workbookHelp.database.inputs.compteName
 
   // save a backup
@@ -222,13 +228,13 @@ async function save(workbookHelp) {
 }
 
 
-async function readParams(workbookHelp) {
+async function readParams(workbookHelp: any) {
   const database = workbookHelp.database
   const rows = await workbookHelp.readSheet("params")
   if (rows.length >= 999999) {
     helperJs.error(`Reading ${rows.length} in params - way too much!`)
   }
-  rows.forEach(row => {
+  rows.forEach((row: any) => {
     if (row[0] === 'startDate') {
       database.params.startDate = row[1]    // excel serial date, when the data starts (the year before, to have an init of all accounts)
     } else if (row[0] === 'account') {
@@ -262,11 +268,11 @@ async function readParams(workbookHelp) {
 
   // sort the matches by length (longer before)
   // so if there are the same prefix, the longer is checked before the smaller
-  database.params.categoryMatches.sort((a,b) => b.regex.toString().length - a.regex.toString().length)
+  database.params.categoryMatches.sort((a: any,b: any) => b.regex.toString().length - a.regex.toString().length)
 
 }
 
-async function updateHisto(workbookHelp) {
+async function updateHisto(workbookHelp: any) {
   const database = workbookHelp.database
 
   const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year
@@ -281,15 +287,15 @@ async function updateHisto(workbookHelp) {
       accounts: {},
       categories: {}
     }
-    database.params.accounts.forEach(account => database.histo[year].accounts[account.name] = 0)
+    database.params.accounts.forEach((account: any) => database.histo[year].accounts[account.name] = 0)
     Object.keys(database.params.categories).forEach(category => database.histo[year].categories[category] = 0)
   }
 
   // update the startDate of the histo
-  database.params.accounts.forEach(account => database.histo[startYear].accounts[account.name] = account.initialAmount)
+  database.params.accounts.forEach((account: any) => database.histo[startYear].accounts[account.name] = account.initialAmount)
 
   //
-  function process(index, date, account, label, amount, category) {
+  function process(index: any, date: any, account: any, label: any, amount: any, category: any) {
     if (date && amount) {
       const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
       category = category ? category : "=== ERREUR ==="
@@ -315,7 +321,7 @@ async function updateHisto(workbookHelp) {
 }
 
 
-async function createHistoSheet(workbookHelp) {
+async function createHistoSheet(workbookHelp: any) {
   const database = workbookHelp.database
 
   const dataSheet = workbookHelp.workbook.sheet("Histo")
@@ -323,7 +329,7 @@ async function createHistoSheet(workbookHelp) {
   const rows = await dataRange.value()
 
   // clean the rows, apart the title
-  rows.forEach((row, index) => {
+  rows.forEach((row: any, index: any) => {
     const hook = row[0]
     if (hook && database.hooks[hook]) {
       const newRows = database.hooks[hook](database, row)

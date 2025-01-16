@@ -3,6 +3,7 @@
 // MIT License
 // import data from external account
 import databaseHooks from './databaseHooks.mjs';
+// @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs';
 export class workbookHelper {
     constructor(compteName, importFile, importAccount) {
@@ -15,9 +16,9 @@ export class workbookHelper {
                 importAccountName: importAccount, // account that is being imported, from LBP. Linked to importName
             },
             params: {
-                startDate: undefined,
-                startYear: undefined,
-                currentYear: undefined,
+                startDate: 0,
+                startYear: 0,
+                currentYear: 0,
                 // TODO: make accounts as an object of accountName
                 accounts: [], // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
                 categories: {}, // object of 'categoryName': { type1, type2 }
@@ -58,8 +59,8 @@ export class workbookHelper {
             category: row[4], // Alimentation
         };
     }
-    dataSheetCreateRow({ date, account, label, amount, category }) {
-        return [date, account, label, amount, category,];
+    dataSheetCreateRow(data) {
+        return [data.date, data.account, data.label, data.amount, data.category,];
     }
     // callback is a function taking in arguments:
     //    (index, date, account, label, amount, category)
