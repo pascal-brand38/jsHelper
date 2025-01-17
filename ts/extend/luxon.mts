@@ -3,11 +3,34 @@
 //
 // Extend DateTime from luxon library to deal with excel serial date
 // https://stackoverflow.com/questions/34512832/best-way-to-extend-a-javascript-library
+//
+// In TS, extension can be shown as:
+// https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation
 
 import { DateTime, Info } from 'luxon'
+import { StringUnitLength, InfoUnitOptions } from 'luxon'
 
-// Extend DateTime library from luxon
-// zone 'utc' is used to get real dates at noon, not bothering about timezone
+declare module 'luxon' {
+  // declare new constructors
+  namespace DateTime {
+    export function fromNowStartOfDay(): DateTime
+    export function fromEpochStartOfDay(epoch: number): DateTime
+    export function fromFormatStartOfDay(str: string, format?: string): DateTime
+    export function fromExcelSerialStartOfDay(serial: number): DateTime
+  }
+
+  // declare new properties
+  interface DateTime<IsValid extends boolean = boolean> {
+    toEpoch: () => number
+    toExcelSerial: () => number
+
+    weekdayStr: (length?: StringUnitLength, opts?: InfoUnitOptions) => string
+
+    epochNDays: (nDays: number) => number
+  }
+
+}
+
 DateTime.fromNowStartOfDay = () => DateTime.now().setZone('utc').startOf('day')
 DateTime.fromEpochStartOfDay = (epoch) => DateTime.fromSeconds(epoch, {zone: 'utc'}).startOf('day')
 DateTime.fromFormatStartOfDay = (str, format = 'd/M/y') => DateTime.fromFormat(str, format, {zone: 'utc'}).startOf('day')
@@ -28,6 +51,4 @@ DateTime.prototype.weekdayStr = function (length='long', opts={ locale: 'fr' }) 
   return weekdays[this.weekday-1]   // this.weekday from 1 to 7, 1 is Monday and 7 is Sunday
 }
 
-DateTime.epochNDays = (nDays)  => 60 * 60 * 24 * nDays
-
-export { DateTime }
+DateTime.prototype.epochNDays = (nDays) => 60 * 60 * 24 * nDays

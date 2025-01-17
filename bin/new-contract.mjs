@@ -12,7 +12,8 @@ import { fileURLToPath } from 'url';
 import child_process from 'child_process'
 import helperCattery from '../helpers/helperCattery.mjs';
 import helperJs from '../helpers/helperJs.mjs';
-import { DateTime } from '../extend/luxon.mjs'
+import { DateTime } from 'luxon'
+import '../js/extend/luxon.mjs'
 import { PDFDocument } from '../extend/pdf-lib.mjs';
 
 // fill pdf fields corresponding to the owner

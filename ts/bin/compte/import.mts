@@ -9,8 +9,9 @@
 import * as fs from 'fs'
 import { workbookHelper, dataSheetRowType } from './workbookHelper.mjs'
 
-// @ts-ignore
-import { DateTime } from '../../../extend/luxon.mjs'
+import { DateTime } from 'luxon'
+import '../../extend/luxon.mjs'
+
 // @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs'
 

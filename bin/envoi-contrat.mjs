@@ -7,7 +7,8 @@ import path from 'path'
 
 import helperCattery from '../helpers/helperCattery.mjs'
 import helperJs from '../helpers/helperJs.mjs'
-import { DateTime } from '../extend/luxon.mjs'
+import { DateTime } from 'luxon'
+import '../js/extend/luxon.mjs'
 
 function getVotrePtitLoulou(gender) {
   const nChoices = 2

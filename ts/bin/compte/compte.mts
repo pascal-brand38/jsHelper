@@ -13,8 +13,10 @@ import * as path from 'path'
 
 // @ts-ignore
 import xlsxPopulate from 'xlsx-populate'
-// @ts-ignore
-import { DateTime } from '../../../extend/luxon.mjs'
+
+import { DateTime } from 'luxon'
+import '../../extend/luxon.mjs'
+
 // @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs'
 // @ts-ignore
@@ -61,6 +63,17 @@ function getArgs(argv: string[]) {
   return options;
 }
 
+function extractYear(datetime: DateTime): number {
+  // remove toObject()
+  const year = datetime.year
+  if (year===undefined) {
+    helperJs.error('Internal error: year is undefined')
+    return 0    // useless as throw an exception
+  } else {
+    return year
+  }
+}
+
 async function updateCategories(workbookHelp: workbookHelper) {
   const database = workbookHelp.database
   function process(index: number, date: number|undefined, account: string|undefined, label: string|undefined, amount: number|undefined, category: string|undefined) {
@@ -82,8 +95,12 @@ async function updateCategories(workbookHelp: workbookHelper) {
       }
 
       if (category === '=== ERREUR ===') {
-        const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
-        workbookHelp.setError(`${year}: there are some ${category}`)
+        if (date) {
+          const year = extractYear(DateTime.fromExcelSerialStartOfDay(date))
+          workbookHelp.setError(`${year}: there are some ${category}`)
+        } else {
+          workbookHelp.setError(`there are some ${category}`)
+        }
       }
     }
     return {
@@ -128,7 +145,7 @@ async function sortData(workbookHelp: workbookHelper) {
     if (row) {
       const date = row[0]
       if (isNumber(date)) {
-        const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
+        const year = extractYear(DateTime.fromExcelSerialStartOfDay(date))
         if (year !== currentYear) {
           // add a new line
           rows.splice(index, 0, undefined)
@@ -281,8 +298,8 @@ async function readParams(workbookHelp: workbookHelper) {
 async function updateHisto(workbookHelp: workbookHelper) {
   const database = workbookHelp.database
 
-  const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year
-  const currentYear = DateTime.fromNowStartOfDay().toObject().year
+  const startYear = extractYear(DateTime.fromExcelSerialStartOfDay(database.params.startDate))
+  const currentYear = extractYear(DateTime.fromNowStartOfDay())
 
   database.params.startYear = startYear
   database.params.currentYear = currentYear
@@ -303,7 +320,7 @@ async function updateHisto(workbookHelp: workbookHelper) {
   //
   function process(index: number, date: number|undefined, account: string|undefined, label: string|undefined, amount: number|undefined, category: string|undefined) {
     if (date && amount && account) {
-      const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year
+      const year = extractYear(DateTime.fromExcelSerialStartOfDay(date))
       category = category ? category : "=== ERREUR ==="
       database.getParamsAccount(account).lastUpdate = date
       database.histo[year].accounts[account] += amount

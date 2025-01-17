@@ -8,8 +8,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 // @ts-ignore
 import xlsxPopulate from 'xlsx-populate';
-// @ts-ignore
-import { DateTime } from '../../../extend/luxon.mjs';
+import { DateTime } from 'luxon';
+import '../../extend/luxon.mjs';
 // @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs';
 // @ts-ignore
@@ -54,6 +54,17 @@ function getArgs(argv) {
         .argv;
     return options;
 }
+function extractYear(datetime) {
+    // remove toObject()
+    const year = datetime.year;
+    if (year === undefined) {
+        helperJs.error('Internal error: year is undefined');
+        return 0; // useless as throw an exception
+    }
+    else {
+        return year;
+    }
+}
 async function updateCategories(workbookHelp) {
     const database = workbookHelp.database;
     function process(index, date, account, label, amount, category) {
@@ -74,8 +85,13 @@ async function updateCategories(workbookHelp) {
                 workbookHelp.setError(`${category}: unknown category line ${index + 1}`);
             }
             if (category === '=== ERREUR ===') {
-                const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
-                workbookHelp.setError(`${year}: there are some ${category}`);
+                if (date) {
+                    const year = extractYear(DateTime.fromExcelSerialStartOfDay(date));
+                    workbookHelp.setError(`${year}: there are some ${category}`);
+                }
+                else {
+                    workbookHelp.setError(`there are some ${category}`);
+                }
             }
         }
         return {
@@ -117,7 +133,7 @@ async function sortData(workbookHelp) {
         if (row) {
             const date = row[0];
             if (isNumber(date)) {
-                const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
+                const year = extractYear(DateTime.fromExcelSerialStartOfDay(date));
                 if (year !== currentYear) {
                     // add a new line
                     rows.splice(index, 0, undefined);
@@ -248,8 +264,8 @@ async function readParams(workbookHelp) {
 }
 async function updateHisto(workbookHelp) {
     const database = workbookHelp.database;
-    const startYear = DateTime.fromExcelSerialStartOfDay(database.params.startDate).toObject().year;
-    const currentYear = DateTime.fromNowStartOfDay().toObject().year;
+    const startYear = extractYear(DateTime.fromExcelSerialStartOfDay(database.params.startDate));
+    const currentYear = extractYear(DateTime.fromNowStartOfDay());
     database.params.startYear = startYear;
     database.params.currentYear = currentYear;
     // initialize the data structure (account and category per year) to 0
@@ -266,7 +282,7 @@ async function updateHisto(workbookHelp) {
     //
     function process(index, date, account, label, amount, category) {
         if (date && amount && account) {
-            const year = DateTime.fromExcelSerialStartOfDay(date).toObject().year;
+            const year = extractYear(DateTime.fromExcelSerialStartOfDay(date));
             category = category ? category : "=== ERREUR ===";
             database.getParamsAccount(account).lastUpdate = date;
             database.histo[year].accounts[account] += amount;

@@ -9,7 +9,8 @@ import os from 'os'
 import path from 'path'
 import helperJs from './helperJs.mjs';
 import helperExcel from './helperExcel.mjs'
-import { DateTime } from '../extend/luxon.mjs'
+import { DateTime } from 'luxon'
+import '../js/extend/luxon.mjs'
 import { PDFDocument, setProplist } from '../extend/pdf-lib.mjs'
 import { emitKeypressEvents } from 'readline';
 import { emitWarning } from 'process';

@@ -4,8 +4,8 @@
 // import data from external account
 // this is a TS
 import * as fs from 'fs';
-// @ts-ignore
-import { DateTime } from '../../../extend/luxon.mjs';
+import { DateTime } from 'luxon';
+import '../../extend/luxon.mjs';
 // @ts-ignore
 import helperJs from '../../../helpers/helperJs.mjs';
 function readTSV(filename) {

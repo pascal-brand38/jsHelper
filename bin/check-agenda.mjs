@@ -10,7 +10,8 @@
 
 import helperExcel from '../helpers/helperExcel.mjs'
 import helperCattery from '../helpers/helperCattery.mjs'
-import { DateTime } from '../extend/luxon.mjs'
+import { DateTime } from 'luxon'
+import '../js/extend/luxon.mjs'
 import helperJs from '../helpers/helperJs.mjs'
 
 // populates unique arrival and departure dates, from readXls return data
