@@ -52,6 +52,7 @@
   "homepage": "https://github.com/pascal-brand38/jsHelper#readme",
   "devDependencies": {
     "@types/luxon": "^3.4.2",
-    "@types/node": "^22.10.6"
+    "@types/node": "^22.10.6",
+    "@types/yargs": "^17.0.33"
   }
 }

@@ -18,9 +18,7 @@ import { DateTime } from 'luxon'
 import '../../extend/luxon.mjs'
 import helperJs from '../../helpers/helperJs.mjs'
 
-// @ts-ignore
-import yargs from 'yargs'
-// @ts-ignore
+import yargs, { string } from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import { importLBPData } from './import.mjs'
@@ -57,8 +55,9 @@ function getArgs(argv: string[]) {
         return true;
       }
     }).strict()   // raise an error if an option is unknown
-    .argv;
+    .parseSync();
 
+    console.log(options)
   return options;
 }
 
@@ -370,7 +369,8 @@ async function createHistoSheet(workbookHelp: workbookHelper) {
 export async function compte() {
   const options = getArgs(process.argv)
 
-  const workbookHelp = new workbookHelper(options['_'][0], options.importFile, options.importAccount)
+  const xlsxName: string = (typeof options['_'][0] === 'string' ? options['_'][0] : '')
+  const workbookHelp = new workbookHelper(xlsxName, options.importFile, options.importAccount)
 
   helperJs.info(`Read ${workbookHelp.database.inputs.compteName}`)
   workbookHelp.workbook = await xlsxPopulate.fromFileAsync(workbookHelp.database.inputs.compteName)

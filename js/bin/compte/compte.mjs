@@ -11,9 +11,7 @@ import xlsxPopulate from 'xlsx-populate';
 import { DateTime } from 'luxon';
 import '../../extend/luxon.mjs';
 import helperJs from '../../helpers/helperJs.mjs';
-// @ts-ignore
 import yargs from 'yargs';
-// @ts-ignore
 import { hideBin } from 'yargs/helpers';
 import { importLBPData } from './import.mjs';
 import { workbookHelper } from './workbookHelper.mjs';
@@ -50,7 +48,8 @@ function getArgs(argv) {
             return true;
         }
     }).strict() // raise an error if an option is unknown
-        .argv;
+        .parseSync();
+    console.log(options);
     return options;
 }
 function extractYear(datetime) {
@@ -322,7 +321,8 @@ async function createHistoSheet(workbookHelp) {
 }
 export async function compte() {
     const options = getArgs(process.argv);
-    const workbookHelp = new workbookHelper(options['_'][0], options.importFile, options.importAccount);
+    const xlsxName = (typeof options['_'][0] === 'string' ? options['_'][0] : '');
+    const workbookHelp = new workbookHelper(xlsxName, options.importFile, options.importAccount);
     helperJs.info(`Read ${workbookHelp.database.inputs.compteName}`);
     workbookHelp.workbook = await xlsxPopulate.fromFileAsync(workbookHelp.database.inputs.compteName);
     helperJs.info('readParams');
