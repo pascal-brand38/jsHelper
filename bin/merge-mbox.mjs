@@ -12,7 +12,7 @@ import os from 'os'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import crypto from 'node:crypto'
-import helperJs from '../helpers/helperJs.mjs';
+import helperJs from '../js/helpers/helperJs.mjs'
 
 let statistics = {
   nTotal: 0,

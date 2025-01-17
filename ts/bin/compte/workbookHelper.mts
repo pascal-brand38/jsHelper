@@ -7,8 +7,7 @@
 
 import {databaseHooks, databaseHooksType } from './databaseHooks.mjs'
 
-// @ts-ignore
-import helperJs from '../../../helpers/helperJs.mjs'
+import helperJs from '../../helpers/helperJs.mjs'
 
 export type categoryMatchType = {regex: RegExp , category: string }
 

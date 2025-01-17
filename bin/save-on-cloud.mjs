@@ -15,7 +15,7 @@ import fs from 'fs'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import fileSyncCmp from 'file-sync-cmp'
-import helperJs from '../helpers/helperJs.mjs'
+import helperJs from '../js/helpers/helperJs.mjs'
 
 let statistics = {
   identical: 0,

@@ -3,8 +3,7 @@
 // MIT License
 // import data from external account
 import { databaseHooks } from './databaseHooks.mjs';
-// @ts-ignore
-import helperJs from '../../../helpers/helperJs.mjs';
+import helperJs from '../../helpers/helperJs.mjs';
 export class workbookHelper {
     constructor(compteName, importFile, importAccount) {
         this.workbook = undefined;

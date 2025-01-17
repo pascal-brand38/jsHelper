@@ -12,8 +12,7 @@ import { workbookHelper, dataSheetRowType } from './workbookHelper.mjs'
 import { DateTime } from 'luxon'
 import '../../extend/luxon.mjs'
 
-// @ts-ignore
-import helperJs from '../../../helpers/helperJs.mjs'
+import helperJs from '../../helpers/helperJs.mjs'
 
 function readTSV(filename: string) {
   const text: string = fs.readFileSync(filename, 'utf8')

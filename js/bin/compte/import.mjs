@@ -6,8 +6,7 @@
 import * as fs from 'fs';
 import { DateTime } from 'luxon';
 import '../../extend/luxon.mjs';
-// @ts-ignore
-import helperJs from '../../../helpers/helperJs.mjs';
+import helperJs from '../../helpers/helperJs.mjs';
 function readTSV(filename) {
     const text = fs.readFileSync(filename, 'utf8');
     const rows = [];

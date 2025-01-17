@@ -7,7 +7,7 @@ import { decode } from 'html-entities';
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import helperJs from './helperJs.mjs';
+import helperJs from '../js/helpers/helperJs.mjs'
 import helperExcel from './helperExcel.mjs'
 import { DateTime } from 'luxon'
 import '../js/extend/luxon.mjs'

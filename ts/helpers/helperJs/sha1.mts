@@ -1,16 +1,21 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
-import fs from 'fs'
-import crypto from 'node:crypto'
+import * as fs from 'fs'
+import * as crypto from 'node:crypto'
+
+// @ts-ignore
 import fileSyncCmp from 'file-sync-cmp'
+
+
+export interface sha1ListType { [sha1: string]: string[] }     // all filenames for given sha1
 
 // read a file chunk by chunk
 const chunkSize = 10 * 1024*1024        // read files by 10MB chunk size
 const chunkBuffer = Buffer.alloc(chunkSize);
 
 // get sha1 of a file, given its filename
-function getSha1(filename) {
+function getSha1(filename: string) {
   let fp = fs.openSync(filename, 'r');
   let bytesRead = 0;
   let offset = 0
@@ -31,7 +36,7 @@ function initSha1List()  { return {} }
 
 // add a sha1, corresponding to a filename, in a list
 // if checkCollision=true and in case of collision, throw an error if the collision files do not have the same content
-function updateSha1List(sha1List, sha1sum, filename, checkCollision=true) {
+function updateSha1List(sha1List: sha1ListType, sha1sum: string, filename: string, checkCollision=true) {
   if (sha1List[sha1sum] === undefined) {
     sha1List[sha1sum] = [ ]
   } else {
@@ -46,7 +51,7 @@ function updateSha1List(sha1List, sha1sum, filename, checkCollision=true) {
 
 // return true if a filename sha1 is in sha1List
 // in case of collision, and if the file contents differ, an exception is thrown
-function isInSha1List(sha1List, filename) {
+function isInSha1List(sha1List: sha1ListType, filename: string) {
   const sha1sum = getSha1(filename)
   if (sha1List[sha1sum] === undefined) {
     return undefined
@@ -57,7 +62,6 @@ function isInSha1List(sha1List, filename) {
     return sha1List[sha1sum][0]
   }
 }
-
 
 export default {
   getSha1,

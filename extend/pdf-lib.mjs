@@ -5,7 +5,7 @@
 // https://pdf-lib.js.org/#fill-form
 
 import { PDFDocument } from 'pdf-lib'
-import helperJs from '../helpers/helperJs.mjs';
+import helperJs from '../js/helpers/helperJs.mjs'
 import fs from 'fs'
 
 

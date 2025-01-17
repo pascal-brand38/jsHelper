@@ -9,7 +9,7 @@ import fs from 'fs'
 import path from 'path';
 import child_process from 'child_process'
 import helperCattery from '../helpers/helperCattery.mjs';
-import helperJs from '../helpers/helperJs.mjs';
+import helperJs from '../js/helpers/helperJs.mjs'
 
 
 async function main() {

@@ -1,10 +1,13 @@
 /// Copyright (c) Pascal Brand
 /// MIT License
 
-import fs from 'fs'
-import path from 'path'
-import child_process from 'child_process'
-import pdfjsdist from '../extend/pdfjs-dist.mjs'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as child_process from 'child_process'
+
+// @ts-ignore
+import pdfjsdist from '../../extend/pdfjs-dist.mjs'
+
 import sha1 from './helperJs/sha1.mjs'
 
 // https://nodejs.org/api/readline.html
@@ -12,13 +15,13 @@ import sha1 from './helperJs/sha1.mjs'
 import * as readline from 'readline/promises';
 import { stdin as input, stdout as output } from 'process';
 
-function warning(s) {
+function warning(s: string) {
   console.log('WARNING');
   console.log('WARNING  ', s);
   console.log('WARNING');
 }
 
-function error(s) {
+function error(s: string) {
   console.log('***');
   console.log('***  ERREUR');
   console.log('*** ', s);
@@ -28,12 +31,17 @@ function error(s) {
                     // TODO: exit, without throw, but without killing the window
 }
 
+interface walkDirOptionsType {
+  stepVerbose: number
+  excludes: string[]
+}
+
 const question = {
   // question: async (text) =>  await new Promise(resolve => {
   //   const rl = readline.createInterface({ input, output })
   //   rl.question(`${text}`, resolve)
   // })
-  question: async (text) => {
+  question: async (text: string) => {
     const rl = readline.createInterface({ input, output })
     const answer = await rl.question(`${text}`)
     rl.close()
@@ -43,12 +51,12 @@ const question = {
 
 const thunderbird = {
   compose: async (
-    email,
-    subject,
-    body,
-    attachment = null,
-    exe = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"',
-    forbiddenWords = [ 'undefined', 'infinity', ' nan€', ' nan ', ],     // must be a lower case list
+    email: string,
+    subject: string,
+    body: string,
+    attachment: string|null = null,
+    exe: string = '"C:\\Program Files\\Mozilla Thunderbird\\thunderbird.exe"',
+    forbiddenWords: string[] = [ 'undefined', 'infinity', ' nan€', ' nan ', ],     // must be a lower case list
   ) => {
 
     // check the email does not contain any forbidden words
@@ -91,7 +99,7 @@ const thunderbird = {
 }
 
 /// get the list of all files in rootDir, from subDir recursiveley
-function _walkDir(rootDir, options, files, subDir) {
+function _walkDir(rootDir: string, options: walkDirOptionsType, files: string[], subDir: string) {
   const thisDir = path.join(rootDir, subDir);
   fs.readdirSync(thisDir).forEach(file => {
     if (options.excludes.includes(file)) {
@@ -115,8 +123,8 @@ function _walkDir(rootDir, options, files, subDir) {
 
 }
 
-function _createOptions(options, defaultOptions) {
-  let currentOptions = {}
+function _createOptions(options: any, defaultOptions: any) {
+  let currentOptions: any = {}
   if (options === undefined) {
     currentOptions = defaultOptions
   } else {
@@ -127,7 +135,7 @@ function _createOptions(options, defaultOptions) {
   return currentOptions
 }
 
-function walkDir(rootDir, options) {
+function walkDir(rootDir: any, options: any) {
   // create options
   const defaultOptions = {
     excludes: [],       // list of files / directories to exclude from the list
@@ -135,22 +143,22 @@ function walkDir(rootDir, options) {
   }
   const currentOptions = _createOptions(options, defaultOptions)
 
-  let files = []
+  let files: any[] = []
   _walkDir(rootDir, currentOptions, files, '.')
   return files
 }
 
 const utils = {
-  getImmediateSubdirs: (dir) => {
+  getImmediateSubdirs: (dir: string) => {
     return fs.readdirSync(dir, { withFileTypes: true })
       .filter((item) => item.isDirectory())
       .map((item) => item.name);
   },
   error,
   warning,
-  sleep: async s => new Promise(r => setTimeout(r, s * 1000)),
+  sleep: async (s: number) => new Promise(r => setTimeout(r, s * 1000)),
   walkDir,
-  beautifulSize(s) {
+  beautifulSize(s: number) {
     if (s < 1024) {
       return `${s.toFixed(2)}Bytes`
     } else if (s < 1024*1024) {
@@ -175,7 +183,7 @@ export default {
     isInSha1List: sha1.isInSha1List,
   },
 
-  info: (text) => console.log('\x1b[34m' + text + '\x1b[0m'),
+  info: (text: string) => console.log('\x1b[34m' + text + '\x1b[0m'),
   warning,
   error,
 }

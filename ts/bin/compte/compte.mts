@@ -16,9 +16,8 @@ import xlsxPopulate from 'xlsx-populate'
 
 import { DateTime } from 'luxon'
 import '../../extend/luxon.mjs'
+import helperJs from '../../helpers/helperJs.mjs'
 
-// @ts-ignore
-import helperJs from '../../../helpers/helperJs.mjs'
 // @ts-ignore
 import yargs from 'yargs'
 // @ts-ignore
