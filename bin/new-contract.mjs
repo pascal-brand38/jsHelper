@@ -140,7 +140,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
 
   let sAcompteDate = argsComptaPdfLastContract.rowCompta.acompteDate
   if (sAcompteDate) {
-    sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('d/M/y')
+    sAcompteDate = DateTime.fromExcelSerialStartOfDay(sAcompteDate).toFormat('dd/MM/yyyy')
   } else {
     sAcompteDate = ''
   }
