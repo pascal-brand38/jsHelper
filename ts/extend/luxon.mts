@@ -11,12 +11,14 @@ import { DateTime, Info } from 'luxon'
 import { StringUnitLength, InfoUnitOptions } from 'luxon'
 
 declare module 'luxon' {
-  // declare new constructors
+  // declare static function
   namespace DateTime {
+    // declare new constructors
     export function fromNowStartOfDay(): DateTime
     export function fromEpochStartOfDay(epoch: number): DateTime
     export function fromFormatStartOfDay(str: string, format?: string): DateTime
     export function fromExcelSerialStartOfDay(serial: number): DateTime
+    export function epochNDays(nDays: number): number
   }
 
   // declare new properties
@@ -25,15 +27,13 @@ declare module 'luxon' {
     toExcelSerial: () => number
 
     weekdayStr: (length?: StringUnitLength, opts?: InfoUnitOptions) => string
-
-    epochNDays: (nDays: number) => number
   }
-
 }
 
 DateTime.fromNowStartOfDay = () => DateTime.now().setZone('utc').startOf('day')
 DateTime.fromEpochStartOfDay = (epoch) => DateTime.fromSeconds(epoch, {zone: 'utc'}).startOf('day')
 DateTime.fromFormatStartOfDay = (str, format = 'd/M/y') => DateTime.fromFormat(str, format, {zone: 'utc'}).startOf('day')
+DateTime.epochNDays = (nDays) => 60 * 60 * 24 * nDays
 
 // from a serial day in excel (nb of days since 01/01/1900),
 // https://stackoverflow.com/questions/26792144/converting-days-since-jan-1-1900-to-todays-date
@@ -50,5 +50,3 @@ DateTime.prototype.weekdayStr = function (length='long', opts={ locale: 'fr' }) 
   const weekdays = Info.weekdays(length, opts)    // arrays of day strings, [0] being lundi
   return weekdays[this.weekday-1]   // this.weekday from 1 to 7, 1 is Monday and 7 is Sunday
 }
-
-DateTime.prototype.epochNDays = (nDays) => 60 * 60 * 24 * nDays

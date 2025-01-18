@@ -10,6 +10,7 @@ import { DateTime, Info } from 'luxon';
 DateTime.fromNowStartOfDay = () => DateTime.now().setZone('utc').startOf('day');
 DateTime.fromEpochStartOfDay = (epoch) => DateTime.fromSeconds(epoch, { zone: 'utc' }).startOf('day');
 DateTime.fromFormatStartOfDay = (str, format = 'd/M/y') => DateTime.fromFormat(str, format, { zone: 'utc' }).startOf('day');
+DateTime.epochNDays = (nDays) => 60 * 60 * 24 * nDays;
 // from a serial day in excel (nb of days since 01/01/1900),
 // https://stackoverflow.com/questions/26792144/converting-days-since-jan-1-1900-to-todays-date
 // Convert serial to seconds, minus the offset of the number of seconds between Jan-1-1900(Serial Date)
@@ -24,4 +25,3 @@ DateTime.prototype.weekdayStr = function (length = 'long', opts = { locale: 'fr'
     const weekdays = Info.weekdays(length, opts); // arrays of day strings, [0] being lundi
     return weekdays[this.weekday - 1]; // this.weekday from 1 to 7, 1 is Monday and 7 is Sunday
 };
-DateTime.prototype.epochNDays = (nDays) => 60 * 60 * 24 * nDays;
