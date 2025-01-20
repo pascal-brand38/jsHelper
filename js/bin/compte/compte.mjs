@@ -309,9 +309,14 @@ async function createHistoSheet(workbookHelp) {
     // clean the rows, apart the title
     rows.forEach((row, index) => {
         const hook = row[0];
-        if (hook && database.hooks[hook]) {
-            const newRows = database.hooks[hook](database, row);
-            rows[index] = [undefined, undefined, undefined, undefined, ...newRows];
+        if (hook) {
+            if (database.hooks[hook]) {
+                const newRows = database.hooks[hook](database, row);
+                rows[index] = [undefined, undefined, undefined, undefined, ...newRows];
+            }
+            else {
+                helperJs.error(`Internal error: hook ${hook} does not exist`);
+            }
         }
         else {
             rows[index] = undefined; // no change - important for formulas
