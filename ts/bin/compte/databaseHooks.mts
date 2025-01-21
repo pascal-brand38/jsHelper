@@ -3,6 +3,7 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
+import helperJs from '../../helpers/helperJs.mjs'
 import type { databaseType } from './workbookHelper.mts'
 
 const _round = ((number: number) => Math.round(number * 100) / 100)
@@ -90,9 +91,40 @@ function getSumCategories(database: databaseType, row: (string | undefined)[]) {
 }
 
 
+// row[0] ==> 'getAllAccounts"
+// row[1] ==> index
+// row[2] ==> unused
+// row[3] ==> unused
+// row[4] ==> unused
+//
+// return undefined from 0 to 4, then the account name at the provided index,
+// and then the sum of categories for each years
+function getAllAccounts(database: databaseType, row: (string | undefined)[]) {
+  const histo = database.histo
+  const params = database.params
+  const index = row[1]
+  if (index === undefined) {
+    helperJs.error('No index for hooks getAllAccounts')
+  } else {
+    // search the account with this index
+    let newRow: (string | number | undefined)[] = []
+    const accountNames = Object.keys(database.params.accounts)
+    const selectedNames = accountNames.filter(accountName => (database.params.accounts[accountName].index === parseInt(index)))
+    if (selectedNames.length === 0) {
+      const values = new Array(params.currentYear - params.startYear + 1).fill('');
+      newRow = [ undefined, undefined, undefined, undefined, undefined, '', ...values ]
+    } else {
+      const values = Object.keys(histo).map(year => histo[year].accounts[selectedNames[0]])
+      newRow = [ undefined, undefined, undefined, undefined, undefined, selectedNames[0], ...values ]
+    }
+    return newRow
+  }
+}
+
 export type databaseHooksType = { [functionName: string]: Function }
 export const databaseHooks: databaseHooksType = {
   getYears,
   getSumAccounts,
   getSumCategories,
+  getAllAccounts,
 }

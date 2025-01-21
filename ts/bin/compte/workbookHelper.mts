@@ -28,12 +28,13 @@ interface dataSheetRowObjectType {
   category: string | undefined,
 }
 
-interface accountParamType {   // list of all the accounts
+export interface accountParamType {   // list of all the accounts
   initialAmount: 0,
   type1: string,
   type2: string,
   type3: string,
   lastUpdate: number | undefined,
+  index: number,    // from 0. increment when a new account, +2 if new account.type2 is not the same than the previous one
 }
 
 interface categoryParamType {

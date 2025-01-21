@@ -18,12 +18,13 @@ interface dataSheetRowObjectType {
     amount: number | undefined;
     category: string | undefined;
 }
-interface accountParamType {
+export interface accountParamType {
     initialAmount: 0;
     type1: string;
     type2: string;
     type3: string;
     lastUpdate: number | undefined;
+    index: number;
 }
 interface categoryParamType {
     type1: string;

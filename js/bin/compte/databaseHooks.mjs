@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Copyright (c) Pascal Brand
 // MIT License
+import helperJs from '../../helpers/helperJs.mjs';
 const _round = ((number) => Math.round(number * 100) / 100);
 // hooks on database
 // row[0] ==> 'getYears"
@@ -78,8 +79,40 @@ function getSumCategories(database, row) {
     });
     return [undefined, undefined, undefined, undefined, undefined, undefined, ...statRows];
 }
+// row[0] ==> 'getAllAccounts"
+// row[1] ==> index
+// row[2] ==> unused
+// row[3] ==> unused
+// row[4] ==> unused
+//
+// return undefined from 0 to 4, then the account name at the provided index,
+// and then the sum of categories for each years
+function getAllAccounts(database, row) {
+    const histo = database.histo;
+    const params = database.params;
+    const index = row[1];
+    if (index === undefined) {
+        helperJs.error('No index for hooks getAllAccounts');
+    }
+    else {
+        // search the account with this index
+        let newRow = [];
+        const accountNames = Object.keys(database.params.accounts);
+        const selectedNames = accountNames.filter(accountName => (database.params.accounts[accountName].index === parseInt(index)));
+        if (selectedNames.length === 0) {
+            const values = new Array(params.currentYear - params.startYear + 1).fill('');
+            newRow = [undefined, undefined, undefined, undefined, undefined, '', ...values];
+        }
+        else {
+            const values = Object.keys(histo).map(year => histo[year].accounts[selectedNames[0]]);
+            newRow = [undefined, undefined, undefined, undefined, undefined, selectedNames[0], ...values];
+        }
+        return newRow;
+    }
+}
 export const databaseHooks = {
     getYears,
     getSumAccounts,
     getSumCategories,
+    getAllAccounts,
 };
