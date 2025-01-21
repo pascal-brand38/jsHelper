@@ -356,7 +356,7 @@ async function createHistoSheet(workbookHelp: workbookHelper) {
     if (hook) {
       if (database.hooks[hook]) {
         const newRows = database.hooks[hook](database, row)
-        rows[index] = [ undefined, undefined, undefined, undefined, ...newRows]
+        rows[index] = [ undefined, undefined, undefined, undefined, undefined, undefined, ...newRows]
       } else {
         helperJs.error(`Internal error: hook ${hook} does not exist`)
       }

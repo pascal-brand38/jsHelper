@@ -21,52 +21,36 @@ function getYears(database: databaseType) {
 // return an array of sum of accounts per year
 function getSumAccounts(database: databaseType, row: string[]) {
   const histo = database.histo
+  const accountParam = database.params.accounts
+  const type1: string | undefined = row[2]
   return Object.keys(histo).map(year => {
     let total = 0
     const accounts = histo[year].accounts
-    Object.keys(accounts).forEach(accountName => total += accounts[accountName])
+    Object.keys(accounts).forEach(accountName => {
+      if (!type1 || (accountParam[accountName].type1 === type1)) {
+        total += accounts[accountName]
+      }
+    })
     return _round(total)
   })
 }
 
-function getCategory(database: databaseType, row: string[]) {
-  const histo = database.histo
-  const category = row[3]
-  return Object.keys(histo).map(year => histo[year].categories[category])
-}
-
-
-// Revenus - Depenses pour tout ce qui est courant
-function getEconomieCourantes(database: databaseType, row: string[]) {
-  const histo = database.histo
-  return Object.keys(histo).map(year => {
-    let depenses = 0
-    let revenus = 0
-    Object.keys(histo[year].categories).forEach(category => {
-      if (database.params.categories[category].type2 === 'Courant') {
-        if (database.params.categories[category].type1 === 'Dépenses') {
-          depenses += histo[year].categories[category]
-        }
-        if (database.params.categories[category].type1 === 'Revenus') {
-          revenus += histo[year].categories[category]
-        }
-      }
-    })
-    return _round(revenus + depenses)
-  })
-}
 
 // par type (type1===row[1]  and type2===row[2])
-function getCategoryByType(database: databaseType, row: string[]) {
+function getSumCategories(database: databaseType, row: (string | undefined)[]) {
   const histo = database.histo
-  const type1 = row[1]
-  const type2 = row[2]
+  const searchCategory = row[1]
+  const type1 = row[2]
+  const type2 = row[3]
   return Object.keys(histo).map(year => {
     let total = 0
     Object.keys(histo[year].categories).forEach(category => {
-      if ((!type1 || type1===database.params.categories[category].type1) &&
-          (!type2 || type2===database.params.categories[category].type2)){
-                total += histo[year].categories[category]
+      let toCount = true
+      toCount = toCount && ((!searchCategory) || (searchCategory === category))
+      toCount = toCount && ((!type1) || (type1 === database.params.categories[category].type1))
+      toCount = toCount && ((!type2) || (type2 === database.params.categories[category].type2))
+      if (toCount) {
+        total += histo[year].categories[category]
       }
     })
     return _round(total)
@@ -77,7 +61,5 @@ export type databaseHooksType = { [functionName: string]: Function }
 export const databaseHooks: databaseHooksType = {
   getYears,
   getSumAccounts,
-  getCategory,
-  getEconomieCourantes,
-  getCategoryByType,
+  getSumCategories,
 }
