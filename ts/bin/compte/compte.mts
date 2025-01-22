@@ -22,7 +22,7 @@ import yargs, { string } from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import { importLBPData } from './import.mjs'
-import { dataSheetRowType, categoryMatchType, workbookHelper, accountParamType } from './workbookHelper.mjs'
+import { dataSheetRowType, categoryMatchType, workbookHelper, accountParamType, categoryParamType } from './workbookHelper.mjs'
 
 function getArgs(argv: string[]) {
   console.log(argv)
@@ -257,6 +257,7 @@ async function readParams(workbookHelp: workbookHelper) {
     helperJs.error(`Reading ${rows.length} in params - way too much!`)
   }
   let lastAccount: accountParamType | undefined = undefined
+  let lastCategory: categoryParamType | undefined = undefined
   rows.forEach((row: any) => {
     if (row[0] === 'startDate') {
       database.params.startDate = row[1]    // excel serial date, when the data starts (the year before, to have an init of all accounts)
@@ -281,10 +282,21 @@ async function readParams(workbookHelp: workbookHelper) {
       }
       lastAccount = database.params.accounts[row[1]]
     } else if (row[0] === 'category') {
+      let index = 0
+      if (lastCategory) {
+        index = lastCategory.index + 1
+        if (lastCategory.type1 != row[2]) {
+          index ++
+        }
+      } else {
+        index = 0
+      }
       database.params.categories[row[1]] = {
         type1: row[2],
         type2: row[3],
+        index: index,
       }
+      lastCategory = database.params.categories[row[1]]
     } else if (row[0] === 'categoryMatch') {
       database.params.categoryMatches.push({
         regex: new RegExp(`^${row[1]}`, 'i'),

@@ -26,9 +26,10 @@ export interface accountParamType {
     lastUpdate: number | undefined;
     index: number;
 }
-interface categoryParamType {
+export interface categoryParamType {
     type1: string;
     type2: string;
+    index: number;
 }
 interface histoYearType {
     accounts: {

@@ -110,9 +110,41 @@ function getAllAccounts(database, row) {
         return newRow;
     }
 }
+// row[0] ==> 'getAllCategories"
+// row[1] ==> index
+// row[2] ==> unused
+// row[3] ==> unused
+// row[4] ==> unused
+//
+// return undefined from 0 to 4, then the account name at the provided index,
+// and then the sum of categories for each years
+function getAllCategories(database, row) {
+    const histo = database.histo;
+    const params = database.params;
+    const index = row[1];
+    if (index === undefined) {
+        helperJs.error('No index for hooks getAllAccounts');
+    }
+    else {
+        // search the account with this index
+        let newRow = [];
+        const categoryNames = Object.keys(database.params.categories);
+        const selectedNames = categoryNames.filter(categoryNames => (database.params.categories[categoryNames].index === parseInt(index)));
+        if (selectedNames.length === 0) {
+            const values = new Array(params.currentYear - params.startYear + 1).fill('');
+            newRow = [undefined, undefined, undefined, undefined, undefined, '', ...values];
+        }
+        else {
+            const values = Object.keys(histo).map(year => histo[year].categories[selectedNames[0]]);
+            newRow = [undefined, undefined, undefined, undefined, undefined, selectedNames[0], ...values];
+        }
+        return newRow;
+    }
+}
 export const databaseHooks = {
     getYears,
     getSumAccounts,
     getSumCategories,
     getAllAccounts,
+    getAllCategories,
 };

@@ -224,6 +224,7 @@ async function readParams(workbookHelp) {
         helperJs.error(`Reading ${rows.length} in params - way too much!`);
     }
     let lastAccount = undefined;
+    let lastCategory = undefined;
     rows.forEach((row) => {
         if (row[0] === 'startDate') {
             database.params.startDate = row[1]; // excel serial date, when the data starts (the year before, to have an init of all accounts)
@@ -251,10 +252,22 @@ async function readParams(workbookHelp) {
             lastAccount = database.params.accounts[row[1]];
         }
         else if (row[0] === 'category') {
+            let index = 0;
+            if (lastCategory) {
+                index = lastCategory.index + 1;
+                if (lastCategory.type1 != row[2]) {
+                    index++;
+                }
+            }
+            else {
+                index = 0;
+            }
             database.params.categories[row[1]] = {
                 type1: row[2],
                 type2: row[3],
+                index: index,
             };
+            lastCategory = database.params.categories[row[1]];
         }
         else if (row[0] === 'categoryMatch') {
             database.params.categoryMatches.push({

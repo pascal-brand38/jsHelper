@@ -37,9 +37,10 @@ export interface accountParamType {   // list of all the accounts
   index: number,    // from 0. increment when a new account, +2 if new account.type2 is not the same than the previous one
 }
 
-interface categoryParamType {
+export interface categoryParamType {
   type1: string,      // Dépenses, Revenus, Somme nulle
   type2: string,      // Courant, Exceptionnel
+  index: number,      // from 0. increment when a new category, +2 if new category.type1 is not the same than the previous one
 }
 
 interface histoYearType {
