@@ -20,12 +20,20 @@ export type dataSheetRowType = [
   // then the others are string or numbers
 ] | undefined   // can be undefined for a new empty line
 
-interface dataSheetRowObjectType {
+export interface dataSheetRowObjectType {
   date: number | undefined,
   account: string | undefined,
   label: string | undefined,
   amount: number | undefined,
   category: string | undefined,
+}
+
+export interface rawdataType {
+  date: number,
+  account: string,
+  label: string,
+  amount: number,
+  category: string,
 }
 
 export interface accountParamType {   // list of all the accounts
@@ -66,6 +74,7 @@ export interface databaseType  {
   histo: {  // historic data, per years
     [year: string]: histoYearType    // the key is the year, and the values are the data for this year
   },
+  rawData: rawdataType[],   // the raw data, as after the categories have been updated
   hooks: databaseHooksType,
   getParamsAccount: (accountName: string) => accountParamType
 
@@ -96,6 +105,7 @@ export class workbookHelper {
       },
       histo: {  // historic data, per years
       },
+      rawData: [],
       hooks: databaseHooks,
       getParamsAccount: (accountName) => this.database.params.accounts[accountName],
     }
@@ -145,6 +155,19 @@ export class workbookHelper {
 
   dataSheetCreateRow(data: dataSheetRowObjectType) {
     return [ data.date, data.account, data.label, data.amount, data.category, ]
+  }
+  rawdataCreateFromRow(row: dataSheetRowType): rawdataType | undefined {
+    if (row && row[0] && row[1] && row[2] && row[3]) {
+      return {
+        date: row[0],
+        account: row[1],
+        label: row[2],
+        amount: row[3],
+        category: row[4],
+      }
+    } else {
+      return undefined
+    }
   }
 
   // callback is a function taking in arguments:

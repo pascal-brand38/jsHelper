@@ -25,7 +25,6 @@ import { importLBPData } from './import.mjs'
 import { dataSheetRowType, categoryMatchType, workbookHelper, accountParamType, categoryParamType } from './workbookHelper.mjs'
 
 function getArgs(argv: string[]) {
-  console.log(argv)
   let options = yargs(hideBin(argv))
     .usage('node bin/compte.mjs /c/Users/pasca/Mon\ Drive/coffre-fort/comptes/new/compte.xlsx  --import-file /c/Users/pasca/Downloads/00000.tsv --import-account "CCP"')
     .help('help').alias('help', 'h')
@@ -57,7 +56,6 @@ function getArgs(argv: string[]) {
     }).strict()   // raise an error if an option is unknown
     .parseSync();
 
-    console.log(options)
   return options;
 }
 
@@ -112,6 +110,19 @@ async function updateCategories(workbookHelp: workbookHelper) {
   await workbookHelp.dataSheetForEachRow(process)
 }
 
+async function createRawdata(workbookHelp: workbookHelper) {
+  const workbook = workbookHelp.workbook
+  const dataSheet = workbook.sheet("data")
+  const dataRange = dataSheet.usedRange()
+  const rows: dataSheetRowType[]  = await dataRange.value()
+  rows.forEach(row => {
+    const rawdata = workbookHelp.rawdataCreateFromRow(row)
+    if (rawdata) {
+      workbookHelp.database.rawData.push(rawdata)
+    }
+  })
+}
+
 async function sortData(workbookHelp: workbookHelper) {
   const database = workbookHelp.database
   function isNumber(value: any) {
@@ -157,7 +168,7 @@ async function sortData(workbookHelp: workbookHelper) {
   await dataRange.clear()
   await dataRange.value(rows)
 
-  // set the last cell so that we ensure that addaing newlines do not make thing wrong
+  // set the last cell so that we ensure that adding newlines do not make thing wrong
   dataRange.endCell().value('END OF DATA - DO NOT REMOVE THIS CELL')
 
 }
@@ -241,11 +252,11 @@ async function save(workbookHelp: workbookHelper) {
   const base = path.basename(compteName, ext)
 
   const copyName = path.join(dir, base + '-' + now + ext)
-  console.log(dir, base, ext)
-  console.log(copyName)
+  helperJs.info(`   copy ${compteName} as ${copyName}`)
   fs.copyFileSync(compteName, copyName)
 
   // save the updated execl file
+  helperJs.info(`   save ${compteName}`)
   await workbookHelp.workbook.toFileAsync(compteName);
 }
 
@@ -339,18 +350,13 @@ async function updateHisto(workbookHelp: workbookHelper) {
   // update the startDate of the histo
   Object.keys(database.params.accounts).forEach(account => database.histo[startYear].accounts[account] = database.params.accounts[account].initialAmount)
 
-  //
-  function process(index: number, date: number|undefined, account: string|undefined, label: string|undefined, amount: number|undefined, category: string|undefined) {
-    if (date && amount && account) {
-      const year = extractYear(DateTime.fromExcelSerialStartOfDay(date))
-      category = category ? category : "=== ERREUR ==="
-      database.getParamsAccount(account).lastUpdate = date
-      database.histo[year].accounts[account] += amount
-      database.histo[year].categories[category] += amount
-    }
-    return undefined
-  }
-  await workbookHelp.dataSheetForEachRow(process)
+  database.rawData.forEach(raw => {
+    const year = extractYear(DateTime.fromExcelSerialStartOfDay(raw.date))
+    database.getParamsAccount(raw.account).lastUpdate = raw.date
+    database.histo[year].accounts[raw.account] += raw.amount
+    database.histo[year].categories[raw.category] += raw.amount
+
+  })
 
   // accumulate and round
   Object.keys(database.histo).forEach(year => {
@@ -413,6 +419,9 @@ export async function compte() {
 
   helperJs.info('Update Categories')
   await updateCategories(workbookHelp)
+
+  helperJs.info('Create row data')
+  await createRawdata(workbookHelp)
 
   helperJs.info('updateHisto')
   await updateHisto(workbookHelp)

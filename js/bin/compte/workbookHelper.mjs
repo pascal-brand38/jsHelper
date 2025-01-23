@@ -24,6 +24,7 @@ export class workbookHelper {
             },
             histo: { // historic data, per years
             },
+            rawData: [],
             hooks: databaseHooks,
             getParamsAccount: (accountName) => this.database.params.accounts[accountName],
         };
@@ -70,6 +71,20 @@ export class workbookHelper {
     }
     dataSheetCreateRow(data) {
         return [data.date, data.account, data.label, data.amount, data.category,];
+    }
+    rawdataCreateFromRow(row) {
+        if (row && row[0] && row[1] && row[2] && row[3]) {
+            return {
+                date: row[0],
+                account: row[1],
+                label: row[2],
+                amount: row[3],
+                category: row[4],
+            };
+        }
+        else {
+            return undefined;
+        }
     }
     // callback is a function taking in arguments:
     //    (index, date, account, label, amount, category)

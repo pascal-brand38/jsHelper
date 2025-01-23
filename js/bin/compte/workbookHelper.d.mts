@@ -11,12 +11,19 @@ export type dataSheetRowType = [
     number,
     string
 ] | undefined;
-interface dataSheetRowObjectType {
+export interface dataSheetRowObjectType {
     date: number | undefined;
     account: string | undefined;
     label: string | undefined;
     amount: number | undefined;
     category: string | undefined;
+}
+export interface rawdataType {
+    date: number;
+    account: string;
+    label: string;
+    amount: number;
+    category: string;
 }
 export interface accountParamType {
     initialAmount: 0;
@@ -60,6 +67,7 @@ export interface databaseType {
     histo: {
         [year: string]: histoYearType;
     };
+    rawData: rawdataType[];
     hooks: databaseHooksType;
     getParamsAccount: (accountName: string) => accountParamType;
 }
@@ -85,6 +93,7 @@ export declare class workbookHelper {
         category: undefined;
     };
     dataSheetCreateRow(data: dataSheetRowObjectType): (string | number | undefined)[];
+    rawdataCreateFromRow(row: dataSheetRowType): rawdataType | undefined;
     dataSheetForEachRow(callback: (index: number, date: number | undefined, account: string | undefined, label: string | undefined, amount: number | undefined, category: string | undefined) => dataSheetRowObjectType | undefined): Promise<void>;
 }
 export {};
