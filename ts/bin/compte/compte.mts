@@ -272,6 +272,8 @@ async function readParams(workbookHelp: workbookHelper) {
   rows.forEach((row: any) => {
     if (row[0] === 'startDate') {
       database.params.startDate = row[1]    // excel serial date, when the data starts (the year before, to have an init of all accounts)
+      database.params.startYear = extractYear(DateTime.fromExcelSerialStartOfDay(database.params.startDate))
+      database.params.currentYear = extractYear(DateTime.fromNowStartOfDay())
     } else if (row[0] === 'account') {
       let index = 0
       if (lastAccount) {
@@ -331,11 +333,8 @@ async function readParams(workbookHelp: workbookHelper) {
 async function updateHisto(workbookHelp: workbookHelper) {
   const database = workbookHelp.database
 
-  const startYear = extractYear(DateTime.fromExcelSerialStartOfDay(database.params.startDate))
-  const currentYear = extractYear(DateTime.fromNowStartOfDay())
-
-  database.params.startYear = startYear
-  database.params.currentYear = currentYear
+  const startYear = database.params.startYear
+  const currentYear = database.params.currentYear
 
   // initialize the data structure (account and category per year) to 0
   for (let year=startYear; year<=currentYear; year++) {
