@@ -105,6 +105,7 @@ async function fillBooking(newContract, lastContract, argsComptaPdfLastContract,
     }
   } else {
     prixJour = prixChambreMin
+    nbRooms = helperCattery.helperContract.priceDay[noms.length-1][0].nbRooms
     if (prixChambreMin===prixChambreMax) {
       nbRooms = 0
     }
