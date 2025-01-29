@@ -313,7 +313,8 @@ function filterConsecutive(data) {
 }
 
 
-// check if vaccination rcp is up-to-date
+// check if vaccination rcp is up-to-date for the cats that are in the cattery
+// it helps updating the contract accordingly
 async function checkVaccination(dataCompta, comptaName, AgendaName) {
   const epochToday = DateTime.fromNowStartOfDay().toEpoch();
 
@@ -327,8 +328,9 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
   // https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
   await Promise.all(dataCompta.map(async (data) => {
     const epochArrival = DateTime.fromExcelSerialStartOfDay(data.arrival).toEpoch()
+    const epochDeparture = DateTime.fromExcelSerialStartOfDay(data.departure).toEpoch()
 
-    if (epochToday < epochArrival) {
+    if ((epochArrival <= epochToday) && (epochToday <= epochDeparture)) {
       const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
       if (pdfObject.getExtend().version === undefined) {
         // return when version is undefined as the rcp vaccination date is not accurate enough
@@ -337,7 +339,6 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       await helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
       // vaccination date
-      const epochDeparture = DateTime.fromExcelSerialStartOfDay(data.departure).toEpoch()
       const vaccinUptodate = helperCattery.helperPdf.isVaccinUptodate(pdfObject, epochDeparture)
       if (!vaccinUptodate) {
         data.rcps = pdfObject.getExtend().chat.rcps
@@ -369,6 +370,8 @@ async function main() {
   let dataAgenda = helperExcel.readXls(argv[3], helperCattery.helperXls.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
+  await checkVaccination(dataCompta, argv[2], argv[3])
+
   checkAcompte(dataComptaNoSort)
   checkBank(dataCompta, dataBank)
 
@@ -377,7 +380,6 @@ async function main() {
   dataCompta = dataCompta.filter(e => e.arrival >= firstDate)
 
   // check coherency
-  // await checkVaccination(dataCompta, argv[2], argv[3])
   checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
 }
