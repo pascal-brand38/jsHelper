@@ -154,7 +154,8 @@ export default {
         updateSha1List: sha1.updateSha1List,
         isInSha1List: sha1.isInSha1List,
     },
-    info: (text) => console.log('\x1b[34m' + text + '\x1b[0m'),
+    info: (text) => console.log('\x1b[34m' + text + '\x1b[0m'), // blue
+    logError: (text) => console.log('\x1b[31m' + text + '\x1b[0m'), // red
     warning,
     error,
 };

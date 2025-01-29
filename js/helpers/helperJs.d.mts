@@ -23,6 +23,7 @@ declare const _default: {
         isInSha1List: (sha1List: import("./helperJs/sha1.mjs").sha1ListType, filename: string) => string | undefined;
     };
     info: (text: string) => void;
+    logError: (text: string) => void;
     warning: typeof warning;
     error: typeof error;
 };

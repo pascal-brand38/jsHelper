@@ -30,6 +30,17 @@ function populateDates(dates, data) {
 }
 
 
+function normalizeStr(str) {
+  const reDoubleSpace = /[\s]{2,}/g;
+  const reSlash = /\//g;
+  return str
+    .trim()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
+    .replace(reDoubleSpace, ' ')
+    .replace(reSlash, '-')  // so now who does contain neither accents nor double-space nor slash (replace with dash)
+}
+
+
 // check coherency of arrival and departure number of dates in comta and agenda
 function checkDates(dataCompta, dataAgenda) {
   console.log()
@@ -44,21 +55,43 @@ function checkDates(dataCompta, dataAgenda) {
   const todaySerial = DateTime.fromNowStartOfDay().toExcelSerial()
   dates.forEach(d => {
     if (todaySerial <= d.date) {
+      let errorFound = false
       const what = d.what
-      const compta = dataCompta.filter(e => e[what] === d.date)
+      const whatStr = (what === 'departure' ? 'Départ ' : 'Arrivée')
+      const compta = dataCompta.filter(e => e[what] === d.date)   // .sort((a,b) => a.name.localeCompare(b.name))
       const agenda = dataAgenda.filter(e => e[what] === d.date)
-      if (compta.length !== agenda.length) {
-        const len = (compta.length<agenda.length) ? agenda.length : compta.length
-        console.log(`--- ${what} on ${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} ----------------`)
-        let table = []
-        for (let i=0; i<len; i++) {
-          table.push({
-            'Agenda': (agenda[i] ? agenda[i].name : ''),
-            'Compta': (compta[i] ? compta[i].name : ''),
-          })
+      const mustHaveAnError = (compta.length !== agenda.length)
+
+      for (let i=0; i<agenda.length; i++) {
+        // get the corresponding compta book
+        let found = -1
+        const agendaNames = normalizeStr(agenda[i].name).split(' ').filter(n => ((n !== 'et') && (n.length >= 3)))
+        for (let j=0; j<compta.length; j++) {
+          // corresponding if first 3 letters are the same
+          const startComptaNames = normalizeStr(compta[j].name).split(' ')
+          const startComptaName = startComptaNames[0]   // name of the 1st cat
+          if (agendaNames.includes(startComptaName)) {
+            found = j
+            break
+          }
         }
-        console.table(table)
-        console.log()
+
+        if (found === -1) {
+          // did not found a match ==> error: in agenda, but not in compta
+          errorFound = true
+          console.log(`${whatStr} le ${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} - ${'\x1b[31m'}Agenda${'\x1b[0m'}: ${agenda[i].name}`)
+        } else {
+          // remove this compta from the list to search
+          compta.splice(found, 1)
+        }
+      }
+      for (let i=0; i<compta.length; i++) {
+        errorFound = true
+        console.log(`${whatStr} le ${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')} - ${'\x1b[34m'}Compta${'\x1b[0m'}: ${compta[i].name}`)
+      }
+
+      if ((!errorFound) && (mustHaveAnError)) {
+        helperJs.logError(`${DateTime.fromExcelSerialStartOfDay(d.date).toFormat('dd/MM/yyyy')}: Incohérence sur les ${whatStr} entre agenda et compta`)
       }
     }
   })
