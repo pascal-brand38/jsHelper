@@ -774,6 +774,41 @@ function isVaccinUptodate(pdfObject, epochDeparture, newContract = undefined, fo
   return result
 }
 
+function missingInformation(pdfObject) {
+  const missing = []
+
+  const proprio = [
+    'nom',
+    'adr1',
+    // 'adr2',
+    'tel',
+    'email',
+    'urgenceNom',
+    'urgenceTel',
+  ]
+  proprio.forEach((field => {
+    const str = pdfObject.getExtend().proprio[field]
+    if ((str === '') || (str === undefined)) {
+      missing.push(`proprio/${helperJs.utils.capitalizeFirstLetter(field)}`)
+    }
+  }))
+
+  const chat = [ 'naissances', 'ids', 'races' ]
+  for (let i=0; i<3; i++) {
+    const nom = pdfObject.getExtend().chat.noms[i]
+    if ((nom !== '') && (nom !== undefined)) {
+      chat.forEach(field => {
+        const str = pdfObject.getExtend().chat[field][i]
+        if ((str === '') || (str === undefined)) {
+          missing.push(`${nom}/${helperJs.utils.capitalizeFirstLetter(field)}`)
+        }
+      })
+    }
+  }
+
+  return missing
+}
+
 async function checkInFuture(fromStr) {
   const epochArrival = DateTime.fromFormatStartOfDay(fromStr).toEpoch()
   const now = DateTime.fromNowStartOfDay().toEpoch()
@@ -961,6 +996,7 @@ export default {
     getPdfDataFromDataCompta,
     getCatNames,
     isVaccinUptodate,
+    missingInformation,
   },
 
   helperXls: {

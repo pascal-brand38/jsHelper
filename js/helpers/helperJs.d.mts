@@ -15,6 +15,7 @@ declare const _default: {
         sleep: (s: number) => Promise<unknown>;
         walkDir: typeof walkDir;
         beautifulSize(s: number): string;
+        capitalizeFirstLetter(str: string): string;
     };
     sha1: {
         getSha1: (filename: string) => string;

@@ -143,6 +143,9 @@ const utils = {
             return `${(s / (1024 * 1024 * 1024)).toFixed(2)}GB`;
         }
     },
+    capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 };
 export default {
     question,

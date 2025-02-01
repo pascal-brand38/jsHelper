@@ -189,10 +189,6 @@ function checkAcompte(dataComptaNoSort) {
 }
 
 function checkBank(dataCompta, dataBank) {
-  console.log()
-  console.log('-------------------------------------------------')
-  console.log('---------------------------------- BANK vs COMPTA')
-  console.log('-------------------------------------------------')
   const epochStart = DateTime.fromNowStartOfDay().toEpoch() - DateTime.epochNDays(60)
   const excelStart = DateTime.fromEpochStartOfDay(epochStart).toExcelSerial()
 
@@ -277,16 +273,23 @@ function checkBank(dataCompta, dataBank) {
     return result
   })
 
-
-  dataBankToCheck.forEach(bank => {
-    console.log(`Bank: ${DateTime.fromExcelSerialStartOfDay(bank.date).toFormat('dd/MM/yyyy')} - ${bank.name} ${bank.credit}€`)
-  })
-
   dataFilled = dataFilled.filter(data => (data.date >= excelStart))
-  dataFilled.forEach(data => {
-    console.log(`Compta: ${DateTime.fromExcelSerialStartOfDay(data.date).toFormat('dd/MM/yyyy')} - ${data.name} ${data.amount}€`)
-  })
 
+  if ((dataBankToCheck.length !==0) || (dataFilled.length !==0)) {
+  console.log()
+    console.log('-------------------------------------------------')
+    console.log('---------------------------------- BANK vs COMPTA')
+    console.log('-------------------------------------------------')
+
+
+    dataBankToCheck.forEach(bank => {
+      console.log(`Bank: ${DateTime.fromExcelSerialStartOfDay(bank.date).toFormat('dd/MM/yyyy')} - ${bank.name} ${bank.credit}€`)
+    })
+
+    dataFilled.forEach(data => {
+      console.log(`Compta: ${DateTime.fromExcelSerialStartOfDay(data.date).toFormat('dd/MM/yyyy')} - ${data.name} ${data.amount}€`)
+    })
+  }
 }
 
 // filter consecutive periods in the agenda, which may be
@@ -315,13 +318,8 @@ function filterConsecutive(data) {
 
 // check if vaccination rcp is up-to-date for the cats that are in the cattery
 // it helps updating the contract accordingly
-async function checkVaccination(dataCompta, comptaName, AgendaName) {
+async function missingInformation(dataCompta, comptaName, AgendaName) {
   const epochToday = DateTime.fromNowStartOfDay().toEpoch();
-
-  console.log()
-  console.log('-------------------------------------------------')
-  console.log('------------------------------------- VACCINATION')
-  console.log('-------------------------------------------------')
 
   let toBeCheckeds = []
 
@@ -339,16 +337,40 @@ async function checkVaccination(dataCompta, comptaName, AgendaName) {
       await helperCattery.helperPdf.postErrorCheck(pdfObject, undefined)
 
       // vaccination date
+      let check = false
       const vaccinUptodate = helperCattery.helperPdf.isVaccinUptodate(pdfObject, epochDeparture)
       if (!vaccinUptodate) {
         data.rcps = pdfObject.getExtend().chat.rcps
+        check = true
+      }
+      const missing = helperCattery.helperPdf.missingInformation(pdfObject)
+      if (missing.length !== 0) {
+        data.missing = missing
+        check = true
+      }
+      if (check) {
         toBeCheckeds.push(data)
       }
     }
   }))
 
-  toBeCheckeds.sort(function(a, b) { return b.epochArrival - a.epochArrival } );    // reverse order
-  toBeCheckeds.forEach(data => console.log(`${data.name} departure: ${DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')}  rcps: ${data.rcps}`))
+  if (toBeCheckeds.length !== 0) {
+    console.log()
+    console.log('-------------------------------------------------')
+    console.log('------------------------- INFORMATIONS MANQUANTES')
+    console.log('-------------------------------------------------')
+
+    toBeCheckeds.sort(function(a, b) { return b.epochArrival - a.epochArrival } );    // reverse order
+    toBeCheckeds.forEach(data => {
+      if (data.rcps) {
+        console.log(`${data.name} Départ le ${DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')}, vaccination rcp le ${data.rcps}`)
+      }
+      if (data.missing !== undefined) {
+        console.log(`${data.name} Informations manquantes`)
+        console.log('    ', data.missing)
+      }
+    })
+  }
 }
 
 const xlsFormatComptaNoSort = {
@@ -370,18 +392,14 @@ async function main() {
   let dataAgenda = helperExcel.readXls(argv[3], helperCattery.helperXls.xlsFormatAgenda)
   dataAgenda = filterConsecutive(dataAgenda)
 
-  await checkVaccination(dataCompta, argv[2], argv[3])
-
   checkAcompte(dataComptaNoSort)
-  checkBank(dataCompta, dataBank)
+  await missingInformation(dataCompta, argv[2], argv[3])
 
   // filter the dates from the compta that are prior the 1st arrival in the agenda
-  const firstDate = dataAgenda[0].arrival
-  dataCompta = dataCompta.filter(e => e.arrival >= firstDate)
+  checkDates(dataCompta.filter(e => e.arrival >= dataAgenda[0].arrival), dataAgenda)
 
-  // check coherency
-  checkDates(dataCompta, dataAgenda)
   checkStatusPay(dataCompta)
+  checkBank(dataCompta, dataBank)
 }
 
 try {
