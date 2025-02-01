@@ -31,12 +31,13 @@ function populateDates(dates, data) {
 
 
 function normalizeStr(str) {
-  const reDoubleSpace = /[\s]{2,}/g;
-  const reSlash = /\//g;
+  const reSpace = /[\s]+/g;   // series of space, tab, non-printeable space... to a single space
+  const reSlash = /\//g;      // '/' as a '-'
   return str
+    .toLowerCase()
     .trim()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")     // remove accent that may be confused
-    .replace(reDoubleSpace, ' ')
+    .replace(reSpace, ' ')
     .replace(reSlash, '-')  // so now who does contain neither accents nor double-space nor slash (replace with dash)
 }
 
@@ -61,7 +62,6 @@ function checkDates(dataCompta, dataAgenda) {
       const compta = dataCompta.filter(e => e[what] === d.date)   // .sort((a,b) => a.name.localeCompare(b.name))
       const agenda = dataAgenda.filter(e => e[what] === d.date)
       const mustHaveAnError = (compta.length !== agenda.length)
-
       for (let i=0; i<agenda.length; i++) {
         // get the corresponding compta book
         let found = -1

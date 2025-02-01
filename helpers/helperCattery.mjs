@@ -12,8 +12,6 @@ import helperExcel from './helperExcel.mjs'
 import { DateTime } from 'luxon'
 import '../js/extend/luxon.mjs'
 import { PDFDocument, setProplist } from '../extend/pdf-lib.mjs'
-import { emitKeypressEvents } from 'readline';
-import { emitWarning } from 'process';
 
 async function getArgs(usage) {
   console.log(process.argv)
