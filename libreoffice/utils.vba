@@ -30,6 +30,7 @@ End Sub
 '    stepTime("My Code Step: ", 0)
 '    MsgBox(stepTimeMsg(0))
 
+Private _stepTime as Long
 Private _stepMsg as String
 
 Sub stepTimeInit(index as Long)
