@@ -5,11 +5,8 @@
 
 
 import * as fs from 'fs'
-import * as path from 'path'
 
-import helperJs from '../../helpers/helperJs.mjs'
-
-import yargs, { boolean, string } from 'yargs'
+import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 
