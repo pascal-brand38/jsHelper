@@ -18,7 +18,7 @@ import { DateTime } from 'luxon'
 import '../../extend/luxon.mjs'
 import helperJs from '../../helpers/helperJs.mjs'
 
-import yargs, { string } from 'yargs'
+import yargs, { help, string } from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 import { importLBPData } from './import.mjs'
@@ -122,6 +122,30 @@ async function createRawdata(workbookHelp: workbookHelper) {
     }
   })
 }
+
+async function check(workbookHelp: workbookHelper) {
+  const workbook = workbookHelp.workbook
+  const dataSheet = workbook.sheet("data")
+  const dataRange = dataSheet.usedRange()
+  const rows: dataSheetRowType[]  = await dataRange.value()
+
+  rows.forEach((row, index) => {
+    if (row) {
+      // check account
+      const account = row[1]
+      if (account && workbookHelp.database.params.accounts[account] === undefined) {
+        helperJs.error(`Internal error: wrong account ${account} at line ${index+1}`)
+      }
+
+      // check category
+      const category = row[4]
+      if (category && workbookHelp.database.params.categories[category] === undefined) {
+        helperJs.error(`Internal error: wrong category ${category} at line ${index+1}`)
+      }
+    }
+  })
+}
+
 
 async function sortData(workbookHelp: workbookHelper) {
   const database = workbookHelp.database
@@ -412,6 +436,9 @@ export async function compte() {
 
   helperJs.info('importLBPData')
   const lbpSolde = await importLBPData(workbookHelp)
+
+  helperJs.info('Chek')
+  await check(workbookHelp)
 
   helperJs.info('Sort Data')
   await sortData(workbookHelp)

@@ -112,6 +112,26 @@ async function createRawdata(workbookHelp) {
         }
     });
 }
+async function check(workbookHelp) {
+    const workbook = workbookHelp.workbook;
+    const dataSheet = workbook.sheet("data");
+    const dataRange = dataSheet.usedRange();
+    const rows = await dataRange.value();
+    rows.forEach((row, index) => {
+        if (row) {
+            // check account
+            const account = row[1];
+            if (account && workbookHelp.database.params.accounts[account] === undefined) {
+                helperJs.error(`Internal error: wrong account ${account} at line ${index + 1}`);
+            }
+            // check category
+            const category = row[4];
+            if (category && workbookHelp.database.params.categories[category] === undefined) {
+                helperJs.error(`Internal error: wrong category ${category} at line ${index + 1}`);
+            }
+        }
+    });
+}
 async function sortData(workbookHelp) {
     const database = workbookHelp.database;
     function isNumber(value) {
@@ -363,6 +383,8 @@ export async function compte() {
     await readParams(workbookHelp);
     helperJs.info('importLBPData');
     const lbpSolde = await importLBPData(workbookHelp);
+    helperJs.info('Chek');
+    await check(workbookHelp);
     helperJs.info('Sort Data');
     await sortData(workbookHelp);
     helperJs.info('Update Categories');
