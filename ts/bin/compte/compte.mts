@@ -26,10 +26,10 @@ import { dataSheetRowType, categoryMatchType, workbookHelper, accountParamType, 
 
 function getArgs(argv: string[]) {
   let options = yargs(hideBin(argv))
-    .usage('node bin/compte.mjs /c/Users/pasca/Mon\ Drive/coffre-fort/comptes/new/compte.xlsx  --import-file /c/Users/pasca/Downloads/00000.tsv --import-account "CCP"')
+    .usage('node bin/compte.mjs "/c/Users/pasca/Mon\ Drive/coffre-fort/comptes/compte.xlsx"  --import-file /c/Users/pasca/Downloads/00000.tsv --import-account "CCP"')
     .help('help').alias('help', 'h')
     .version('version', '1.0').alias('version', 'V')
-    .demandCommand(1, 1)   // exactly 1 arg without options, which is the xlsx file
+    .demandCommand(0, 1)   // if 0, then the default xlsx file. Otherwise the xlsx filename
     .options({
       "import-file": {
         description: 'import a tsv file from LBP',
@@ -425,7 +425,10 @@ async function createHistoSheet(workbookHelp: workbookHelper) {
 export async function compte() {
   const options = getArgs(process.argv)
 
-  const xlsxName: string = (typeof options['_'][0] === 'string' ? options['_'][0] : '')
+  const xlsxName: string =
+    (((options['_'] !== undefined) && (typeof options['_'][0] === 'string')) ?
+      options['_'][0] :
+      'c:/Users/pasca/Mon Drive/coffre-fort/comptes/compte.xlsx')
   const workbookHelp = new workbookHelper(xlsxName, options.importFile, options.importAccount)
 
   helperJs.info(`Read ${workbookHelp.database.inputs.compteName}`)
