@@ -18,7 +18,7 @@ rm-duplicates --nameonly --src-dir="C:\Users\pasca\Pictures" --dup-dir="C:\tmp"
 
 import path from 'path'
 import fs from 'fs'
-import os from 'os'
+import os, { type } from 'os'
 import mv from 'mv'
 import fileSyncCmp from 'file-sync-cmp'
 import _yargs from 'yargs'
@@ -43,11 +43,13 @@ async function getArgs(usage) {
     .options({
       "src-dir": {
         description: "source directory to copy",
+        type: "string",
         requiresArg: true,
         required: true,
       },
       "dup-dir": {
         description: "directory that may contain duplicates",
+        type: "string",
         requiresArg: true,
         required: false,
       },
