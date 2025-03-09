@@ -159,6 +159,29 @@ export default {
     },
     info: (text) => console.log('\x1b[34m' + text + '\x1b[0m'), // blue
     logError: (text) => console.log('\x1b[31m' + text + '\x1b[0m'), // red
+    // cf. https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
+    textColor: (text, color) => {
+        let colorCode;
+        if (color === 'FgRed') {
+            colorCode = '\x1b[31m';
+        }
+        else if (color === 'FgBlue') {
+            colorCode = '\x1b[34m';
+        }
+        else if (color === 'FgGreen') {
+            colorCode = '\x1b[32m';
+        }
+        else if (color === 'FgYellow') {
+            colorCode = '\x1b[33m';
+        }
+        else if (color === 'FgCyan') {
+            colorCode = '\x1b[36m';
+        }
+        else {
+            colorCode = '\x1b[31m';
+        } // red by default
+        return colorCode + text + '\x1b[0m';
+    },
     warning,
     error,
 };

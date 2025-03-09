@@ -25,6 +25,7 @@ declare const _default: {
     };
     info: (text: string) => void;
     logError: (text: string) => void;
+    textColor: (text: string, color: string) => string;
     warning: typeof warning;
     error: typeof error;
 };

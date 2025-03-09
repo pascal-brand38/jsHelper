@@ -33,6 +33,7 @@
     "new-contract": "bin/new-contract.mjs",
     "rm-duplicates": "bin/rm-duplicates.mjs",
     "save-on-cloud": "bin/save-on-cloud.mjs",
+    "same-dir": "bin/same-dir.mjs",
     "thanks": "bin/thanks.mjs"
   },
   "scripts": {
