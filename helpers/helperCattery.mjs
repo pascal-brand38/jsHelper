@@ -317,7 +317,7 @@ const xlsFormatBank = {
   postComputationSheet: postComputationBank,
 }
 
-async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
+async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true, last=false) {
   const rootDir = path.parse(comptaName).dir
   const enterprise = path.parse(rootDir).base
   const contractRootDir = rootDir + '\\Contrat Clients ' + enterprise
@@ -330,8 +330,11 @@ async function getPdfDataFromDataCompta(dataCompta, comptaName, exact=true) {
    sComptaArrival = DateTime.fromExcelSerialStartOfDay(dataCompta['comptaArrival']).toFormat('dd/MM/yyyy')
   }
   const currentContractDir = contractRootDir + '\\' + getCurrentContractDir(contractRootDir, dataCompta['name']);
-  let contractName = getContractName(sComptaArrival, currentContractDir);
-  if ((contractName === undefined) && (!exact)) {
+  let contractName = undefined
+  if (!last) {
+    contractName = getContractName(sComptaArrival, currentContractDir)
+  }
+  if (last || ((contractName === undefined) && (!exact))) {
     // fall-back on last known contract
     contractName = getLastContract(currentContractDir)
   }

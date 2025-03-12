@@ -329,7 +329,7 @@ async function missingInformation(dataCompta, comptaName, AgendaName) {
     const epochDeparture = DateTime.fromExcelSerialStartOfDay(data.departure).toEpoch()
 
     if ((epochArrival <= epochToday) && (epochToday <= epochDeparture)) {
-      const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false)
+      const {pdfObject, contractName} = await helperCattery.helperPdf.getPdfDataFromDataCompta(data, comptaName, false, true)
       if (pdfObject.getExtend().version === undefined) {
         // return when version is undefined as the rcp vaccination date is not accurate enough
         return
