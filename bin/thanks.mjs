@@ -21,7 +21,7 @@ async function main() {
   const email = helperCattery.helperPdf.getEmail(argsComptaPdf.pdfObject)
   const catNames = await helperCattery.helperPdf.getCatNames(argsComptaPdf.pdfObject)
 
-  let subject = 'Merci pour votre acompte'
+  let subject = `Merci pour votre acompte pour les vacances de ${catNames}`
   let body = ""
   body += `Bonjour,`
   body += `<br>`
