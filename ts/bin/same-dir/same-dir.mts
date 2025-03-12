@@ -4,23 +4,17 @@
 // MIT License
 //
 
-import path from 'path'
-import fs from 'fs'
-import os, { type } from 'os'
-import mv from 'mv'
+import * as fs from 'fs'
+import * as path from 'path'
+
+// @ts-ignore
 import fileSyncCmp from 'file-sync-cmp'
+
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
-import helperJs from '../js/helpers/helperJs.mjs'
+import helperJs from '../../helpers/helperJs.mjs'
 
-let statistics = {
-  nTotal: 0,
-  nRemove: 0,
-}
-
-const _step = 1000
-
-async function getArgs(usage) {
+async function getArgs(usage: string) {
   console.log(process.argv)
   const yargs = _yargs(hideBin(process.argv));
 
@@ -54,25 +48,17 @@ async function getArgs(usage) {
     // })
     .argv;
 
-  options.excludes = [ 'desktop.ini', 'Thumbs.db']
-
   return options
 }
 
 
 
-function equalFiles(file1, file2) {
+function equalFiles(file1: string, file2: string) {
   return fileSyncCmp.equalFiles(file1, file2)
 }
 
-function print(text, index) {
-  if ((index % _step) === 0) {
-    console.log(text)
-  }
-}
-
-
-function checkDir(options, rootDir1, rootDir2, subDir, checkIdentical=true) {
+function checkDir(rootDir1: string, rootDir2: string, subDir: string, checkIdentical: boolean =true) {
+  const excludes =  [ 'desktop.ini', 'Thumbs.db']
   const thisDir1 = path.join(rootDir1, subDir);
   const thisDir2 = path.join(rootDir2, subDir);
 
@@ -86,14 +72,14 @@ function checkDir(options, rootDir1, rootDir2, subDir, checkIdentical=true) {
   }
 
   fs.readdirSync(thisDir1).forEach(file => {
-    if (options.excludes.includes(file)) {
+    if (excludes.includes(file)) {
       return;
     }
     const absolute1 = path.join(thisDir1, file);
     const absolute2 = path.join(thisDir2, file);
     const sub = path.join(subDir, file);
     if (fs.statSync(absolute1).isDirectory()) {
-      checkDir(options, rootDir1, rootDir2, sub, checkIdentical);
+      checkDir(rootDir1, rootDir2, sub, checkIdentical);
     }
     else {
       if (!fs.existsSync(absolute2)) {
@@ -108,13 +94,8 @@ function checkDir(options, rootDir1, rootDir2, subDir, checkIdentical=true) {
 }
 
 
-async function main(options) {
-  checkDir(options, options.dir1, options.dir2, '.')
-  checkDir(options, options.dir2, options.dir1, '.', false)
+export async function sameDir() {
+  const options = await getArgs(`same-dir --dir1="save" --dir2="backup"`)
+  checkDir(options.dir1, options.dir2, '.')
+  checkDir(options.dir2, options.dir1, '.', false)
 }
-
-const options = await getArgs(`same-dir --dir1="save" --dir2="backup"`)
-await main(options);
-console.log('-------------------------------')
-console.log(statistics)
-console.log('Done')
