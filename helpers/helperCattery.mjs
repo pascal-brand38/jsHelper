@@ -764,7 +764,7 @@ function isVaccinUptodate(pdfObject, epochDeparture, newContract = undefined, fo
       result = false
     } else {
       const epochRcp = DateTime.fromFormatStartOfDay(date).toEpoch()
-      const epochRcpNext = epochRcp + DateTime.epochNDays(365+30)
+      const epochRcpNext = epochRcp + DateTime.epochNDays(365+15)
       if (epochRcpNext < epochDeparture) {
         result = false
         if (newContract !== undefined) {
