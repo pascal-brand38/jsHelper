@@ -275,7 +275,9 @@ async function save(workbookHelp: workbookHelper) {
   const ext = path.extname(compteName)
   const base = path.basename(compteName, ext)
 
-  const copyName = path.join(dir, base + '-' + now + ext)
+  const tmpDir = 'C:/tmp/compte'
+  fs.mkdirSync(tmpDir);
+  const copyName = path.join(tmpDir, base + '-' + now + ext)
   helperJs.info(`   copy ${compteName} as ${copyName}`)
   fs.copyFileSync(compteName, copyName)
 
