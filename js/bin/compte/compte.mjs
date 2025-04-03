@@ -15,9 +15,10 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { importLBPData } from './import.mjs';
 import { workbookHelper } from './workbookHelper.mjs';
+const defaultCompte = 'c:/tmp/compte/compte.xlsx';
 function getArgs(argv) {
     let options = yargs(hideBin(argv))
-        .usage('node bin/compte.mjs "/c/Users/pasca/Mon\ Drive/coffre-fort/comptes/compte.xlsx"  --import-file /c/Users/pasca/Downloads/00000.tsv --import-account "CCP"')
+        .usage(`node bin/compte.mjs ${defaultCompte}  --import-file /c/Users/pasca/Downloads/00000.tsv --import-account "CCP"`)
         .help('help').alias('help', 'h')
         .version('version', '1.0').alias('version', 'V')
         .demandCommand(0, 1) // if 0, then the default xlsx file. Otherwise the xlsx filename
@@ -241,7 +242,11 @@ async function save(workbookHelp) {
     const ext = path.extname(compteName);
     const base = path.basename(compteName, ext);
     const tmpDir = 'C:/tmp/compte';
-    fs.mkdirSync(tmpDir);
+    try {
+        fs.mkdirSync(tmpDir);
+    }
+    catch {
+    }
     const copyName = path.join(tmpDir, base + '-' + now + ext);
     helperJs.info(`   copy ${compteName} as ${copyName}`);
     fs.copyFileSync(compteName, copyName);
@@ -379,7 +384,7 @@ export async function compte() {
     const options = getArgs(process.argv);
     const xlsxName = (((options['_'] !== undefined) && (typeof options['_'][0] === 'string')) ?
         options['_'][0] :
-        'c:/Users/pasca/Mon Drive/coffre-fort/comptes/compte.xlsx');
+        defaultCompte);
     const workbookHelp = new workbookHelper(xlsxName, options.importFile, options.importAccount);
     helperJs.info(`Read ${workbookHelp.database.inputs.compteName}`);
     workbookHelp.workbook = await xlsxPopulate.fromFileAsync(workbookHelp.database.inputs.compteName);
