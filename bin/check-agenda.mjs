@@ -172,7 +172,7 @@ function _newFromCompta(dataFilled, excelStart, name, amount, date, type, status
 function checkAcompte(dataComptaNoSort) {
   console.log()
   console.log('-------------------------------------------------')
-  console.log('-------------------------------- ACOMPTE RECOVERY')
+  console.log('------------------------------ ACOMPTE EN ATTENTE')
   console.log('-------------------------------------------------')
   const todaySerial = DateTime.fromNowStartOfDay().toExcelSerial()
   let warning = false
