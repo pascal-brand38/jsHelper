@@ -363,7 +363,7 @@ async function missingInformation(dataCompta, comptaName, AgendaName) {
     toBeCheckeds.sort(function(a, b) { return b.epochArrival - a.epochArrival } );    // reverse order
     toBeCheckeds.forEach(data => {
       if (data.rcps) {
-        console.log(`${data.name} Départ le ${DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')}, vaccination rcp le ${data.rcps}`)
+        console.log(`${data.name} Départ le ${DateTime.fromExcelSerialStartOfDay(data.departure).toFormat('dd/MM/yyyy')}, ${helperJs.textColor('Vaccination RCP', 'FgGreen')}, le ${data.rcps}`)
       }
       if (data.missing !== undefined) {
         console.log(`${data.name} Informations manquantes`)
