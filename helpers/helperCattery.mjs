@@ -786,8 +786,8 @@ function missingInformation(pdfObject) {
     // 'adr2',
     'tel',
     'email',
-    'urgenceNom',
-    'urgenceTel',
+    // 'urgenceNom',
+    // 'urgenceTel',
   ]
   proprio.forEach((field => {
     const str = pdfObject.getExtend().proprio[field]
