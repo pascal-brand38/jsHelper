@@ -56,11 +56,18 @@ interface histoYearType {
   categories: { [name: string]: number },  // the key is the category name, the number is the amount of this category
 }
 
+export interface accountCorrespType {
+  accountName: string,    // name of the account in the .xlsx file
+  type: string,           // type of the account in the .tsv imported filed from LBP
+  startNumbers: string,   // 1st numbers of the account number. is a string as may start with a 0
+}
+
 export interface databaseType  {
   inputs: {
-    compteName: string,             // xslx file to be updated: categpry, importing new data,...
-    importName: string|undefined,             // name of the file to import, from LBP. May be optional
-    importAccountName: string|undefined,   // account that is being imported, from LBP. Linked to importName
+    compteName: string,                    // xslx file to be updated: categpry, importing new data,...
+    importName: string|undefined,          // name of the file to import, from LBP. May be optional
+    importAccountName: string|undefined,   // account that is being imported, from LBP, as given with --import-account. Linked to importName
+    tsvAccountName: string|undefined,      // account that is being imported, from LBP, as given in the tsv importName
   },
   params: {   // parameter of the xslx datas: startDate, account names, categories,...
     startDate: number,
@@ -70,6 +77,7 @@ export interface databaseType  {
     accounts: { [ name: string]: accountParamType},   // the key is the category name
     categories: { [ category: string]: categoryParamType},   // the key is the category name
     categoryMatches: categoryMatchType[],  // list of { regex, category }  to match LBP labels
+    accountCorresps: accountCorrespType[], // list of account correspondence to know what is the account in the .xlsx related to the one in the imported tsv
   },
   histo: {  // historic data, per years
     [year: string]: histoYearType    // the key is the year, and the values are the data for this year
@@ -77,7 +85,6 @@ export interface databaseType  {
   rawData: rawdataType[],   // the raw data, as after the categories have been updated
   hooks: databaseHooksType,
   getParamsAccount: (accountName: string) => accountParamType
-
 }
 
 export class workbookHelper {
@@ -92,16 +99,18 @@ export class workbookHelper {
       inputs: {    // the inputs
         compteName: compteName,             // xslx file to be updated: categpry, importing new data,...
         importName: importFile,             // name of the file to import, from LBP. May be optional
-        importAccountName: importAccount,   // account that is being imported, from LBP. Linked to importName
+        importAccountName: importAccount,   // account that is being imported, from LBP, as given with --import-account. Linked to importName
+        tsvAccountName: undefined,          // account that is being imported, from LBP, as given in the tsv importName
       },
       params: {   // parameter of the xslx datas: startDate, account names, categories,...
         startDate: 0,
         startYear: 0,
         currentYear: 0,
 
-        accounts: {},                               // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
-        categories: {},                             // object of 'categoryName': { type1, type2 }
-        categoryMatches: [],                        // list of { regex, category }  to match LBP labels
+        accounts: {},                       // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
+        categories: {},                     // object of 'categoryName': { type1, type2 }
+        categoryMatches: [],                // list of { regex, category }  to match LBP labels
+        accountCorresps: [],                // list of correspondence between account metatdata in tsv, and the account name in the xlsx
       },
       histo: {  // historic data, per years
       },

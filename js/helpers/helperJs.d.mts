@@ -1,5 +1,5 @@
 declare function warning(s: string): void;
-declare function error(s: string): void;
+declare function error(s: string): never;
 declare function walkDir(rootDir: any, options: any): any[];
 declare const _default: {
     question: {

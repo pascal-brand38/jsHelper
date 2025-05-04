@@ -21,7 +21,7 @@ function warning(s: string) {
   console.log('WARNING');
 }
 
-function error(s: string) {
+function error(s: string): never {
   console.log('***');
   console.log('***  ERREUR');
   console.log('*** ', s);

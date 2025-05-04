@@ -19,15 +19,37 @@ function readTSV(filename) {
 function frenchTextToFloat(text) {
     return parseFloat(text.replaceAll(',', '.'));
 }
-function readLBPTSV(filename) {
+function readLBPTSV(filename, workbookHelp) {
     let rows = readTSV(filename);
-    // look for solde in TSV
+    // look for metadata in TSV
     let solde = undefined;
+    let type = undefined;
+    let accountNumber = undefined;
     rows.forEach(row => {
-        if (row[0] && row[0].startsWith('Solde (EUROS)')) {
-            solde = frenchTextToFloat(row[1]);
+        if (row[0]) {
+            // if (row[2] === undefined) {
+            //   console.log(row[0], row[1])
+            // }
+            if (row[0].startsWith('Solde (EUROS)')) {
+                solde = frenchTextToFloat(row[1]);
+            }
+            if (row[0] === 'Type') {
+                type = row[1];
+            }
+            if (row[0] === 'Num�ro Compte') {
+                accountNumber = row[1];
+            }
         }
     });
+    // console.log(type, accountNumber)
+    if ((type !== undefined) && (accountNumber !== undefined)) {
+        workbookHelp.database.params.accountCorresps.some(c => {
+            // console.log(c.type, c.startNumbers)
+            if ((c.type === type) && ((accountNumber).startsWith(c.startNumbers))) {
+                workbookHelp.database.inputs.tsvAccountName = c.accountName;
+            }
+        });
+    }
     // leave only amount data, processed with date and value
     // const resultRows: [ [ number, string, number ] ] | [] = []
     const resultRows = [];
@@ -45,15 +67,28 @@ function readLBPTSV(filename) {
 }
 export async function importLBPData(workbookHelp) {
     const importName = workbookHelp.database.inputs.importName;
-    const accountName = workbookHelp.database.inputs.importAccountName;
-    const workbook = workbookHelp.workbook;
     if (importName === undefined) {
         return undefined;
     }
-    if (accountName === undefined) {
-        return undefined;
+    const importAccountName = workbookHelp.database.inputs.importAccountName;
+    const workbook = workbookHelp.workbook;
+    const { solde: lbpSolde, resultRows: importRows } = readLBPTSV(importName, workbookHelp);
+    if (importAccountName && workbookHelp.database.inputs.tsvAccountName) {
+        if (importAccountName !== workbookHelp.database.inputs.tsvAccountName) {
+            helperJs.error(`ERROR: import account name ${importAccountName} is not the same as the tsv deduced one ${workbookHelp.database.inputs.tsvAccountName}`);
+        }
     }
-    const { solde: lbpSolde, resultRows: importRows } = readLBPTSV(importName);
+    if (!workbookHelp.database.inputs.tsvAccountName) {
+        workbookHelp.database.inputs.tsvAccountName = importAccountName;
+    }
+    const accountName = workbookHelp.database.inputs.tsvAccountName || importAccountName;
+    if (accountName === undefined) {
+        helperJs.error(`ERROR: dont know the import account name - use option --import-account`);
+        throw ('ERROR');
+    }
+    if (lbpSolde === undefined) {
+        helperJs.error(`ERROR: dont know the solde of the import account`);
+    }
     const dataSheet = workbook.sheet("data");
     const dataRange = dataSheet.usedRange();
     const rows = await dataRange.value();

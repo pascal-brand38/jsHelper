@@ -12,7 +12,8 @@ export class workbookHelper {
             inputs: {
                 compteName: compteName, // xslx file to be updated: categpry, importing new data,...
                 importName: importFile, // name of the file to import, from LBP. May be optional
-                importAccountName: importAccount, // account that is being imported, from LBP. Linked to importName
+                importAccountName: importAccount, // account that is being imported, from LBP, as given with --import-account. Linked to importName
+                tsvAccountName: undefined, // account that is being imported, from LBP, as given in the tsv importName
             },
             params: {
                 startDate: 0,
@@ -21,6 +22,7 @@ export class workbookHelper {
                 accounts: {}, // list of all the accounts  { name, initialAmount, type1, type2, type3, lastUpdate }
                 categories: {}, // object of 'categoryName': { type1, type2 }
                 categoryMatches: [], // list of { regex, category }  to match LBP labels
+                accountCorresps: [], // list of correspondence between account metatdata in tsv, and the account name in the xlsx
             },
             histo: { // historic data, per years
             },

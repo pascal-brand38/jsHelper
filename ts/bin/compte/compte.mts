@@ -50,8 +50,6 @@ function getArgs(argv: string[]) {
     .check((argv: any) => {
       if ((!argv['import-file']) && (argv['import-account'])) {
         throw new Error('--import-file, but no --import-account')
-      } else if ((argv['import-file']) && (!argv['import-account'])) {
-        throw new Error('no --import-file, but --import-account');
       } else {
         return true;
       }
@@ -239,14 +237,14 @@ async function createResumeSheet(workbookHelp: workbookHelper) {
 function displayErrors(workbookHelp: workbookHelper, lbpSolde: number|undefined) {
   const database = workbookHelp.database
 
-  if (lbpSolde && database.inputs.importAccountName) {
+  if (lbpSolde && database.inputs.tsvAccountName) {
     // check, but raise an error and stop immediately as a problem in a import may corrupt the xlsx file
-    const computed = database.histo[database.params.currentYear].accounts[database.inputs.importAccountName]
+    const computed = database.histo[database.params.currentYear].accounts[database.inputs.tsvAccountName]
     if (!computed) {
-      helperJs.error(`PLEASE CHECK: Import account ${database.inputs.importAccountName} not found`)
+      helperJs.error(`PLEASE CHECK: Import account ${database.inputs.tsvAccountName} not found`)
     }
     if (computed !== lbpSolde) {
-      helperJs.error(`PLEASE CHECK: ${database.inputs.importAccountName} solde: ${computed}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
+      helperJs.error(`PLEASE CHECK: ${database.inputs.tsvAccountName} solde: ${computed}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
     }
   }
 
@@ -346,6 +344,13 @@ async function readParams(workbookHelp: workbookHelper) {
       database.params.categoryMatches.push({
         regex: new RegExp(`^${row[1]}`, 'i'),
         category: row[2],
+      })
+    } else if (row[0] === 'accountCorresp') {
+      const startNumbers = (typeof row[3] === 'number' ? row[3].toString() : row[3])
+      database.params.accountCorresps.push({
+        accountName: row[1],
+        type: row[2],
+        startNumbers: startNumbers,   // as a string, as may start with 0
       })
     } else if (row[0] !== undefined) {
       workbookHelp.setError(`Internal Error: do not know param named ${row[0]}`)

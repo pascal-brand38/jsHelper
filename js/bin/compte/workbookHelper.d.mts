@@ -46,11 +46,17 @@ interface histoYearType {
         [name: string]: number;
     };
 }
+export interface accountCorrespType {
+    accountName: string;
+    type: string;
+    startNumbers: string;
+}
 export interface databaseType {
     inputs: {
         compteName: string;
         importName: string | undefined;
         importAccountName: string | undefined;
+        tsvAccountName: string | undefined;
     };
     params: {
         startDate: number;
@@ -63,6 +69,7 @@ export interface databaseType {
             [category: string]: categoryParamType;
         };
         categoryMatches: categoryMatchType[];
+        accountCorresps: accountCorrespType[];
     };
     histo: {
         [year: string]: histoYearType;
