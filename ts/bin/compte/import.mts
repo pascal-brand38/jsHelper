@@ -123,7 +123,7 @@ export async function importLBPData(workbookHelp: workbookHelper): Promise<lbpIm
   const rows = await dataRange.value()
   let addRows: dataSheetRowType[] = []
   importRows.forEach(importRow => {
-    const found = rows.some((row: dataSheetRowType) => row && (importRow.date===row[0]) && (accountName===row[1]) && ((row[2] !== undefined) && (row[2].endsWith(importRow.label))) && (importRow.amount===row[3]))
+    const found = rows.some((row: dataSheetRowType) => row && (importRow.date===row[0]) && (accountName===row[1]) && ((row[2] !== undefined) && (row[2].endsWith !== undefined) && (row[2].endsWith(importRow.label))) && (importRow.amount===row[3]))
     if (!found) {
       addRows.push([ importRow.date, accountName, importRow.label, importRow.amount, '=== ERREUR ===' ])
     }
