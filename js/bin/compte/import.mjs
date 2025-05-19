@@ -41,6 +41,9 @@ function readLBPTSV(filename, workbookHelp) {
             }
         }
     });
+    if (solde === undefined) {
+        throw ('Cannot find the solde in the imported file');
+    }
     // console.log(type, accountNumber)
     if ((type !== undefined) && (accountNumber !== undefined)) {
         workbookHelp.database.params.accountCorresps.some(c => {
@@ -104,5 +107,5 @@ export async function importLBPData(workbookHelp) {
         const addRange = dataSheet.range(dataRange._maxRowNumber + 1, dataRange._minColumnNumber, dataRange._maxRowNumber + addRows.length, dataRange._maxColumnNumber);
         addRange.value(addRows);
     }
-    return lbpSolde;
+    return { lbpSolde, addRows };
 }

@@ -21,7 +21,7 @@ import helperJs from '../../helpers/helperJs.mjs'
 import yargs, { help, string } from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
-import { importLBPData } from './import.mjs'
+import { importLBPData, lbpImportedType } from './import.mjs'
 import { dataSheetRowType, categoryMatchType, workbookHelper, accountParamType, categoryParamType } from './workbookHelper.mjs'
 
 const defaultCompte: string = 'c:/tmp/compte/compte.xlsx'
@@ -234,17 +234,21 @@ async function createResumeSheet(workbookHelp: workbookHelper) {
 }
 
 
-function displayErrors(workbookHelp: workbookHelper, lbpSolde: number|undefined) {
+function displayErrors(workbookHelp: workbookHelper, lbpImported: lbpImportedType | undefined) {
   const database = workbookHelp.database
 
-  if (lbpSolde && database.inputs.tsvAccountName) {
+  if (lbpImported && database.inputs.tsvAccountName) {
     // check, but raise an error and stop immediately as a problem in a import may corrupt the xlsx file
     const computed = database.histo[database.params.currentYear].accounts[database.inputs.tsvAccountName]
     if (!computed) {
       helperJs.error(`PLEASE CHECK: Import account ${database.inputs.tsvAccountName} not found`)
     }
-    if (computed !== lbpSolde) {
-      helperJs.error(`PLEASE CHECK: ${database.inputs.tsvAccountName} solde: ${computed}€ (computed)  vs  ${lbpSolde}€ (expected from tsv imported file)`)
+    if (computed !== lbpImported.lbpSolde) {
+      console.log(`PLEASE CHECK: ${database.inputs.tsvAccountName} solde: ${computed}€ (computed)  vs  ${lbpImported.lbpSolde}€ (expected from tsv imported file)`)
+      console.log(`              Difference of ${computed - lbpImported.lbpSolde}€`)
+      console.log(`              List of imported data:`)
+      lbpImported.addRows.forEach(row => console.log(row))
+      helperJs.error('STOP')
     }
   }
 
@@ -451,7 +455,7 @@ export async function compte() {
   await readParams(workbookHelp)
 
   helperJs.info('importLBPData')
-  const lbpSolde = await importLBPData(workbookHelp)
+  const lbpImported = await importLBPData(workbookHelp)
 
   helperJs.info('Chek')
   await check(workbookHelp)
@@ -475,7 +479,7 @@ export async function compte() {
   await createHistoSheet(workbookHelp)
 
   helperJs.info('displayErrors')
-  displayErrors(workbookHelp, lbpSolde)
+  displayErrors(workbookHelp, lbpImported)
 
   if (options.save) {
     await save(workbookHelp)

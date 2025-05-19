@@ -51,6 +51,9 @@ function readLBPTSV(filename: string, workbookHelp: workbookHelper) {
       }
     }
   })
+  if (solde === undefined) {
+    throw('Cannot find the solde in the imported file')
+  }
 
   // console.log(type, accountNumber)
 
@@ -80,7 +83,12 @@ function readLBPTSV(filename: string, workbookHelp: workbookHelper) {
   return { solde, resultRows }
 }
 
-export async function importLBPData(workbookHelp: workbookHelper) {
+export interface lbpImportedType {
+  lbpSolde: number,
+  addRows: dataSheetRowType[],
+}
+
+export async function importLBPData(workbookHelp: workbookHelper): Promise<lbpImportedType | undefined> {
   const importName = workbookHelp.database.inputs.importName
   if (importName===undefined) {
     return undefined
@@ -127,5 +135,5 @@ export async function importLBPData(workbookHelp: workbookHelper) {
     addRange.value(addRows)
   }
 
-  return lbpSolde
+  return { lbpSolde, addRows }
 }

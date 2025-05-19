@@ -1,4 +1,8 @@
 #!/usr/bin/env node
-import { workbookHelper } from './workbookHelper.mjs';
+import { workbookHelper, dataSheetRowType } from './workbookHelper.mjs';
 import '../../extend/luxon.mjs';
-export declare function importLBPData(workbookHelp: workbookHelper): Promise<undefined>;
+export interface lbpImportedType {
+    lbpSolde: number;
+    addRows: dataSheetRowType[];
+}
+export declare function importLBPData(workbookHelp: workbookHelper): Promise<lbpImportedType | undefined>;
