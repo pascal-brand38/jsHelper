@@ -30,7 +30,7 @@ let statistics = {
   nRemove: 0,
 }
 
-const _step = 1000
+const _step = 10
 
 async function getArgs(usage) {
   console.log(process.argv)
@@ -132,7 +132,7 @@ function equalFiles(file1, file2) {
 
 function print(text, index) {
   if ((index % _step) === 0) {
-    console.log(text)
+    process.stdout.write(`${text}\r`)
   }
 }
 
@@ -160,7 +160,8 @@ function action(options, dup, src) {
 function getHashes(dir, options) {
   console.log(`--- getHashes of ${dir} ---`)
   console.log(`    --- Get files list of ${dir} ---`)
-  let files = helperJs.utils.walkDir(dir, { stepVerbose: 1000, excludes: options.excludes})
+  let files = helperJs.utils.walkDir(dir, { stepVerbose: 2, excludes: options.excludes, antiSlashR: true })
+  console.log()
 
   console.log(`    --- Computes Hashes of ${dir} ---`)
   let hashes = helperJs.sha1.initSha1List()
@@ -174,6 +175,7 @@ function getHashes(dir, options) {
       console.log(e)
     }
   })
+  console.log()
 
   return hashes
 }
@@ -211,6 +213,7 @@ function removeDup(srcHashes, options) {
       }
     })
   })
+  console.log()
 
   if (options.remove) {
     console.log(`--- Remove empty dirs of ${options.dupDir} ---`)
@@ -254,6 +257,7 @@ async function removeSelf(srcHashes, options) {
       }
     }
   }
+  console.log()
 }
 
 async function main(options) {

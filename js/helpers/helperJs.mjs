@@ -88,7 +88,11 @@ function _walkDir(rootDir, options, files, subDir) {
         else {
             files.push(sub);
             if ((options.stepVerbose > 0) && ((files.length % options.stepVerbose) === 0)) {
-                console.log(`      ${files.length} files found`);
+                let endOfLine = '\n';
+                if (options.antiSlashR === true) {
+                    endOfLine = '\r';
+                }
+                process.stdout.write(`      ${files.length} files found${endOfLine}`);
             }
         }
     });
@@ -113,6 +117,7 @@ function walkDir(rootDir, options) {
     const defaultOptions = {
         excludes: [], // list of files / directories to exclude from the list
         stepVerbose: -1, // no verbose
+        antiSlashR: false, // return
     };
     const currentOptions = _createOptions(options, defaultOptions);
     let files = [];

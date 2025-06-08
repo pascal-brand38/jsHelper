@@ -32,8 +32,9 @@ function error(s: string): never {
 }
 
 interface walkDirOptionsType {
-  stepVerbose: number
-  excludes: string[]
+  stepVerbose: number,
+  excludes: string[],
+  antiSlashR?: boolean,
 }
 
 const question = {
@@ -112,7 +113,11 @@ function _walkDir(rootDir: string, options: walkDirOptionsType, files: string[],
     } else {
       files.push(sub);
       if ((options.stepVerbose > 0) && ((files.length % options.stepVerbose) === 0)) {
-        console.log(`      ${files.length} files found`)
+        let endOfLine = '\n'
+        if (options.antiSlashR === true) {
+          endOfLine = '\r'
+        }
+        process.stdout.write(`      ${files.length} files found${endOfLine}`)
       }
     }
   });
@@ -140,6 +145,7 @@ function walkDir(rootDir: any, options: any) {
   const defaultOptions = {
     excludes: [],       // list of files / directories to exclude from the list
     stepVerbose: -1,    // no verbose
+    antiSlashR: false,  // return
   }
   const currentOptions = _createOptions(options, defaultOptions)
 
