@@ -18,7 +18,15 @@ function readTSV(filename: string) {
   const text: string = fs.readFileSync(filename, 'utf8')
   const rows: string[][] = []
   text.split('\n').forEach(rowText => {
-    const row = rowText.trim().split('\t')
+    let row = rowText.trim().split('\t')
+    if (row.length === 1) {
+      row = rowText.trim().split(';')
+    }
+    if (row.length >= 4) {
+      helperJs.error(`Failed to import ${filename}`)
+    }
+
+    row = row.map(s => s.trim());
     rows.push(row)
   })
   return rows
@@ -110,7 +118,7 @@ export async function importLBPData(workbookHelp: workbookHelper): Promise<lbpIm
 
   const accountName = workbookHelp.database.inputs.tsvAccountName || importAccountName
   if (accountName === undefined) {
-    helperJs.error(`ERROR: dont know the import account name - use option --import-account`)
+    helperJs.error(`ERROR: dont know the import account name ${accountName} - use option --import-account`)
     throw('ERROR')
   }
 

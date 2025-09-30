@@ -30,7 +30,7 @@ let statistics = {
   nRemove: 0,
 }
 
-const _step = 10
+const _step = 1
 
 async function getArgs(usage) {
   console.log(process.argv)
@@ -160,7 +160,7 @@ function action(options, dup, src) {
 function getHashes(dir, options) {
   console.log(`--- getHashes of ${dir} ---`)
   console.log(`    --- Get files list of ${dir} ---`)
-  let files = helperJs.utils.walkDir(dir, { stepVerbose: 2, excludes: options.excludes, antiSlashR: true })
+  let files = helperJs.utils.walkDir(dir, { stepVerbose: 1, excludes: options.excludes, antiSlashR: true })
   console.log()
 
   console.log(`    --- Computes Hashes of ${dir} ---`)
