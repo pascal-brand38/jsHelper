@@ -821,10 +821,10 @@ async function checkInFuture(fromStr) {
 }
 
 const priceDay = [
-  [ { price: 14             }, { price: 14             }, ],
-  [ { price: 24, nbRooms: 1 }, { price: 28, nbRooms: 2 }, ],
-  [ { price: 36, nbRooms: 2 }, { price: 42, nbRooms: 3 }, ],
-  [ { price: 44, nbRooms: 2 }, { price: 56, nbRooms: 4 }, ],
+  [ { price: 16             }, { price: 16             }, ],
+  [ { price: 28, nbRooms: 1 }, { price: 32, nbRooms: 2 }, ],
+  [ { price: 42, nbRooms: 2 }, { price: 48, nbRooms: 3 }, ],
+  [ { price: 52, nbRooms: 2 }, { price: 64, nbRooms: 4 }, ],
 ]
 
 // Check the data in compta is coherent with respect to the previous one
