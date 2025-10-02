@@ -826,6 +826,10 @@ const priceDay = [
   [ { price: 42, nbRooms: 2 }, { price: 48, nbRooms: 3 }, ],
   [ { price: 52, nbRooms: 2 }, { price: 64, nbRooms: 4 }, ],
 ]
+// from this date, we are "almost" sure this is a booking with the new prices
+// we had few bookings after this date with the old price, but they
+// are with cats with medecine. So checking the price is not really a problem.
+const serialSureNewPrice = DateTime.fromFormatStartOfDay('01/02/2026')
 
 // Check the data in compta is coherent with respect to the previous one
 // - deposit asking, or not
@@ -867,8 +871,15 @@ async function checkComptaData(argsComptaPdf) {
       console.log()
     }
 
-    // check daily price is the same - can be different in case of medecine
-    if (rowPrev.prixJour != rowCurrent.prixJour)  {
+    if (serialSureNewPrice < rowPrev.arrival) {
+      // don't know if the previous booking was made with the new price or not
+      // so ask to check, even if daily price is the same
+      console.log(`Vérification du prix de la réservation - l'ancienne réservation était peut-être avec les anciens prix`)
+      console.log(`   ${rowCurrent.prixJour}€  vs  ${rowPrev.prixJour}€ précédemment (départ le ${DateTime.fromExcelSerialStartOfDay(rowPrev.arrival).toFormat('dd/MM/yyyy')})`)
+      await helperJs.question.question(`Appuyer pour continuer`)
+      console.log()
+    } else if (rowPrev.prixJour != rowCurrent.prixJour)  {
+      // daily price are not the same, this may be a problem
       console.log(`Le prix journalier n'est pas le même par rapport à la dernière réservation`)
       console.log(`   ${rowCurrent.prixJour}€  vs  ${rowPrev.prixJour}€ précédemment`)
       await helperJs.question.question(`Appuyer pour continuer`)
