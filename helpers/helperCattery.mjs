@@ -826,6 +826,9 @@ const priceDay = [
   [ { price: 42, nbRooms: 2 }, { price: 48, nbRooms: 3 }, ],
   [ { price: 52, nbRooms: 2 }, { price: 64, nbRooms: 4 }, ],
 ]
+const prevPriceDay1Room = 14
+const priceDay1Room = priceDay[0][0].price
+
 // from this date, we are "almost" sure this is a booking with the new prices
 // we had few bookings after this date with the old price, but they
 // are with cats with medecine. So checking the price is not really a problem.
@@ -871,19 +874,26 @@ async function checkComptaData(argsComptaPdf) {
       console.log()
     }
 
-    if (serialSureNewPrice > rowPrev.arrival) {
-      // don't know if the previous booking was made with the new price or not
-      // so ask to check, even if daily price is the same
-      console.log(`Vérification du prix de la réservation - l'ancienne réservation était peut-être avec les anciens prix`)
-      console.log(`   ${rowCurrent.prixJour}€  vs  ${rowPrev.prixJour}€ précédemment (départ le ${DateTime.fromExcelSerialStartOfDay(rowPrev.arrival).toFormat('dd/MM/yyyy')})`)
-      await helperJs.question.question(`Appuyer pour continuer`)
-      console.log()
-    } else if (rowPrev.prixJour != rowCurrent.prixJour)  {
-      // daily price are not the same, this may be a problem
-      console.log(`Le prix journalier n'est pas le même par rapport à la dernière réservation`)
-      console.log(`   ${rowCurrent.prixJour}€  vs  ${rowPrev.prixJour}€ précédemment`)
-      await helperJs.question.question(`Appuyer pour continuer`)
-      console.log()
+    if ((rowPrev.prixJour === prevPriceDay1Room) && (rowCurrent.prixJour === priceDay1Room)) {
+      // in case the previous booking was 1 room with the old price, and
+      // the current booking is the price of 1 room,
+      // ==> then it is ok
+    } else {
+      // make the test as the price difference may come from the increase
+      if (serialSureNewPrice > rowPrev.arrival) {
+        // don't know if the previous booking was made with the new price or not
+        // so ask to check, even if daily price is the same
+        console.log(`Vérification du prix de la réservation - l'ancienne réservation était peut-être avec les anciens prix`)
+        console.log(`   ${rowCurrent.prixJour}€  vs  ${rowPrev.prixJour}€ précédemment (départ le ${DateTime.fromExcelSerialStartOfDay(rowPrev.arrival).toFormat('dd/MM/yyyy')})`)
+        await helperJs.question.question(`Appuyer pour continuer`)
+        console.log()
+      } else if (rowPrev.prixJour != rowCurrent.prixJour)  {
+        // daily price are not the same, this may be a problem
+        console.log(`Le prix journalier n'est pas le même par rapport à la dernière réservation`)
+        console.log(`   ${rowCurrent.prixJour}€  vs  ${rowPrev.prixJour}€ précédemment`)
+        await helperJs.question.question(`Appuyer pour continuer`)
+        console.log()
+      }
     }
 
   } else {
