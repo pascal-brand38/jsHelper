@@ -871,7 +871,7 @@ async function checkComptaData(argsComptaPdf) {
       console.log()
     }
 
-    if (serialSureNewPrice < rowPrev.arrival) {
+    if (serialSureNewPrice > rowPrev.arrival) {
       // don't know if the previous booking was made with the new price or not
       // so ask to check, even if daily price is the same
       console.log(`Vérification du prix de la réservation - l'ancienne réservation était peut-être avec les anciens prix`)
