@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 // @ts-ignore
 import { mboxReader } from 'mbox-reader'; // scan messages
+import * as crypto from 'node:crypto';
 import { simpleParser } from 'mailparser'; // parse a single message
 import pLimit from 'p-limit'; // limit the number of processed emails in parallel
 import { program } from 'commander';
@@ -20,10 +21,6 @@ const skipPaths = [
 const _stats = {
     nTotal: 0, // total number of emails
     nNew: 0, // new emails that have been pdfed
-    nAttachement: 0, // number of downloaded attachments - do not count skipped emails
-    duplicate: {
-        self: {},
-    }
 };
 function escape(s) {
     return s.replace(/[^0-9A-Za-z ]/g, c => "&#" + c.charCodeAt(0) + ";");
@@ -208,15 +205,6 @@ async function mailToPdf(options, message, outputDir, mboxPath) {
     // console.log(`--- ${header.basename}`)
     const targetDir = path.join(outputDir, header.basename);
     // check duplicated emails
-    if (_treatedEmails.targetDir[targetDir]) {
-        if (_stats.duplicate.self[mboxPath] === undefined) {
-            _stats.duplicate.self[mboxPath] = [];
-        }
-        _stats.duplicate.self[mboxPath].push(header.basename);
-    }
-    else {
-        _treatedEmails.targetDir[targetDir] = true;
-    }
     if (_treatedEmails.basename[header.basename] === undefined) {
         _treatedEmails.basename[header.basename] = [];
     }
@@ -236,7 +224,6 @@ async function mailToPdf(options, message, outputDir, mboxPath) {
             if (!options.dryRun) {
                 fs.writeFileSync(path.join(targetDir, filename), attachment.content);
             }
-            _stats.nAttachement++;
         });
         _stats.nNew++;
     }
@@ -316,9 +303,8 @@ function getArgs() {
         .usage('node dist/mail-to-pdf <options> --output-dir <dir>')
         .description('Save emails as pdf, along with the attachment files')
         .option('--input <dir|mbox>', 'input, either a directory or a mbox file. When not provided, is looking at thunderbird mbox files (working on windows only)')
-        .requiredOption('--output-dir <dir>', 'output directory of the pdf and attachments')
+        .requiredOption('--output <mbox>', 'output mbox, that includes all messages from input, and the one of output if it already exists')
         .option('--no-parallel', 'Use --no-parallel to run sequentially', true)
-        .option('--force', 'Force creation of the pdf, even if already exists', false)
         .option('--dry-run', 'dryrun - nothing is generated', false)
         .option('--no-skip', `Use --no-skip not to skip ${skipPaths}`, true),
         program.parse();
@@ -326,6 +312,90 @@ function getArgs() {
     // .example('$0 --output-dir /tmp/test', 'save all emails of thunderbirds (windows) as pdf, along their attachments, in /tmp/test')
     // .example('$0 --input file.mbox --output-dir /tmp/test', 'save all emails of file.mbox as pdf, along their attachments, in /tmp/test')
     // .example('$0 --input directory --output-dir /tmp/test', 'save all emails in driectory (look for all mbox files recursively in this directory) as pdf, along their attachments, in /tmp/test')
+}
+async function getHash(options, message) {
+    const parser = await simpleParser(message.content);
+    const date = parser.headers.get('date');
+    const subject = parser.headers.get('subject');
+    const strToHash = subject + date.toLocaleString();
+    const shasum = crypto.createHash('sha1');
+    shasum.update(strToHash);
+    return shasum.digest('hex');
+}
+async function getHashes(options, mboxFilename) {
+    try {
+        const stat = fs.statSync(mboxFilename);
+        if (stat.isFile()) {
+        }
+        else {
+            console.log(`ERROR: Output mbox ${mboxFilename} type is not recognized`.red);
+            return null; // this is an error
+        }
+    }
+    catch {
+        // the output file does not exist
+        // ==> create it, and return empty hashes
+        console.log(`Output mbox ${mboxFilename} does not exist`.green);
+        console.log(`Create it`.green);
+        fs.closeSync(fs.openSync(mboxFilename, 'w'));
+        return [];
+    }
+    let result;
+    console.log(`Reading messages in ${mboxFilename}`.blue);
+    const readStream = fs.createReadStream(mboxFilename);
+    if (options.parallel) {
+        let promises = [];
+        const limit = pLimit(5); // max of 5 emails in parallel
+        for await (let message of mboxReader(readStream)) {
+            promises.push(limit(() => getHash(options, message)));
+        }
+        result = await Promise.all(promises).then(result => result);
+    }
+    else {
+        result = [];
+        for await (let message of mboxReader(readStream)) {
+            result.push(await getHash(options, message));
+        }
+    }
+    return result;
+}
+async function flattenMbox(options, hashes, outputMbox, inputMbox) {
+    if (skipPaths.some(skipPath => inputMbox.endsWith(skipPath))) {
+        console.log(`Skip mbox file: ${inputMbox}`.yellow);
+        return;
+    }
+    let displayedMessage = false;
+    function displayMessage() {
+        if (!displayedMessage) {
+            console.log(`Processing mbox file: ${inputMbox}`.blue);
+            displayedMessage = true;
+        }
+    }
+    const readStream = fs.createReadStream(inputMbox);
+    let nTotal = 0;
+    let nNew = 0;
+    if (options.parallel) {
+        const limit = pLimit(5); // max of 5 emails in parallel
+        for await (let message of mboxReader(readStream)) {
+            displayMessage();
+            throw 'NOT IMPLEMENTED YET';
+        }
+    }
+    else {
+        for await (let message of mboxReader(readStream)) {
+            nTotal++;
+            displayMessage();
+            const hash = await getHash(options, message);
+            if (!hashes.some(h => (h === hash))) {
+                nNew++;
+                fs.appendFileSync(outputMbox, `From - ${message.time}\n${message.content.toString()}\n\n`);
+                hashes.push(hash);
+            }
+        }
+    }
+    _stats.nTotal += nTotal;
+    _stats.nNew += nNew;
+    console.log('Adding '.blue + `${nNew}`.green + ' messages, and skipped as duplicate '.blue + `${nTotal - nNew}`.green + ' messages'.blue);
 }
 export async function flattenMboxes() {
     const options = getArgs();
@@ -342,44 +412,49 @@ export async function flattenMboxes() {
     else {
         inputs = [options.input];
     }
-    if (true) {
-        for (let input of inputs) {
-            for await (let desc of getMboxPaths(input, options.outputDir)) {
-                console.log(desc.fullInputPath.blue);
-                console.log(desc.fullOutputPath.blue);
-                await mboxToPdf(options, desc.fullInputPath, desc.fullOutputPath);
-            }
-        }
+    const hashes = await getHashes(options, options.output);
+    if (hashes === null) {
+        return; // Error. Stop the process
     }
-    else {
-        const mboxPath = '';
-        await mboxToPdf(options, mboxPath, 'C:/tmp/mail-to-pdf/output');
-    }
+    console.log(hashes);
+    await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie');
+    await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie');
+    // if (true) {
+    //   for (let input of inputs) {
+    //     for await (let desc of getMboxPaths(input, options.outputDir)) {
+    //       console.log(desc.fullInputPath.blue)
+    //       console.log(desc.fullOutputPath.blue)
+    //       await mboxToPdf(options, desc.fullInputPath, desc.fullOutputPath)
+    //     }
+    //   }
+    // } else {
+    //   const mboxPath = ''
+    //   await mboxToPdf(options, mboxPath, 'C:/tmp/mail-to-pdf/output')
+    // }
     console.log();
-    console.log(`Number of emails: ${_stats.nTotal}`.green);
+    console.log(`Number of emails in new mbox: ${hashes.length}`.green);
     console.log(`Number of new emails: ${_stats.nNew}`.green);
-    console.log(`Number of generated attachments: ${_stats.nAttachement}`.green);
-    const keysDup = Object.keys(_stats.duplicate.self);
-    if (keysDup.length === 0) {
-        console.log('mbox that contain duplication: NONE'.green);
-    }
-    else {
-        console.log(`mbox that contain duplication:`.green);
-        keysDup.forEach(key => {
-            console.log(`  - ${key}: ${_stats.duplicate.self[key].length}`.blue);
-            if (_stats.duplicate.self[key].length < 10) {
-                _stats.duplicate.self[key].forEach(value => console.log(`       ${value}`.blue));
-            }
-        });
-    }
-    let nDup = 0;
-    Object.keys(_treatedEmails.basename).forEach(basename => {
-        if (_treatedEmails.basename[basename].length >= 2) {
-            nDup += (_treatedEmails.basename[basename].length - 1);
-            console.log(`Duplicate email:`);
-            _treatedEmails.basename[basename].forEach(l => console.log(`    ${l}`.blue));
-        }
-    });
-    console.log(`Number of duplicated emails: ${nDup}`.green);
+    console.log(`Number of skipped as duplicates emails: ${_stats.nTotal - _stats.nNew}`.green);
+    // const keysDup = Object.keys(_stats.duplicate.self)
+    // if (keysDup.length === 0) {
+    //   console.log('mbox that contain duplication: NONE'.green)
+    // } else {
+    //   console.log(`mbox that contain duplication:`.green)
+    //   keysDup.forEach(key => {
+    //     console.log(`  - ${key}: ${_stats.duplicate.self[key].length}`.blue)
+    //     if (_stats.duplicate.self[key].length < 10) {
+    //       _stats.duplicate.self[key].forEach(value => console.log(`       ${value}`.blue))
+    //     }
+    //   })
+    // }
+    // let nDup = 0
+    // Object.keys(_treatedEmails.basename).forEach(basename => {
+    //   if (_treatedEmails.basename[basename].length >= 2) {
+    //     nDup += (_treatedEmails.basename[basename].length - 1)
+    //     console.log(`Duplicate email:`)
+    //     _treatedEmails.basename[basename].forEach(l => console.log(`    ${l}`.blue))
+    //   }
+    // })
+    // console.log(`Number of duplicated emails: ${nDup}`.green)
     console.log('DONE'.green);
 }
