@@ -6,7 +6,7 @@ import * as path from 'path';
 // @ts-ignore
 import { mboxReader } from 'mbox-reader'; // scan messages
 import * as crypto from 'node:crypto';
-import { simpleParser } from 'mailparser'; // parse a single message
+import { simpleParser, } from 'mailparser'; // parse a single message
 import pLimit from 'p-limit'; // limit the number of processed emails in parallel
 import { program } from 'commander';
 import { LIB_VERSION } from './version.mjs';
@@ -34,10 +34,10 @@ function getDirectories(source) {
 }
 function getArgs() {
     program
-        .name('mail-to-pdf')
+        .name('flatten-mboxes')
         .version(LIB_VERSION) // TODO: use dynamic version from package.json
         .usage('node dist/mail-to-pdf <options> --output-dir <dir>')
-        .description('Save emails as pdf, along with the attachment files')
+        .description('Create a single mbox from several ones, removing duplicates')
         .option('--input <dir|mbox>', 'input, either a directory or a mbox file. When not provided, is looking at thunderbird mbox files (working on windows only)')
         .requiredOption('--output <mbox>', 'output mbox, that includes all messages from input, and the one of output if it already exists')
         .option('--no-parallel', 'Use --no-parallel to run sequentially', true)
@@ -45,9 +45,6 @@ function getArgs() {
         .option('--no-skip', `Use --no-skip not to skip ${skipPaths}`, true),
         program.parse();
     return program.opts();
-    // .example('$0 --output-dir /tmp/test', 'save all emails of thunderbirds (windows) as pdf, along their attachments, in /tmp/test')
-    // .example('$0 --input file.mbox --output-dir /tmp/test', 'save all emails of file.mbox as pdf, along their attachments, in /tmp/test')
-    // .example('$0 --input directory --output-dir /tmp/test', 'save all emails in driectory (look for all mbox files recursively in this directory) as pdf, along their attachments, in /tmp/test')
 }
 async function getHash(options, message) {
     const parser = await simpleParser(message.content);
@@ -87,7 +84,8 @@ async function getHashes(options, mboxFilename) {
     let result;
     console.log(`Reading messages in ${mboxFilename}`.blue);
     const readStream = fs.createReadStream(mboxFilename);
-    if (options.parallel) {
+    if (false && options.parallel) {
+        // disable parallel as read all file in memory, which is huge
         let promises = [];
         const limit = pLimit(5); // max of 5 emails in parallel
         for await (let message of mboxReader(readStream)) {
@@ -99,7 +97,17 @@ async function getHashes(options, mboxFilename) {
         result = [];
         for await (let message of mboxReader(readStream)) {
             display();
-            result.push(await getHash(options, message));
+            const hash = await getHash(options, message);
+            if (result.some(r => r === hash)) {
+                const parser = await simpleParser(message.content);
+                console.log();
+                console.log(`Duplicate: from=${parser.headers.get('from')}`);
+                console.log(`Duplicate: subject=${parser.headers.get('subject')}`);
+                console.log(`Duplicate: date=${parser.headers.get('date')}`);
+                console.log(`Duplicate: message-id=${parser.headers.get('message-id')}`);
+                console.log(message.content.toString());
+            }
+            result.push(hash);
         }
     }
     console.log();
@@ -111,8 +119,9 @@ async function flattenMbox(options, hashes, outputMbox, inputMbox) {
         nTotal++;
         if (!hashes.some(h => (h === hash))) {
             nNew++;
-            fs.appendFileSync(outputMbox, `From - ${message.time}\n${message.content.toString()}\n\n`);
             hashes.push(hash);
+            const regEx = /^From/gm; // m is the multiline
+            fs.appendFileSync(outputMbox, `From - ${message.time}\n${message.content.toString().replaceAll(regEx, '>From')}\n\n`);
         }
         const lenWhite = 80 + 20;
         process.stdout.write(`${" ".repeat(lenWhite)}\r`.green);
@@ -153,9 +162,6 @@ async function flattenInput(options, hashes, outputMbox, input) {
         }
         else {
             const contents = fs.readdirSync(input, { withFileTypes: true });
-            // await Promise.all(contents.map(async c => {
-            //   await flattenMbox(options, hashes, outputMbox, path.join(input, c.name))
-            // }))
             for (const i in contents) {
                 await flattenInput(options, hashes, outputMbox, path.join(input, contents[i].name));
             }
@@ -183,26 +189,18 @@ export async function flattenMboxes() {
     if (hashes === null) {
         return; // Error. Stop the process
     }
-    // await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie')
-    // await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie.msf')
-    // await flattenInput(options, hashes, options.output, options.input)
-    for await (let input of inputs) {
-        await flattenInput(options, hashes, options.output, input);
+    const set = new Set(hashes);
+    if (set.size !== hashes.length) {
+        console.log(`DUPLICATES in ${options.output}: ${set.size} vs ${hashes.length}`);
+        return;
     }
-    // if (true) {
-    //   for (let input of inputs) {
-    //     for await (let desc of getMboxPaths(input, options.outputDir)) {
-    //       console.log(desc.fullInputPath.blue)
-    //       console.log(desc.fullOutputPath.blue)
-    //       await mboxToPdf(options, desc.fullInputPath, desc.fullOutputPath)
-    //     }
-    //   }
-    // } else {
-    //   const mboxPath = ''
-    //   await mboxToPdf(options, mboxPath, 'C:/tmp/mail-to-pdf/output')
-    // }
+    console.log(inputs);
+    for await (let input of inputs) {
+        console.log(input);
+        await flattenInput(options, hashes || [], options.output, input);
+    }
     console.log();
-    console.log(`Number of emails in new mbox:           ${hashes.length}`.green);
+    console.log(`Number of emails in new mbox:           ${(hashes !== null) ? hashes?.length : 0}`.green);
     console.log(`Number of new emails:                   ${_stats.nNew}`.green);
     console.log(`Number of skipped as duplicates emails: ${_stats.nTotal - _stats.nNew}`.green);
     console.log('DONE'.green);
