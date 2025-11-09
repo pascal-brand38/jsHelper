@@ -245,7 +245,7 @@ async function mboxToPdf(options, mboxPath, outputDir) {
         }
     }
     const readStream = fs.createReadStream(mboxPath);
-    if (options.parallel) {
+    if (false && options.parallel) {
         let promises = [];
         const limit = pLimit(5); // max of 5 emails in parallel
         for await (let message of mboxReader(readStream)) {
@@ -317,7 +317,8 @@ async function getHash(options, message) {
     const parser = await simpleParser(message.content);
     const date = parser.headers.get('date');
     const subject = parser.headers.get('subject');
-    const strToHash = subject + date.toLocaleString();
+    const messageId = parser.headers.get('message-id');
+    const strToHash = subject + date.toLocaleString() + messageId;
     const shasum = crypto.createHash('sha1');
     shasum.update(strToHash);
     return shasum.digest('hex');
@@ -364,27 +365,19 @@ async function flattenMbox(options, hashes, outputMbox, inputMbox) {
         console.log(`Skip mbox file: ${inputMbox}`.yellow);
         return;
     }
-    let displayedMessage = false;
-    function displayMessage() {
-        if (!displayedMessage) {
-            console.log(`Processing mbox file: ${inputMbox}`.blue);
-            displayedMessage = true;
-        }
-    }
     const readStream = fs.createReadStream(inputMbox);
+    console.log(`Processing mbox file: ${inputMbox}`.blue);
     let nTotal = 0;
     let nNew = 0;
-    if (options.parallel) {
+    if (false && options.parallel) {
         const limit = pLimit(5); // max of 5 emails in parallel
         for await (let message of mboxReader(readStream)) {
-            displayMessage();
             throw 'NOT IMPLEMENTED YET';
         }
     }
     else {
         for await (let message of mboxReader(readStream)) {
             nTotal++;
-            displayMessage();
             const hash = await getHash(options, message);
             if (!hashes.some(h => (h === hash))) {
                 nNew++;
@@ -393,9 +386,31 @@ async function flattenMbox(options, hashes, outputMbox, inputMbox) {
             }
         }
     }
-    _stats.nTotal += nTotal;
-    _stats.nNew += nNew;
-    console.log('Adding '.blue + `${nNew}`.green + ' messages, and skipped as duplicate '.blue + `${nTotal - nNew}`.green + ' messages'.blue);
+    if (nTotal !== 0) {
+        _stats.nTotal += nTotal;
+        _stats.nNew += nNew;
+        console.log('Adding '.blue + `${nNew}`.green + ' messages, and skipped as duplicate '.blue + `${nTotal - nNew}`.green + ' messages'.blue);
+        console.log();
+    }
+}
+async function flattenInput(options, hashes, outputMbox, input) {
+    try {
+        const stat = fs.statSync(input);
+        if (stat.isFile()) {
+            await flattenMbox(options, hashes, outputMbox, input);
+        }
+        else {
+            const contents = fs.readdirSync(input, { withFileTypes: true });
+            // await Promise.all(contents.map(async c => {
+            //   await flattenMbox(options, hashes, outputMbox, path.join(input, c.name))
+            // }))
+            for (const i in contents) {
+                await flattenInput(options, hashes, outputMbox, path.join(input, contents[i].name));
+            }
+        }
+    }
+    catch {
+    }
 }
 export async function flattenMboxes() {
     const options = getArgs();
@@ -416,9 +431,12 @@ export async function flattenMboxes() {
     if (hashes === null) {
         return; // Error. Stop the process
     }
-    console.log(hashes);
-    await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie');
-    await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie');
+    // await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie')
+    // await flattenMbox(options, hashes, options.output, 'p:/Thunderbird/Profiles/3rhje9nc.default-release/ImapMail/imap.gmail-4.com/9.1- a-vie.msf')
+    // await flattenInput(options, hashes, options.output, options.input)
+    for await (let input of inputs) {
+        await flattenInput(options, hashes, options.output, input);
+    }
     // if (true) {
     //   for (let input of inputs) {
     //     for await (let desc of getMboxPaths(input, options.outputDir)) {
@@ -432,8 +450,8 @@ export async function flattenMboxes() {
     //   await mboxToPdf(options, mboxPath, 'C:/tmp/mail-to-pdf/output')
     // }
     console.log();
-    console.log(`Number of emails in new mbox: ${hashes.length}`.green);
-    console.log(`Number of new emails: ${_stats.nNew}`.green);
+    console.log(`Number of emails in new mbox:           ${hashes.length}`.green);
+    console.log(`Number of new emails:                   ${_stats.nNew}`.green);
     console.log(`Number of skipped as duplicates emails: ${_stats.nTotal - _stats.nNew}`.green);
     // const keysDup = Object.keys(_stats.duplicate.self)
     // if (keysDup.length === 0) {
