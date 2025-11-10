@@ -50,6 +50,12 @@ function getArgs(usage) {
         description: 'remove file of the dstdir, which are not in srcdir, but have a copy somewhere else in srcdir',
         type: 'boolean'
       },
+      "skip-list": {
+        description: "files / dir to skip, separated by comma",
+        requiresArg: true,
+        required: false,
+      },
+
     })
     // .fail((msg, err, yargs) => {
     //   if (err) throw err // preserve stack
@@ -62,7 +68,8 @@ function getArgs(usage) {
 
   options.walkDirOptions = {
     excludes: [ 'tmp', '.tmp.drivedownload', 'desktop.ini', 'Thumbs.db', _dirDated ],
-    stepVerbose: 1000,
+    stepVerbose: 1,
+    antiSlashR: true,
   }
   return options
 }
@@ -105,6 +112,8 @@ function removeMovedFiles(options, sha1List) {
 function main(options) {
   let srcDir = options.srcDir
   let dstDir = options.dstDir
+  let skipList = (options.skipList ? options.skipList.split(',') : [])
+
   console.log(`--- Copy files step`)
 
   let sha1List = helperJs.sha1.initSha1List()
@@ -114,14 +123,22 @@ function main(options) {
   // console.log(srcFiles)
 
   console.log(`------ Save non-existing files`)
-  srcFiles.forEach(file => {
+  srcFiles.forEach((file, index) => {
+    const lenWhite = 10
+    process.stdout.write(`${" ".repeat(lenWhite)}\r`)
+    process.stdout.write(`--- ${index}\r`)
+
     const srcFile = path.join(srcDir, file);
     const dstFile = path.join(dstDir, file);
 
-    sha1List = helperJs.sha1.updateSha1List(sha1List, helperJs.sha1.getSha1(srcFile), srcFile)
+    const skip = skipList.some(s => s === file)
+
     let mustCopy = false
     let update = false
-    if (fs.existsSync(dstFile)) {
+    if (!skip) {
+      sha1List = helperJs.sha1.updateSha1List(sha1List, helperJs.sha1.getSha1(srcFile), srcFile)
+    }
+    if (!skip && fs.existsSync(dstFile)) {
       // the file already exists in the cloud
       const statDstFile = fs.statSync(dstFile)
 
@@ -142,7 +159,7 @@ function main(options) {
         }
       }
     } else {
-      // an error, so the file does not exist on the cloud
+      // file to copy only
       statistics.new ++
       mustCopy = true
       const dirname = path.dirname(dstFile)
