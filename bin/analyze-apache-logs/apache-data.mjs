@@ -4,9 +4,9 @@
 import Alpine from 'alpine'   // Apache Log Parser
 import fs from 'fs'
 import { DateTime } from 'luxon'
-import '../js/extend/luxon.mjs'
+import '../../js/extend/luxon.mjs'
 import assert from 'node:assert';
-import helperJs from '../js/helpers/helperJs.mjs'
+import helperJs from '../../js/helpers/helperJs.mjs'
 
 class ApacheData {
   constructor() {
