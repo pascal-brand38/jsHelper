@@ -31,6 +31,7 @@
     "compte": "bin/compte.mjs",
     "envoi-contrat": "bin/envoi-contrat.mjs",
     "flatten-mboxes": "bin/flatten-mboxes.mjs",
+    "get-logs": "bin/get-logs.mjs",
     "livre-entrees-sorties": "bin/livre-entrees-sorties.mjs",
     "merge-google-reviews": "bin/merge-google-reviews.mjs",
     "merge-mbox": "bin/merge-mbox.mjs",
