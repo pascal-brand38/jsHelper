@@ -3513,5 +3513,934 @@
       "isSpam": false,
       "date": "6/9/2024"
     }
+  },
+  "104.210.140.128": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "104.210.140.130": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "104.210.140.135": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "104.210.140.137": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "104.210.140.140": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "112.203.34.231": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.132.218": {
+    "local": {
+      "isSpam": true,
+      "reason": "User Agent indicates a bot or a spammer: Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.133.78": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.136.176": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.138.154": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.140.73": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.145.22": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.146.198": {
+    "local": {
+      "isSpam": true,
+      "reason": "User Agent indicates a bot or a spammer: Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.147.213": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.149.203": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "114.119.152.64": {
+    "local": {
+      "isSpam": true,
+      "reason": "User Agent indicates a bot or a spammer: Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 (compatible; PetalBot;+https://webmaster.petalsearch.com/site/petalbot)",
+      "date": "10/1/2026"
+    }
+  },
+  "115.45.40.170": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "115.45.40.208": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "115.45.43.223": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "116.76.38.26": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "130.94.93.43": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "10/1/2026"
+    }
+  },
+  "142.250.32.10": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "142.250.32.9": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "142.44.220.108": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "143.110.221.235": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "148.135.243.131": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "159.89.141.62": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "162.120.188.147": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "17.246.23.244": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "170.203.218.85": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "172.183.222.135": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "172.183.222.138": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "172.183.222.140": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "172.183.222.142": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "172.213.21.114": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "172.213.21.118": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "172.225.120.119": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "173.252.82.25": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "173.252.87.42": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "173.252.87.58": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "176.31.139.24": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "176.65.149.179": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "10/1/2026"
+    }
+  },
+  "176.65.149.186": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "178.17.58.159": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "185.191.171.7": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "185.220.101.155": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "185.220.101.30": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "189.217.96.7": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "192.36.109.114": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "192.36.109.128": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "192.36.109.129": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "192.36.109.96": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "192.42.116.181": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "193.186.4.75": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "194.32.107.163": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "195.176.3.24": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "195.178.110.242": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "195.24.236.199": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "198.244.183.254": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "198.244.226.218": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.171.154.221": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.214.23": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.214.31": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.220.108": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.220.178": {
+    "local": {
+      "isSpam": true,
+      "reason": "User Agent indicates a bot or a spammer: Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.220.185": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.220.190": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.220.214": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.220.218": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "20.215.220.98": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "201.81.1.77": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "207.46.13.230": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "212.34.155.126": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "220.181.108.166": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "27.46.69.20": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "34.148.99.205": {
+    "local": {
+      "isSpam": true,
+      "reason": "Not always the same user-agent: Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edg/128.0.2790.25 Chrome/128.0.6540.22 Safari/537.36 !== Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0",
+      "date": "10/1/2026"
+    }
+  },
+  "34.177.100.148": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "34.210.247.213": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "35.170.205.140": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "35.236.65.11": {
+    "local": {
+      "isSpam": true,
+      "reason": "Not always the same user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.76 Safari/537.36 !== Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.7 Mobile/15E148 Safari/604.1",
+      "date": "10/1/2026"
+    }
+  },
+  "37.59.204.147": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "43.173.169.41": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "43.173.175.91": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "43.173.177.148": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "44.215.231.15": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "45.131.95.238": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "45.134.225.36": {
+    "local": {
+      "isSpam": true,
+      "reason": "immediate post contact form",
+      "date": "10/1/2026"
+    }
+  },
+  "45.138.16.164": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "45.141.215.156": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "45.84.107.174": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "45.84.107.198": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "45.84.107.47": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "45.84.107.97": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "46.105.48.30": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "46.202.224.82": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "47.128.127.29": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "49.37.45.113": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "5.39.109.167": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "5.39.109.181": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "5.39.109.184": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "51.195.183.179": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "51.38.109.223": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "51.68.107.148": {
+    "local": {
+      "isSpam": true,
+      "reason": "Accessing a file indicating a bot or a spammer: GET /robots.txt HTTP/1.1",
+      "date": "10/1/2026"
+    }
+  },
+  "51.68.247.223": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "51.75.236.144": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "51.75.236.146": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "51.75.236.147": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "51.89.38.21": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "52.167.144.23": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "54.145.186.166": {
+    "local": {
+      "isSpam": true,
+      "reason": "Accessing a file indicating a bot or a spammer: GET /robots.txt HTTP/1.1",
+      "date": "10/1/2026"
+    }
+  },
+  "54.37.118.77": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "57.141.0.13": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "57.141.0.24": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "57.141.0.36": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "57.141.0.42": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "57.141.0.48": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "57.141.0.65": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "66.249.65.97": {
+    "local": {
+      "isSpam": true,
+      "reason": "Not always the same user-agent: Googlebot-Image/1.0 !== Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.169 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "date": "10/1/2026"
+    }
+  },
+  "66.249.65.98": {
+    "local": {
+      "isSpam": true,
+      "reason": "Not always the same user-agent: Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.7499.169 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html) !== Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "date": "10/1/2026"
+    }
+  },
+  "66.249.65.99": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "66.69.54.158": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "69.171.231.21": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "69.30.198.202": {
+    "local": {
+      "isSpam": true,
+      "reason": "Accessing a file indicating a bot or a spammer: GET /robots.txt HTTP/1.1",
+      "date": "10/1/2026"
+    }
+  },
+  "74.7.230.34": {
+    "local": {
+      "isSpam": true,
+      "reason": "no html requests succeed",
+      "date": "10/1/2026"
+    }
+  },
+  "74.7.244.40": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "88.210.10.79": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "88.80.26.3": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "91.173.100.53": {
+    "local": {
+      "isSpam": false,
+      "date": "10/1/2026"
+    }
+  },
+  "91.84.99.6": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "92.222.104.204": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "92.222.104.213": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "92.222.104.218": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "92.222.108.109": {
+    "local": {
+      "isSpam": true,
+      "reason": "Only 2 requests for this ip",
+      "date": "10/1/2026"
+    }
+  },
+  "95.217.114.145": {
+    "local": {
+      "isSpam": true,
+      "reason": "Accessing a file indicating a bot or a spammer: GET /robots.txt HTTP/1.1",
+      "date": "10/1/2026"
+    }
   }
 }
