@@ -1,28 +1,51 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
+// @ts-ignore
 import Alpine from 'alpine'   // Apache Log Parser
-import fs from 'fs'
+import * as fs from 'fs'
 import { DateTime } from 'luxon'
-import '../../js/extend/luxon.mjs'
-import assert from 'node:assert';
-import helperJs from '../../js/helpers/helperJs.mjs'
+import '../../extend/luxon.mjs'
+import helperJs from '../../helpers/helperJs.mjs'
+import * as assert from 'node:assert';
+import { OptionValues } from 'commander';
+
+export type ApacheLineIndexTypes = 'originalLine' | 'remoteHost' | 'logname' | 'remoteUser' | 'time' | 'request' | 'status' | 'sizeCLF' | 'RequestHeader Referer' | 'RequestHeader User-Agent'
+
+export interface ApacheLineTypes {
+  originalLine: string                // originalLine: '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"',
+  remoteHost: string                  // remoteHost: '78.153.241.205',
+  logname: string                     // logname: 'www.example.com',
+  remoteUser: string                  // remoteUser: '-',
+  time: string                        // time: '27/Dec/2021:05:55:01 +0100',
+  request: string                     // request: 'GET /index.html HTTP/1.1',
+  status: string                      // status: '200',
+  sizeCLF: string                     // sizeCLF: '3092',
+  'RequestHeader Referer': string     // 'RequestHeader Referer': '-',
+  'RequestHeader User-Agent': string  // 'RequestHeader User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
+}
 
 class ApacheData {
+  logs: ApacheLineTypes[]
+  userIps: string[]
+  spamIps: string[]
+  dbip: any
+  todayStr: string
+
   constructor() {
-    this.logs = undefined
+    this.logs = []
 
     /**
      * list of IPs considered as coming from real users (not spam)
      * @type {Array.<string>}
      */
-    this.userIps = undefined    /** {Array.<string>} */
+    this.userIps = []
 
     /**
      * list of IPs considered as spams (bots, phishing,...)
      * @type {Array.<string>}
      */
-    this.spamIps = undefined             // list of IPs considered as spams
+    this.spamIps = []             // list of IPs considered as spams
     this.dbip = {}
     this.todayStr = DateTime.fromNowStartOfDay().toFormat('d/M/y')
   }
@@ -31,7 +54,7 @@ class ApacheData {
    * Read all log files, and populates this.logs
    * @param {Array.<string>} logFilenames
    */
-  readLogs(logFilenames) {
+  readLogs(logFilenames: string[]) {
     // Apache logs: https://httpd.apache.org/docs/current/mod/mod_log_config.html
     // On
     //    '78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"'
@@ -53,7 +76,7 @@ class ApacheData {
     // var logs = alpine.parseLine('78.153.241.205 www.example.com - [27/Dec/2021:05:55:01 +0100] "GET /index.html HTTP/1.1" 200 3092 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0"');
     // console.log(logs);
 
-    let lines = []
+    let lines: string[] = []
     logFilenames.forEach(logFilename => {
       const log = fs.readFileSync(logFilename).toString()
       lines = lines.concat(log.split('\n'))
@@ -64,24 +87,6 @@ class ApacheData {
       if (line.length !== 0) {
         this.logs.push(alpine.parseLine(line))
       }
-    }
-  }
-
-  /**
-   * Read the db file (containing spams), and populates this.dbip
-   * @param {string} dbIpFilename
-   */
-  readDbIp(dbIpFilename) {
-    try {
-      if (dbIpFilename === undefined) {
-        this.dbip = {}
-      } else {
-        this.dbip = JSON.parse(fs.readFileSync(dbIpFilename, 'utf8'))
-      }
-    } catch (e) {
-      console.log(e)
-      console.log(`CANNOT READ ${dbIpFilename}`)
-      this.dbip = {}
     }
   }
 
@@ -99,7 +104,7 @@ class ApacheData {
     }
 
     // get all spams from the db
-    let newSpamIps = []
+    let newSpamIps: string[] = []
     this.userIps.forEach(ip => {
       if (this.dbip[ip]) {
         const antispams =  Object.keys(this.dbip[ip])
@@ -113,11 +118,7 @@ class ApacheData {
     this.addSpamIps(newSpamIps)
   }
 
-  async saveDbip(dbIpFilename) {
-    fs.writeFileSync(dbIpFilename, JSON.stringify(this.dbip, null, 2), 'utf8')
-  }
-
-  _addToDb(ip, isSpam, antispam, reason) {
+  _addToDb(ip: string, isSpam: boolean, antispam: string, reason: string|undefined) {
     const value = { isSpam: isSpam, reason: reason, date: this.todayStr }
     if (this.dbip[ip] === undefined) {
       this.dbip[ip] = {}
@@ -134,13 +135,13 @@ class ApacheData {
     }
   }
 
-  _spamInformation(ip, isSpam, antispam, reason) {
+  _spamInformation(ip: string, isSpam: boolean, antispam: string, reason: string|undefined) {
     this._addToDb(ip, isSpam, antispam, reason)
 
     return { ip, isSpam, antispam, reason, date: this.todayStr }
   }
 
-  spamCheckToday(ip, antispam) {
+  spamCheckToday(ip: string, antispam: string) {
     if (!this.dbip[ip]) {
       return false
     } else if (!this.dbip[ip][antispam]) {
@@ -150,16 +151,16 @@ class ApacheData {
     }
   }
 
-  spamDetected(ip, reason, antispam) {
+  spamDetected(ip: string, reason: string, antispam: string) {
     return this._spamInformation(ip, true, antispam, reason)
   }
 
-  noSpam(ip, antispam) {
+  noSpam(ip: string, antispam: string) {
     return this._spamInformation(ip, false, antispam, undefined)
   }
 
-  _printSingle(users, spams, title, usersText, spamsText, from=false, print=(size)=>size) {
-    const composeText = (text, from) => {
+  _printSingle(users: number, spams: number, title: string, usersText: string, spamsText: string, from=false, print=(size: number): string=>size.toString()) {
+    const composeText = (text: string | undefined, from: string | undefined) => {
       let cText = `    ${text}`
       if (from) {
         cText += ` from ${from}`
@@ -170,8 +171,8 @@ class ApacheData {
       return cText
     }
     const percentageSpams = Math.round(100 * spams / (spams + users))
-    const uText = composeText(usersText, (from ? 'Real Users' : false))
-    const sText = composeText(spamsText, (from ? 'Spams' : false))
+    const uText = composeText(usersText, (from ? 'Real Users' : undefined))
+    const sText = composeText(spamsText, (from ? 'Spams' : undefined))
 
     console.log(title)
     console.log(`${uText}: ${print(users)}`)
@@ -181,7 +182,7 @@ class ApacheData {
   /**
    * Print statistics on logs
    */
-  print(options) {
+  print(options: OptionValues) {
     const statsConfig = options.config.stats
     const logsUsers = this.logs.filter(l => this.userIps.includes(l.remoteHost))
     const logsSpams = this.logs.filter(l => this.spamIps.includes(l.remoteHost))
@@ -191,7 +192,7 @@ class ApacheData {
     this._printSingle(this.userIps.length, this.spamIps.length, '- IPS:', '#Real Users', '#Spams')
     this._printSingle(logsUsers.length, logsSpams.length, '- Requests:', '#Requests', '#Requests', true)
 
-    const computeSize = (logs) => logs.reduce(
+    const computeSize = (logs: ApacheLineTypes[]) => logs.reduce(
       (partialSum, log) => {
         const current = parseInt(log.sizeCLF)
         return (isNaN(current)) ? partialSum : partialSum + current
@@ -212,7 +213,7 @@ class ApacheData {
    * and add them to the list this.spamIps
    * @param {Array.<string>} newSpamIps List of new ips detected as spam ip
    */
-  addSpamIps(newSpamIps) {
+  addSpamIps(newSpamIps: string[]) {
     if (newSpamIps.some(ip => this.spamIps.includes(ip))) {
       console.trace('ERROR: new spam ips already in spam')
       process.exit(-1)
@@ -223,7 +224,7 @@ class ApacheData {
     this.spamIps = [ ...this.spamIps, ...newSpamIps ]
   }
 
-  saveLogsUser(filename) {
+  saveLogsUser(filename: string) {
     const userLogs = this.logs.filter(log => this.userIps.includes(log.remoteHost))
     let text = ''
     userLogs.forEach(log => text = text + log.originalLine + '\n')

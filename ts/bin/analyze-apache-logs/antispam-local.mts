@@ -1,13 +1,17 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
+import { OptionValues } from "commander"
+import ApacheData from "./apache-data.mjs"
+import type { ApacheLineTypes, ApacheLineIndexTypes } from "./apache-data.mts"
+
 // data is the apache data from logs - see apache-data.mjs
 // db is the ip database - see db-ip.mjs
 
 const antispam = 'local'
 
 // return nb of secs from a time which is typically '26/Dec/2023:07:58:22 +0100'
-function _getNbSecs(time) {
+function _getNbSecs(time: string) {
   const fields = time.split(/[ :]/) // fields = [ '26/Dec/2023', '07', '58', '22', '+0100']
   return (parseInt(fields[1])*60 + parseInt(fields[2])) * 60 + parseInt(fields[3])
 }
@@ -22,16 +26,16 @@ function _getNbSecs(time) {
  * @param {Function} fctToCheck
  * @returns
  */
-function _checkLog(apacheData, requests, botsOnly, logField, textReason, fctToCheck) {
+function _checkLog(apacheData: ApacheData, requests: ApacheLineTypes[], botsOnly: any, logField: ApacheLineIndexTypes, textReason: string, fctToCheck: (logText: string, configText: string)=>boolean) {
   let logText
-  let configTexts = []
+  let configTexts: string[] = []
   Object.keys(botsOnly).forEach(key => {
     if (!key.startsWith('comments-')) {
       configTexts = [...configTexts, ...botsOnly[key]]
     }
   })
   if (requests.some(r => {
-    if (configTexts.some(configText => { logText = r[logField]; return fctToCheck(logText, configText) })) {
+    if (configTexts.some(configText => { let logText: string = r[logField] as string; return fctToCheck(logText, configText) })) {
       return true
     } else {
       return false
@@ -42,12 +46,12 @@ function _checkLog(apacheData, requests, botsOnly, logField, textReason, fctToCh
   return undefined
 }
 
-async function spamDetection(apacheData, options) {
+async function spamDetection(apacheData: ApacheData, options: OptionValues) {
   let spam=undefined
   const results = apacheData.userIps.map(ip => {
     let requests = apacheData.logs.filter((l) => (l.remoteHost === ip))
     if (options.config.local.get.excludes) {
-      requests = requests.filter(log => options.config.local.get.excludes.every(exclude => !log.request.startsWith('GET /' + exclude)))
+      requests = requests.filter(log => options.config.local.get.excludes.every((exclude: string) => !log.request.startsWith('GET /' + exclude)))
     }
     let reason = 'strange'
 
@@ -81,7 +85,7 @@ async function spamDetection(apacheData, options) {
     spam = _checkLog(
       apacheData, requests,
       options.config.local.get.botsOnly, 'request', 'Accessing a file indicating a bot or a spammer',
-      (logText, configText) => logText.startsWith('GET /' + configText))
+      (logText: string, configText: string) => logText.startsWith('GET /' + configText))
     if (spam !== undefined) {
       return spam
     }
@@ -90,7 +94,7 @@ async function spamDetection(apacheData, options) {
     spam = _checkLog(
       apacheData, requests,
       options.config.local.userAgent.botsOnly, 'RequestHeader User-Agent', 'User Agent indicates a bot or a spammer',
-      (logText, configText) => logText.toLowerCase().includes(configText.toLowerCase()))
+      (logText: string, configText: string) => logText.toLowerCase().includes(configText.toLowerCase()))
     if (spam !== undefined) {
       return spam
     }
