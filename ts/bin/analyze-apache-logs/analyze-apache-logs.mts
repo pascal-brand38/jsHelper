@@ -49,4 +49,27 @@ export async function analyzeApacheLogs() {
   await local.spamDetection(apacheData, options)
 
   apacheData.print(options)
+
+  // print error codes of real users
+  const logsUsers = apacheData.logs.filter(l => apacheData.userIps.includes(l.remoteHost))
+  const logsSpams = apacheData.logs.filter(l => apacheData.spamIps.includes(l.remoteHost))
+
+  const statusUsers: {[key: string]: string[]} = {}
+  logsUsers.forEach(log => {
+    if (statusUsers[log.status] === undefined) {
+      statusUsers[log.status] = [log.request]
+    } else {
+      statusUsers[log.status].push(log.request)
+    }
+  })
+  console.log('\n- Status codes of Real Users:')
+  Object.keys(statusUsers).forEach(status => {
+    if (!status.startsWith('2')) {
+      const uniqueStatus = new Set(statusUsers[status])
+      console.log(`    ${status}:`)
+      uniqueStatus.forEach(request => {
+        console.log(`        ${request}`)
+      })
+    }
+  })
 }
