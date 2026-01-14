@@ -80,9 +80,9 @@ class ApacheData {
     return this.logs.filter((log: ApacheLineTypes) => {
       if (log.remoteHost === ip) {
         // check for exclude
-        Object.keys(log).some((key: string) => {
+        return !Object.keys(log).some((key: string) => {
           const exclude: string[] = config[key]?.exclude ?? []
-          return (exclude).some((e:string) => log[key as keyof ApacheLineTypes])
+          return exclude.some((e:string) => log[key as keyof ApacheLineTypes].includes(e))
         })
       } else {
         return false
@@ -109,6 +109,28 @@ class ApacheData {
       return 3    // a spam, so stop immediatly
     }
 
+    if ((result === 1) && (config.request.routes && config.request.routes.length!==0)) {
+      // if no user route is used, then this is at least a bot
+      if (!logs.some((l: ApacheLineTypes) => config.request.routes.some((route: string) => l['request'].includes(route)))) {
+        result = 2
+      }
+    }
+
+    // check if it is a spam, using the config.xxx.spam
+    if (logs.some(log => Object.keys(log).some((key: string) => {
+          const spam: string[] = config[key]?.spam ?? []
+          return spam.some((e:string) => log[key as keyof ApacheLineTypes].includes(e))
+        })))
+        return 3
+
+    // check if it is a bot
+    if ((result === 1) && (logs.some(log => Object.keys(log).some((key: string) => {
+          const bot: string[] = config[key]?.bot ?? []
+          return bot.some((e:string) => log[key as keyof ApacheLineTypes].includes(e))
+        }))))
+        result = 2
+
+
     return result
   }
 
@@ -134,37 +156,6 @@ class ApacheData {
   }
 
 
-  //   // spam no request to a html file succeeds
-  //   if (requests.every(r => {
-  //     if ((r.status === '200') && (r.request.startsWith('GET '))) {
-  //       const v = r.request.split(' ')
-  //       const page = v[1].split('?')
-  //       if ((page[0] === '/') || (page[0].endsWith('html'))) {
-  //         return false
-  //       }
-  //     }
-  //     return true
-  //   })) {
-  //     return apacheData.spamDetected(ip, 'no html requests succeed', antispam)
-  //   }
-
-  //   // check access to files reserved for bots
-  //   spam = _checkLog(
-  //     apacheData, requests,
-  //     options.config.local.get.botsOnly, 'request', 'Accessing a file indicating a bot or a spammer',
-  //     (logText: string, configText: string) => logText.startsWith('GET /' + configText))
-  //   if (spam !== undefined) {
-  //     return spam
-  //   }
-
-  //   // check forbidden keywords in user agent
-  //   spam = _checkLog(
-  //     apacheData, requests,
-  //     options.config.local.userAgent.botsOnly, 'RequestHeader User-Agent', 'User Agent indicates a bot or a spammer',
-  //     (logText: string, configText: string) => logText.toLowerCase().includes(configText.toLowerCase()))
-  //   if (spam !== undefined) {
-  //     return spam
-  //   }
 
 
   //   // spam when requesting a wrong page, or robots,...

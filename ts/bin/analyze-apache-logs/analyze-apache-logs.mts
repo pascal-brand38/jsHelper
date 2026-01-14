@@ -71,4 +71,9 @@ export async function analyzeApacheLogs() {
       })
     }
   })
+
+  console.log()
+  console.log(`#users: ${apacheData.ips['user'].length}`)
+  console.log(`#bots:  ${apacheData.ips['bot'].length}`)
+  console.log(`#spams: ${apacheData.ips['spam'].length}`)
 }

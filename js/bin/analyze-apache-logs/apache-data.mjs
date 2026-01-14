@@ -50,9 +50,9 @@ class ApacheData {
         return this.logs.filter((log) => {
             if (log.remoteHost === ip) {
                 // check for exclude
-                Object.keys(log).some((key) => {
+                return !Object.keys(log).some((key) => {
                     const exclude = config[key]?.exclude ?? [];
-                    return (exclude).some((e) => log[key]);
+                    return exclude.some((e) => log[key].includes(e));
                 });
             }
             else {
@@ -76,6 +76,24 @@ class ApacheData {
         if (logs.some((l) => l['RequestHeader User-Agent'] !== ua)) {
             return 3; // a spam, so stop immediatly
         }
+        if ((result === 1) && (config.request.routes && config.request.routes.length !== 0)) {
+            // if no user route is used, then this is at least a bot
+            if (!logs.some((l) => config.request.routes.some((route) => l['request'].includes(route)))) {
+                result = 2;
+            }
+        }
+        // check if it is a spam, using the config.xxx.spam
+        if (logs.some(log => Object.keys(log).some((key) => {
+            const spam = config[key]?.spam ?? [];
+            return spam.some((e) => log[key].includes(e));
+        })))
+            return 3;
+        // check if it is a bot
+        if ((result === 1) && (logs.some(log => Object.keys(log).some((key) => {
+            const bot = config[key]?.bot ?? [];
+            return bot.some((e) => log[key].includes(e));
+        }))))
+            result = 2;
         return result;
     }
     /**
