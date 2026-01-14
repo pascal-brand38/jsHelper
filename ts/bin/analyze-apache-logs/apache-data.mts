@@ -130,6 +130,17 @@ class ApacheData {
         }))))
         result = 2
 
+    // special rules
+    if (config.special) {
+      if (config.special['get php files']) {
+        // no /GET of php files, otherwise is a spam
+        if (logs.some(log => {
+          const req = log.request.split(' ')
+          return ((req[0] === 'GET') && (req[1].endsWith('.php') || req[1].includes('.php?')))
+        }))
+          return 3
+      }
+    }
 
     return result
   }
