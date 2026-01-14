@@ -15,54 +15,21 @@ export interface ApacheLineTypes {
 }
 declare class ApacheData {
     logs: ApacheLineTypes[];
-    userIps: string[];
-    spamIps: string[];
-    dbip: any;
-    todayStr: string;
+    ips: {
+        [key: string]: string[];
+    };
     constructor();
     /**
      * Read all log files, and populates this.logs
      * @param {Array.<string>} logFilenames
      */
     readLogs(logFilenames: string[]): void;
+    /** return all logs related to an IP, excluding some of them that are in the JSON configuration */
+    getLogsforIp(ip: string, config: any): ApacheLineTypes[];
+    categoriesIp(ip: string, logs: ApacheLineTypes[], config: any): number;
     /**
-     * Populate this.userIps and this.spamIps using this.logs and this.dbip
+     * Populate ips, that is ips['all'], ips['user'], ips['bot'], and ips['spam']
      */
-    populateIps(): void;
-    _addToDb(ip: string, isSpam: boolean, antispam: string, reason: string | undefined): void;
-    _spamInformation(ip: string, isSpam: boolean, antispam: string, reason: string | undefined): {
-        ip: string;
-        isSpam: boolean;
-        antispam: string;
-        reason: string | undefined;
-        date: string;
-    };
-    spamCheckToday(ip: string, antispam: string): boolean;
-    spamDetected(ip: string, reason: string, antispam: string): {
-        ip: string;
-        isSpam: boolean;
-        antispam: string;
-        reason: string | undefined;
-        date: string;
-    };
-    noSpam(ip: string, antispam: string): {
-        ip: string;
-        isSpam: boolean;
-        antispam: string;
-        reason: string | undefined;
-        date: string;
-    };
-    _printSingle(users: number, spams: number, title: string, usersText: string, spamsText: string, from?: boolean, print?: (size: number) => string): void;
-    /**
-     * Print statistics on logs
-     */
-    print(options: OptionValues): void;
-    /**
-     * Knowing new ips are spam, remove them from the list this.userIps,
-     * and add them to the list this.spamIps
-     * @param {Array.<string>} newSpamIps List of new ips detected as spam ip
-     */
-    addSpamIps(newSpamIps: string[]): void;
-    saveLogsUser(filename: string): void;
+    populateIps(options: OptionValues): void;
 }
 export default ApacheData;

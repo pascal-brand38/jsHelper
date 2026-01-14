@@ -25,29 +25,14 @@ export interface ApacheLineTypes {
   'RequestHeader User-Agent': string  // 'RequestHeader User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:43.0) Gecko/20100101 Firefox/43.0'
 }
 
+type ipCategoryType = 'all' | 'user' | 'bot' | 'spam'
 class ApacheData {
   logs: ApacheLineTypes[]
-  userIps: string[]
-  spamIps: string[]
-  dbip: any
-  todayStr: string
+  ips: { [key: string]: string[] }    // keys are of type ipCategoryType
 
   constructor() {
     this.logs = []
-
-    /**
-     * list of IPs considered as coming from real users (not spam)
-     * @type {Array.<string>}
-     */
-    this.userIps = []
-
-    /**
-     * list of IPs considered as spams (bots, phishing,...)
-     * @type {Array.<string>}
-     */
-    this.spamIps = []             // list of IPs considered as spams
-    this.dbip = {}
-    this.todayStr = DateTime.fromNowStartOfDay().toFormat('d/M/y')
+    this.ips = { all: [], user: [], bot: [], spam: [] }
   }
 
   /**
@@ -90,149 +75,137 @@ class ApacheData {
     }
   }
 
-  /**
-   * Populate this.userIps and this.spamIps using this.logs and this.dbip
-   */
-  populateIps() {
-    // populate this.userIps with all known ips, and spamIps to the empty list
-    let setUnique = new Set(this.logs.map(function(a) {return a.remoteHost;}))
-    this.userIps = [ ...setUnique ].sort()
-    this.spamIps = []
-
-    if (!this.dbip) {
-      return
-    }
-
-    // get all spams from the db
-    let newSpamIps: string[] = []
-    this.userIps.forEach(ip => {
-      if (this.dbip[ip]) {
-        const antispams =  Object.keys(this.dbip[ip])
-        if (antispams.some(s => this.dbip[ip][s].isSpam)) {
-          newSpamIps.push(ip)
-        }
-      }
-    });
-
-    // populate this.spamIps, and remove these ips from this.userIps
-    this.addSpamIps(newSpamIps)
-  }
-
-  _addToDb(ip: string, isSpam: boolean, antispam: string, reason: string|undefined) {
-    const value = { isSpam: isSpam, reason: reason, date: this.todayStr }
-    if (this.dbip[ip] === undefined) {
-      this.dbip[ip] = {}
-    }
-    if (this.dbip[ip][antispam] === undefined) {
-      this.dbip[ip][antispam] = value
-    } else {
-      assert.equal(this.dbip[ip][antispam].isSpam, false)   // we add to db only the ones that are not already detected as spam
-      if (isSpam) {
-        this.dbip[ip][antispam] = value
+  /** return all logs related to an IP, excluding some of them that are in the JSON configuration */
+  getLogsforIp(ip: string, config: any): ApacheLineTypes[] {
+    return this.logs.filter((log: ApacheLineTypes) => {
+      if (log.remoteHost === ip) {
+        // check for exclude
+        Object.keys(log).some((key: string) => {
+          const exclude: string[] = config[key]?.exclude ?? []
+          return (exclude).some((e:string) => log[key as keyof ApacheLineTypes])
+        })
       } else {
-        this.dbip[ip][antispam].date = this.todayStr
+        return false
       }
+    })
+  }
+
+  // return 1 for user, 2 for bot, and 3 for spam
+  categoriesIp(ip:string, logs: ApacheLineTypes[], config: any): number {
+    let result = 1
+    if (logs.length === 0) {
+      return 1    // this is a user, with the mail signature being addressed
     }
-  }
 
-  _spamInformation(ip: string, isSpam: boolean, antispam: string, reason: string|undefined) {
-    this._addToDb(ip, isSpam, antispam, reason)
-
-    return { ip, isSpam, antispam, reason, date: this.todayStr }
-  }
-
-  spamCheckToday(ip: string, antispam: string) {
-    if (!this.dbip[ip]) {
-      return false
-    } else if (!this.dbip[ip][antispam]) {
-      return false
-    } else {
-      return this.dbip[ip][antispam].date === this.todayStr
+    if (logs.length <= 2) {
+      // TODO: weak
+      result = 2
     }
-  }
 
-  spamDetected(ip: string, reason: string, antispam: string) {
-    return this._spamInformation(ip, true, antispam, reason)
-  }
-
-  noSpam(ip: string, antispam: string) {
-    return this._spamInformation(ip, false, antispam, undefined)
-  }
-
-  _printSingle(users: number, spams: number, title: string, usersText: string, spamsText: string, from=false, print=(size: number): string=>size.toString()) {
-    const composeText = (text: string | undefined, from: string | undefined) => {
-      let cText = `    ${text}`
-      if (from) {
-        cText += ` from ${from}`
-      }
-      while (cText.length <= 30) {
-        cText += '.'
-      }
-      return cText
+    // same user-agent? if not, this is a spam => stop immediately
+    // note different user-agent may occur when the user is looking with google and then with firefox, which may be rare enough
+    const ua = logs[0]['RequestHeader User-Agent']
+    if (logs.some((l: ApacheLineTypes) => l['RequestHeader User-Agent'] !== ua)) {
+      return 3    // a spam, so stop immediatly
     }
-    const percentageSpams = Math.round(100 * spams / (spams + users))
-    const uText = composeText(usersText, (from ? 'Real Users' : undefined))
-    const sText = composeText(spamsText, (from ? 'Spams' : undefined))
 
-    console.log(title)
-    console.log(`${uText}: ${print(users)}`)
-    console.log(`${sText}: ${print(spams)} (${percentageSpams}%)`)
+    return result
   }
 
   /**
-   * Print statistics on logs
+   * Populate ips, that is ips['all'], ips['user'], ips['bot'], and ips['spam']
    */
-  print(options: OptionValues) {
-    const statsConfig = options.config.stats
-    const logsUsers = this.logs.filter(l => this.userIps.includes(l.remoteHost))
-    const logsSpams = this.logs.filter(l => this.spamIps.includes(l.remoteHost))
+  populateIps(options: OptionValues) {
+    const config = options.config
+    let setUnique = new Set(this.logs.map(function(a) {return a.remoteHost;}))
+    this.ips['all'] = [ ...setUnique ].sort()
 
-    console.log(`\nStatistics (considering bots, phishing... as spams):`)
+    // array of 1, 2 or 3, 1 for user, 2 for bot, and 3 for spam
+    this.ips['all'].forEach((ip: string) => {
+      const logs: ApacheLineTypes[] = this.getLogsforIp(ip, config)
+      const result = this.categoriesIp(ip, logs, config)
+      switch (result) {
+        case 1: this.ips['user'].push(ip); break;
+        case 2: this.ips['bot'].push(ip); break;
+        case 3: this.ips['spam'].push(ip); break;
+      }
+    })
 
-    this._printSingle(this.userIps.length, this.spamIps.length, '- IPS:', '#Real Users', '#Spams')
-    this._printSingle(logsUsers.length, logsSpams.length, '- Requests:', '#Requests', '#Requests', true)
-
-    const computeSize = (logs: ApacheLineTypes[]) => logs.reduce(
-      (partialSum, log) => {
-        const current = parseInt(log.sizeCLF)
-        return (isNaN(current)) ? partialSum : partialSum + current
-      },
-      0
-    )
-    this._printSingle(computeSize(logsUsers), computeSize(logsSpams), '- Sizes:', '#Sizes', '#Sizes', true, helperJs.utils.beautifulSize)
-
-    if (statsConfig && statsConfig['contact-post']) {
-      const logUsersContact = logsUsers.filter(l => (l['request'].startsWith(statsConfig['contact-post'])))
-      const logSpamsContact = logsSpams.filter(l => (l['request'].startsWith(statsConfig['contact-post'])))
-      this._printSingle(logUsersContact.length, logSpamsContact.length, '- Requests:', '#Contact', '#Contact', true)
-    }
   }
 
-  /**
-   * Knowing new ips are spam, remove them from the list this.userIps,
-   * and add them to the list this.spamIps
-   * @param {Array.<string>} newSpamIps List of new ips detected as spam ip
-   */
-  addSpamIps(newSpamIps: string[]) {
-    if (newSpamIps.some(ip => this.spamIps.includes(ip))) {
-      console.trace('ERROR: new spam ips already in spam')
-      process.exit(-1)
-    }
-    this.userIps = this.userIps.filter(ip =>
-      (ip !== '0.0.0.0') && (!newSpamIps.some(spamip => (ip === spamip)))
-    )
-    this.spamIps = [ ...this.spamIps, ...newSpamIps ]
-  }
 
-  saveLogsUser(filename: string) {
-    const userLogs = this.logs.filter(log => this.userIps.includes(log.remoteHost))
-    let text = ''
-    userLogs.forEach(log => text = text + log.originalLine + '\n')
-    fs.writeFileSync(filename, text)
-  }
+  //   // spam no request to a html file succeeds
+  //   if (requests.every(r => {
+  //     if ((r.status === '200') && (r.request.startsWith('GET '))) {
+  //       const v = r.request.split(' ')
+  //       const page = v[1].split('?')
+  //       if ((page[0] === '/') || (page[0].endsWith('html'))) {
+  //         return false
+  //       }
+  //     }
+  //     return true
+  //   })) {
+  //     return apacheData.spamDetected(ip, 'no html requests succeed', antispam)
+  //   }
 
+  //   // check access to files reserved for bots
+  //   spam = _checkLog(
+  //     apacheData, requests,
+  //     options.config.local.get.botsOnly, 'request', 'Accessing a file indicating a bot or a spammer',
+  //     (logText: string, configText: string) => logText.startsWith('GET /' + configText))
+  //   if (spam !== undefined) {
+  //     return spam
+  //   }
+
+  //   // check forbidden keywords in user agent
+  //   spam = _checkLog(
+  //     apacheData, requests,
+  //     options.config.local.userAgent.botsOnly, 'RequestHeader User-Agent', 'User Agent indicates a bot or a spammer',
+  //     (logText: string, configText: string) => logText.toLowerCase().includes(configText.toLowerCase()))
+  //   if (spam !== undefined) {
+  //     return spam
+  //   }
+
+
+  //   // spam when requesting a wrong page, or robots,...
+  //   if (requests.some((r, index) => {
+  //     // immediate post
+  //     if (r.request.startsWith('POST ') && (index >= 1)) {
+  //       const secsPrev = _getNbSecs(requests[index-1].time)
+  //       const secs = _getNbSecs(r.time)
+
+  //       if (secs - secsPrev < 10) {   // less than 10secs between the page arrives, and the post
+  //         reason = 'immediate post contact form'
+  //         return true
+  //       }
+  //     }
+
+  //     return false
+  //   })) {
+  //     return apacheData.spamDetected(ip, reason, antispam)
+  //   }
+
+
+  // }
 
   // private methods
 }
 
 export default ApacheData
+
+
+/*
+Statistics (considering bots, phishing... as spams):
+- IPS:
+    #Real Users................: 64
+    #Spams.....................: 917 (93%)
+- Requests:
+    #Requests from Real Users..: 1451
+    #Requests from Spams.......: 6918 (83%)
+- Sizes:
+    #Sizes from Real Users.....: 43.73MB
+    #Sizes from Spams..........: 107.03MB (71%)
+- Requests:
+    #Contact from Real Users...: 0
+    #Contact from Spams........: 24 (100%)
+*/

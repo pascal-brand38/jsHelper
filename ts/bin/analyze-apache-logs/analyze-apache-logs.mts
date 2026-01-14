@@ -9,7 +9,6 @@ import * as url from 'url';
 import { program } from 'commander'
 import type { OptionValues } from 'commander'
 import ApacheData  from './apache-data.mjs'
-import local from './antispam-local.mjs'
 
 function _readConfig(options: OptionValues) {
   const configText = fs.readFileSync(options.config)
@@ -44,15 +43,15 @@ export async function analyzeApacheLogs() {
 
   const apacheData = new ApacheData()
   apacheData.readLogs(logs)
-  apacheData.populateIps()
+  apacheData.populateIps(options)
 
-  await local.spamDetection(apacheData, options)
+  // await local.spamDetection(apacheData, options)
 
-  apacheData.print(options)
+  // apacheData.print(options)
 
-  // print error codes of real users
-  const logsUsers = apacheData.logs.filter(l => apacheData.userIps.includes(l.remoteHost))
-  const logsSpams = apacheData.logs.filter(l => apacheData.spamIps.includes(l.remoteHost))
+  // // print error codes of real users
+  const logsUsers = apacheData.logs.filter(l => apacheData.ips['user'].includes(l.remoteHost))
+  // const logsSpams = apacheData.logs.filter(l => apacheData.spamIps.includes(l.remoteHost))
 
   const statusUsers: {[key: string]: string[]} = {}
   logsUsers.forEach(log => {

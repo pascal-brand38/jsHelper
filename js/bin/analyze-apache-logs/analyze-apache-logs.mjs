@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import * as url from 'url';
 import { program } from 'commander';
 import ApacheData from './apache-data.mjs';
-import local from './antispam-local.mjs';
 function _readConfig(options) {
     const configText = fs.readFileSync(options.config);
     options.config = JSON.parse(configText.toString());
@@ -29,12 +28,12 @@ export async function analyzeApacheLogs() {
     const { options, logs } = getArgs(process.argv);
     const apacheData = new ApacheData();
     apacheData.readLogs(logs);
-    apacheData.populateIps();
-    await local.spamDetection(apacheData, options);
-    apacheData.print(options);
-    // print error codes of real users
-    const logsUsers = apacheData.logs.filter(l => apacheData.userIps.includes(l.remoteHost));
-    const logsSpams = apacheData.logs.filter(l => apacheData.spamIps.includes(l.remoteHost));
+    apacheData.populateIps(options);
+    // await local.spamDetection(apacheData, options)
+    // apacheData.print(options)
+    // // print error codes of real users
+    const logsUsers = apacheData.logs.filter(l => apacheData.ips['user'].includes(l.remoteHost));
+    // const logsSpams = apacheData.logs.filter(l => apacheData.spamIps.includes(l.remoteHost))
     const statusUsers = {};
     logsUsers.forEach(log => {
         if (statusUsers[log.status] === undefined) {
