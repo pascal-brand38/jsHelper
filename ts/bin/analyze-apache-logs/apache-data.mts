@@ -118,17 +118,20 @@ class ApacheData {
 
     // check if it is a spam, using the config.xxx.spam
     if (logs.some(log => Object.keys(log).some((key: string) => {
+          // console.log(key, log[key as keyof ApacheLineTypes])
           const spam: string[] = config[key]?.spam ?? []
           return spam.some((e:string) => log[key as keyof ApacheLineTypes].includes(e))
-        })))
+        }))) {
         return 3
+    }
 
     // check if it is a bot
     if ((result === 1) && (logs.some(log => Object.keys(log).some((key: string) => {
           const bot: string[] = config[key]?.bot ?? []
           return bot.some((e:string) => log[key as keyof ApacheLineTypes].includes(e))
-        }))))
+        })))) {
         result = 2
+    }
 
     // special rules
     if (config.special) {
@@ -137,8 +140,9 @@ class ApacheData {
         if (logs.some(log => {
           const req = log.request.split(' ')
           return ((req[0] === 'GET') && (req[1].endsWith('.php') || req[1].includes('.php?')))
-        }))
+        })) {
           return 3
+        }
       }
     }
 
