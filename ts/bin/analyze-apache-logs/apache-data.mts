@@ -163,51 +163,7 @@ class ApacheData {
         case 3: this.ips['spam'].push(ip); break;
       }
     })
-
   }
-
-
-
-
-  //   // spam when requesting a wrong page, or robots,...
-  //   if (requests.some((r, index) => {
-  //     // immediate post
-  //     if (r.request.startsWith('POST ') && (index >= 1)) {
-  //       const secsPrev = _getNbSecs(requests[index-1].time)
-  //       const secs = _getNbSecs(r.time)
-
-  //       if (secs - secsPrev < 10) {   // less than 10secs between the page arrives, and the post
-  //         reason = 'immediate post contact form'
-  //         return true
-  //       }
-  //     }
-
-  //     return false
-  //   })) {
-  //     return apacheData.spamDetected(ip, reason, antispam)
-  //   }
-
-
-  // }
-
-  // private methods
 }
 
 export default ApacheData
-
-
-/*
-Statistics (considering bots, phishing... as spams):
-- IPS:
-    #Real Users................: 64
-    #Spams.....................: 917 (93%)
-- Requests:
-    #Requests from Real Users..: 1451
-    #Requests from Spams.......: 6918 (83%)
-- Sizes:
-    #Sizes from Real Users.....: 43.73MB
-    #Sizes from Spams..........: 107.03MB (71%)
-- Requests:
-    #Contact from Real Users...: 0
-    #Contact from Spams........: 24 (100%)
-*/

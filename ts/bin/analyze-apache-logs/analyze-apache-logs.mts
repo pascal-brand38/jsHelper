@@ -43,14 +43,8 @@ export async function analyzeApacheLogs() {
   apacheData.readLogs(logs)
   apacheData.populateIps(options)
 
-  // await local.spamDetection(apacheData, options)
-
-  // apacheData.print(options)
-
   // // print error codes of real users
   const logsUsers = apacheData.logs.filter(l => apacheData.ips['user'].includes(l.remoteHost))
-  // const logsSpams = apacheData.logs.filter(l => apacheData.spamIps.includes(l.remoteHost))
-
   const statusUsers: {[key: string]: string[]} = {}
   logsUsers.forEach(log => {
     if (statusUsers[log.status] === undefined) {

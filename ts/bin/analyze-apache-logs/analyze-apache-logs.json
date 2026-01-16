@@ -6,7 +6,7 @@
   "time": {},
   "request": {
     "comment": [
-      "exclude: list of request not to take into account",
+      "exclude: list of request not to take into account"
     ],
     "exclude": [ ],
     "bot": [ ],
