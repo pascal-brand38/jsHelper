@@ -3,22 +3,21 @@
 // Copyright (c) Pascal Brand
 // MIT License
 
-import * as path from 'path'
 import * as fs from 'fs'
-import * as url from 'url';
 import { program } from 'commander'
 import type { OptionValues } from 'commander'
 import ApacheData  from './apache-data.mjs'
 
 function _readConfig(options: OptionValues) {
-  const configText = fs.readFileSync(options.config)
-  options.config = JSON.parse(configText.toString())
+  if (options.config) {
+    const configText = fs.readFileSync(options.config)
+    options.config = JSON.parse(configText.toString())
+  } else {
+    options.config = {}
+  }
 }
 
 function getArgs(argv: string[]): OptionValues {
-  const __filename = url.fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
   program
     .name('analyze-apache-logs')
     .usage('node analyze-apache-logs <options>')
@@ -26,8 +25,7 @@ function getArgs(argv: string[]): OptionValues {
     .arguments('<log-files...>')
     .option(
       '--config <path>',
-      'Config json file. Default is analyze-apache-logs.json',
-      path.join(__dirname, 'analyze-apache-logs', 'analyze-apache-logs.json')
+      'Config json file. Default is analyze-apache-logs.json'
     );
 
   program.parse()

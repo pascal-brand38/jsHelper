@@ -3,7 +3,6 @@
 // @ts-ignore
 import Alpine from 'alpine'; // Apache Log Parser
 import * as fs from 'fs';
-import '../../extend/luxon.mjs';
 class ApacheData {
     constructor() {
         this.logs = [];
@@ -90,7 +89,6 @@ class ApacheData {
         }))) {
             return 3;
         }
-        // throw 'ERR'
         // check if it is a bot
         if ((result === 1) && (logs.some(log => Object.keys(log).some((key) => {
             const bot = config[key]?.bot ?? [];

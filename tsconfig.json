@@ -23,7 +23,7 @@
     // "module": "NodeNext"
     "module": "ES2022",
 
-
+    "skipLibCheck": true,
   },
   "include": ["./ts/**/*.mts"],
   "exclude": ["*.mjs" ]

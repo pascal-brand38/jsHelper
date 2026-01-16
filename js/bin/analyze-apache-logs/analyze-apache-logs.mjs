@@ -1,24 +1,25 @@
 #!/usr/bin/env node
 // Copyright (c) Pascal Brand
 // MIT License
-import * as path from 'path';
 import * as fs from 'fs';
-import * as url from 'url';
 import { program } from 'commander';
 import ApacheData from './apache-data.mjs';
 function _readConfig(options) {
-    const configText = fs.readFileSync(options.config);
-    options.config = JSON.parse(configText.toString());
+    if (options.config) {
+        const configText = fs.readFileSync(options.config);
+        options.config = JSON.parse(configText.toString());
+    }
+    else {
+        options.config = {};
+    }
 }
 function getArgs(argv) {
-    const __filename = url.fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
     program
         .name('analyze-apache-logs')
         .usage('node analyze-apache-logs <options>')
         .description('Analyze apache logs')
         .arguments('<log-files...>')
-        .option('--config <path>', 'Config json file. Default is analyze-apache-logs.json', path.join(__dirname, 'analyze-apache-logs', 'analyze-apache-logs.json'));
+        .option('--config <path>', 'Config json file. Default is analyze-apache-logs.json');
     program.parse();
     const options = program.opts();
     _readConfig(options);

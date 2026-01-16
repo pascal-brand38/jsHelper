@@ -4,10 +4,6 @@
 // @ts-ignore
 import Alpine from 'alpine'   // Apache Log Parser
 import * as fs from 'fs'
-import { DateTime } from 'luxon'
-import '../../extend/luxon.mjs'
-import helperJs from '../../helpers/helperJs.mjs'
-import * as assert from 'node:assert';
 import { OptionValues } from 'commander';
 
 export type ApacheLineIndexTypes = 'originalLine' | 'remoteHost' | 'logname' | 'remoteUser' | 'time' | 'request' | 'status' | 'sizeCLF' | 'RequestHeader Referer' | 'RequestHeader User-Agent'
