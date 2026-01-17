@@ -832,7 +832,7 @@ const priceDay1Room = priceDay[0][0].price
 // from this date, we are "almost" sure this is a booking with the new prices
 // we had few bookings after this date with the old price, but they
 // are with cats with medecine. So checking the price is not really a problem.
-const serialSureNewPrice = DateTime.fromFormatStartOfDay('01/02/2026')
+const serialSureNewPrice = DateTime.fromFormatStartOfDay('01/02/2026').toExcelSerial()
 
 // Check the data in compta is coherent with respect to the previous one
 // - deposit asking, or not
