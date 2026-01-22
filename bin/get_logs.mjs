@@ -92,6 +92,10 @@ for (let year = options.firstYear; year <= currentYear && !abort; year++) {
         const cmd = `curl --no-clobber -k -s -O -u ${options.login}:${password} ${url}/${remoteDir}/${file}.gz && gzip -d ${file}.gz && mv ${file} ${localDir}/`
         const code = shell.exec(cmd)
         if (code.code !== 0) {
+          if (fs.existsSync(`${file}.gz`)) {
+            fs.unlinkSync(`${file}.gz`)
+          }
+
           console.error('Error executing command:', cmd)
           console.log('ABORTING further downloads.')
           abort = true
