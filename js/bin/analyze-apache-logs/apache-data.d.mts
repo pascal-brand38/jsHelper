@@ -30,5 +30,6 @@ declare class ApacheData {
      * Populate ips, that is ips['all'], ips['user'], ips['bot'], and ips['spam']
      */
     populateIps(options: OptionValues): void;
+    print(options: OptionValues): void;
 }
 export default ApacheData;

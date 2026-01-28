@@ -96,4 +96,7 @@ export async function analyzeApacheLogs() {
     })
   })
   console.log()
+
+  apacheData.print(options)
+
 }

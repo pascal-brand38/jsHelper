@@ -5,6 +5,7 @@
 import Alpine from 'alpine'   // Apache Log Parser
 import * as fs from 'fs'
 import { OptionValues } from 'commander';
+import { log } from 'util';
 
 export type ApacheLineIndexTypes = 'originalLine' | 'remoteHost' | 'logname' | 'remoteUser' | 'time' | 'request' | 'status' | 'sizeCLF' | 'RequestHeader Referer' | 'RequestHeader User-Agent'
 
@@ -162,6 +163,52 @@ class ApacheData {
         case 2: this.ips['bot'].push(ip); break;
         case 3: this.ips['spam'].push(ip); break;
       }
+    })
+  }
+
+  print(options: OptionValues) {
+    const config = options.config
+    if (!config.print) {
+      return
+    }
+
+    Object.keys(config.print).forEach((ipCategory: string) => {
+      console.log(`\n- IPs category: ${ipCategory}`)
+      const configPrint = config.print[ipCategory]
+      const ips = this.ips[ipCategory]
+      if (!ips || ips.length===0) {
+        console.log('    (no IPs)')
+        return
+      }
+
+      const logs = this.logs.filter(l => ips.includes(l.remoteHost))
+      const statusRequest: { [status: string]: {[request: string]: number} } = {}
+      logs.forEach((log: ApacheLineTypes) => {
+        if (configPrint.excludeStatus && configPrint.excludeStatus.includes(log.status)) {
+          return
+        }
+        if (configPrint.request && configPrint.request.every((r: string) => !log['request'].includes(r))) {
+          return
+        }
+
+        const status = log['status']
+        const request = log['request']
+        if (statusRequest[status] === undefined) {
+          statusRequest[status] = {}
+        }
+        if (statusRequest[status][request] === undefined) {
+          statusRequest[status][request] = 0
+        }
+        statusRequest[status][request]++
+      })
+
+      Object.keys(statusRequest).forEach(status => {
+        console.log(`    Status ${status}:`)
+        Object.keys(statusRequest[status]).forEach(request => {
+          console.log(`        #${statusRequest[status][request]}: ${request}`)
+        })
+      })
+      console.log()
     })
   }
 }
