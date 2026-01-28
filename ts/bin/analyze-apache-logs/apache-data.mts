@@ -175,6 +175,7 @@ class ApacheData {
     Object.keys(config.print).forEach((ipCategory: string) => {
       console.log(`\n- IPs category: ${ipCategory}`)
       const configPrint = config.print[ipCategory]
+      console.log(configPrint)
       const ips = this.ips[ipCategory]
       if (!ips || ips.length===0) {
         console.log('    (no IPs)')
@@ -185,9 +186,20 @@ class ApacheData {
       const statusRequest: { [status: string]: {[request: string]: number} } = {}
       logs.forEach((log: ApacheLineTypes) => {
         if (configPrint.excludeStatus && configPrint.excludeStatus.includes(log.status)) {
+          // in the status exclude list ==> skip
           return
         }
-        if (configPrint.request && configPrint.request.every((r: string) => !log['request'].includes(r))) {
+
+        // if one key is not correct, then skip it
+        if (Object.keys(log).some((key: string) => {
+          // return true to skip this log, and false to keep it
+          if (!configPrint[key]) {
+            // if no config for this key, then we don't filter on it
+            return false
+          }
+          // return false if one of the configPrint[key] is in the log[key]
+          return !(configPrint[key].some((r: string) => log[key as keyof ApacheLineTypes].includes(r)))
+        })) {
           return
         }
 
