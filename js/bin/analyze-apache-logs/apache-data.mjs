@@ -136,18 +136,3 @@ class ApacheData {
     }
 }
 export default ApacheData;
-/*
-Statistics (considering bots, phishing... as spams):
-- IPS:
-    #Real Users................: 64
-    #Spams.....................: 917 (93%)
-- Requests:
-    #Requests from Real Users..: 1451
-    #Requests from Spams.......: 6918 (83%)
-- Sizes:
-    #Sizes from Real Users.....: 43.73MB
-    #Sizes from Spams..........: 107.03MB (71%)
-- Requests:
-    #Contact from Real Users...: 0
-    #Contact from Spams........: 24 (100%)
-*/

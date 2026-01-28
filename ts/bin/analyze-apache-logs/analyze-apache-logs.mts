@@ -6,7 +6,7 @@
 import * as fs from 'fs'
 import { program } from 'commander'
 import type { OptionValues } from 'commander'
-import ApacheData  from './apache-data.mjs'
+import ApacheData, { ApacheLineTypes }  from './apache-data.mjs'
 
 function _readConfig(options: OptionValues) {
   if (options.config) {
@@ -68,4 +68,32 @@ export async function analyzeApacheLogs() {
   console.log(`#users: ${apacheData.ips['user'].length}`)
   console.log(`#bots:  ${apacheData.ips['bot'].length}`)
   console.log(`#spams: ${apacheData.ips['spam'].length}`)
+
+  console.log()
+  const logsAll = apacheData.logs
+  const requests = [
+    "GET /sitemap",
+  ]
+  const statusRequest: { [request: string]: {[status: string]: number} } = {}
+  logsAll.forEach((log: ApacheLineTypes) => {
+    if (requests.some(request => log['request'].includes(request))) {
+      const request = log['request']
+      if (statusRequest[request] === undefined) {
+        statusRequest[request] = {}
+      }
+      const status = log['status']
+      if (statusRequest[request][status] === undefined) {
+        statusRequest[request][status] = 0
+      }
+      statusRequest[request][status]++
+    }
+  })
+  console.log('- Status codes for sitemap requests:')
+  Object.keys(statusRequest).forEach(request => {
+    console.log(`    ${request}:`)
+    Object.keys(statusRequest[request]).forEach(status => {
+      console.log(`        ${status}: ${statusRequest[request][status]}`)
+    })
+  })
+  console.log()
 }
