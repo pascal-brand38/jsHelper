@@ -163,7 +163,15 @@ class ApacheData {
                         return false;
                     }
                     // return false if one of the configPrint[key] is in the log[key]
-                    return !(configPrint[key].some((r) => log[key].includes(r)));
+                    return !(configPrint[key].some((r) => {
+                        if (r.startsWith('!')) {
+                            // negative match
+                            return !log[key].includes(r.substring(1));
+                        }
+                        else {
+                            return log[key].includes(r);
+                        }
+                    }));
                 })) {
                     return;
                 }

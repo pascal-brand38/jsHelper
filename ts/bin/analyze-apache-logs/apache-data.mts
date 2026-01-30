@@ -198,7 +198,14 @@ class ApacheData {
             return false
           }
           // return false if one of the configPrint[key] is in the log[key]
-          return !(configPrint[key].some((r: string) => log[key as keyof ApacheLineTypes].includes(r)))
+          return !(configPrint[key].some((r: string) => {
+            if (r.startsWith('!')) {
+              // negative match
+              return !log[key as keyof ApacheLineTypes].includes(r.substring(1))
+            } else {
+              return log[key as keyof ApacheLineTypes].includes(r)
+            }
+          }))
         })) {
           return
         }
