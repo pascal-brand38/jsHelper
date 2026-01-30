@@ -172,9 +172,9 @@ class ApacheData {
       return
     }
 
-    Object.keys(config.print).forEach((ipCategory: string) => {
+    config.print.forEach((configPrint: any) => {
+      const ipCategory = configPrint.ips ?? 'all'
       console.log(`\n- IPs category: ${ipCategory}`)
-      const configPrint = config.print[ipCategory]
       console.log(configPrint)
       const ips = this.ips[ipCategory]
       if (!ips || ips.length===0) {
