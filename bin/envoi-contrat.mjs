@@ -179,8 +179,30 @@ async function sendMail(argsComptaPdf) {
   body += `du ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).weekdayStr()} ${argsComptaPdf.options.from} `
   body += `au ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.to).weekdayStr()} ${argsComptaPdf.options.to}. `
   body += `<br>`
+  body += `<br>`
   body += `En vous remerciant de finir de le remplir, notamment les anti-parasitaires et de me le retourner signé, `
   body += `à l'arrivée de ${getVotrePtitLoulou(gender)} pour le début de ${getSes(gender)} vacances le ${argsComptaPdf.options.from}.`
+  body += `<br>`
+  body += `<br>`
+
+  body += `De plus en plus de chats arrivant avec des puces ou des vers à la garderie, le traitement doit `
+  body += `maintenant être <span style="font-weight:700; text-decoration: underline;">obligatoirement</span> `
+  body += `effectué avec l'un des produits suivants `
+  body += `<span style="font-weight:700;">8 jours avant l'arrivée</span> `
+  body += `de ${catNames}:`
+  body += `<br>`
+  body += `<br>`
+  body += `- contre les vers: en comprimé <span style="color:red;">Milbemax ou Milbactor</span> uniquement. `
+  body += `Les traitements par pipettes expulsent les vers par l'anus, mais ne les tuent pas. `
+  body += `<span style="font-weight:700;"> Ces vers expédiés contagieux (ténias, etc.) `
+  body += `peuvent être transmis à la nounou </span> et entraîner de graves complications.`
+  body += `<br>`
+  body += `<br>`
+  body += `- contre les puces: `
+  body += `<span style="color:red;"> Stronghold, Credelio, Bravecto, Nexgard Combo.</span>`
+  body += `<br>`
+  body += `<br>`
+  body += `Merci de votre compréhension afin de protéger ${catNames}, la garderie et sa nounou.`
   body += `<br>`
   body += `<br>`
 
@@ -224,38 +246,14 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
   body += `<br>`
 
-  body += `${catNames} ${getDevraEtreVermifuge(gender)} depuis moins de 3 mois, `
-  body += `avec un produit vétérinaire (milbemax ou milbactor) et avoir reçu un traitement anti-puces `
-  body += `8 jours avant ${getSon(gender)} arrivée à la garderie.`
-  body += `<br>`
-  body += `<br>`
-
-  body += `De plus en plus de chats arrivant avec des puces à la garderie, `
-  body += `malgré un traitement, `
-  body += `<span style="color:red; font-weight:700; text-decoration: underline;">JE REFUSE</span> `
-  body += `maintenant les produits suivant inefficaces:`
-  body += `<br>`
-  body += `<br>`
-  body += `<div style="color:red; font-weight:700; text-decoration: underline;">`
-  body += `Frontline ou Frontline combo,`
-  body += `<br>`
-  body += `Fiprokil, Effipro, Fiprotec,`
-  body += `<br>`
-  body += `Advocate, Advantage,`
-  body += `<br>`
-  body += `Vectra Felis, Vetocanis, Capstar chat,`
-  body += `<br>`
-  body += `ainsi que tous les produits à base de fipronil ...`
-  body += `<br>`
-  body += `Refus également de produits achetés en grande surface, en pharmacie ou encore par internet !`
-  body += `</div>`
-  body += `<br>`
-
-  body += `Merci de votre compréhension afin de protéger ${catNames} ainsi que la garderie.`
-  body += `<br>`
-  body += `<br>`
-
   body += `Des bisous à ${catNames} de la part de ${getSa(gender)} nounou.`
+  body += `<br>`
+  body += `<br>`
+
+  body += `A très bientôt,`
+  body += `<br>`
+  body += `Virginie - ${argsComptaPdf.options.enterprise}`
+  body += `<br>`
 
   // add the flatten attachement.
   // if not flat, the printed form from a smartphone may be empty :(
