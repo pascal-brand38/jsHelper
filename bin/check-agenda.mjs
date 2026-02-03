@@ -183,7 +183,7 @@ function checkAcompte(dataComptaNoSort) {
         console.log(`${row.name} ${row.acompteAmount}€`)
       }
     } else {
-      warning = ((row.acompteDate) && (row.acompteDate+15<todaySerial))
+      warning = ((row.acompteDate) && (row.acompteDate+30<todaySerial))
     }
   })
 }
