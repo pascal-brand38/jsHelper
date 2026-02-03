@@ -185,6 +185,7 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
   body += `<br>`
 
+  body += `<div style="border: 2px solid red; padding: 10px;">`
   body += `De plus en plus de chats arrivant avec des puces ou des vers à la garderie, le traitement doit `
   body += `maintenant être <span style="font-weight:700; text-decoration: underline;">obligatoirement</span> `
   body += `effectué avec l'un des produits suivants `
@@ -203,6 +204,7 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
   body += `<br>`
   body += `Merci de votre compréhension afin de protéger ${catNames}, la garderie et sa nounou.`
+  body += `</div>`
   body += `<br>`
   body += `<br>`
 
