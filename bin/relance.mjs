@@ -113,11 +113,12 @@ async function sendMail(argsComptaPdf) {
   body += `au ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.to).weekdayStr()} ${argsComptaPdf.options.to}. `
 
   body += `Si les vacances de ${getVotrePtitLoulou(gender)} sont toujours d'actualité, merci de `
-  body += `faire le règlement de l'acompte de ${acompteAmount}€ pour réserver la chambre de ${catNames}. `
+  body += `faire le règlement de l'acompte de ${acompteAmount}€ pour réserver la chambre de ${catNames} `
+  body += `car actuellement, je refuse des loulous car la garderie est complète.`
   body += `<br>`
   body += `<br>`
 
-  body += `En vous remerciant`
+  body += `En vous remerciant et merci de votre compréhension,`
   body += `<br>`
   body += `<br>`
 

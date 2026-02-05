@@ -185,6 +185,29 @@ async function sendMail(argsComptaPdf) {
   body += `<br>`
   body += `<br>`
 
+  const acompteAmount = argsComptaPdf.rowCompta.acompteAmount
+  const acompteDate = argsComptaPdf.rowCompta.acompteDate
+  if (((acompteAmount !== undefined) && (acompteAmount !== '0')) && ((acompteDate === '') || (acompteDate === undefined))) {
+    body += `Afin de valider la réservation de ${getVotrePtitLoulou(gender)}, un acompte de 30% du montant total `
+    body += `vous est demandé, soit ${acompteAmount}€. `
+    body += `<br>`
+    body += `Vous pouvez régler soit par virement (coordonnées bancaires dans le contrat) soit par `
+    body += `chèque à l'ordre de Virginie Roux, car je suis auto-entrepreneur. `
+    body += `<br>`
+    body += `En vous remerciant. `
+    body += `<br>`
+    body += `<br>`
+  } else {
+    // pas de demande d'acompte. solde en espèce?
+    let espece = await getYesNo(`Solde en espèce?`)
+    console.log()
+    if (espece == 'y') {
+      body += `Le solde de la garderie sera à régler en espèce à l'arrivée de ${catNames} pour le début de ses vacances.`
+      body += `<br>`
+      body += `<br>`
+    }
+  }
+
   body += `<div style="border: 2px solid red; padding: 10px;">`
   body += `De plus en plus de chats arrivant avec des puces ou des vers à la garderie, le traitement doit `
   body += `maintenant être <span style="font-weight:700; text-decoration: underline;">obligatoirement</span> `
@@ -216,29 +239,6 @@ async function sendMail(argsComptaPdf) {
       body += `Les vaccins de ${catNames} seront à refaire avant ${getSes(gender)} vacances. `
       body += `Aurez vous la possibilité de me faire une photo quand ${catNames} ${getAura(gender)} refait ${getSes(gender)} vaccins `
       body += `afin que je mette le contrat à jour? Merci.`
-      body += `<br>`
-      body += `<br>`
-    }
-  }
-
-  const acompteAmount = argsComptaPdf.rowCompta.acompteAmount
-  const acompteDate = argsComptaPdf.rowCompta.acompteDate
-  if (((acompteAmount !== undefined) && (acompteAmount !== '0')) && ((acompteDate === '') || (acompteDate === undefined))) {
-    body += `Afin de valider la réservation de ${getVotrePtitLoulou(gender)}, un acompte de 30% du montant total `
-    body += `vous est demandé, soit ${acompteAmount}€. `
-    body += `<br>`
-    body += `Vous pouvez régler soit par virement (coordonnées bancaires dans le contrat) soit par `
-    body += `chèque à l'ordre de Virginie Roux, car je suis auto-entrepreneur. `
-    body += `<br>`
-    body += `En vous remerciant. `
-    body += `<br>`
-    body += `<br>`
-  } else {
-    // pas de demande d'acompte. solde en espèce?
-    let espece = await getYesNo(`Solde en espèce?`)
-    console.log()
-    if (espece == 'y') {
-      body += `Le solde de la garderie sera à régler en espèce à l'arrivée de ${catNames} pour le début de ses vacances.`
       body += `<br>`
       body += `<br>`
     }
