@@ -17,21 +17,21 @@ function getVotrePtitLoulou(gender) {
     case '1':
       switch (r) {
         case 0: return 'votre ptit bonhomme'
-        default: return 'votre ptit loulou'
+        default: return 'votre loulou'
       }
     case '2':
       switch (r) {
         case 0: return 'votre ptite miss'
-        default: return 'votre ptite louloutte'
+        default: return 'votre louloutte'
       }
     case '3':
       switch (r) {
-        default: return 'vos ptits loulous'
+        default: return 'vos loulous'
       }
     case '4':
       switch (r) {
         case 0: return 'vos ptites miss'
-        default: return 'vos ptites loulouttes'
+        default: return 'vos loulouttes'
       }
   }
 }
@@ -111,14 +111,15 @@ async function sendMail(argsComptaPdf) {
   body += `les vacances de ${catNames} `
   body += `du ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.from).weekdayStr()} ${argsComptaPdf.options.from} `
   body += `au ${DateTime.fromFormatStartOfDay(argsComptaPdf.options.to).weekdayStr()} ${argsComptaPdf.options.to}. `
+  body += `<br>`
 
-  body += `Si les vacances de ${getVotrePtitLoulou(gender)} sont toujours d'actualité, merci de `
+  body += `Si les vacances de ${getVotrePtitLoulou(gender)} sont toujours d'actualité, en vous remerciant de `
   body += `faire le règlement de l'acompte de ${acompteAmount}€ pour réserver la chambre de ${catNames} `
   body += `car actuellement, je refuse des loulous car la garderie est complète.`
   body += `<br>`
   body += `<br>`
 
-  body += `En vous remerciant et merci de votre compréhension,`
+  body += `Merci de votre compréhension,`
   body += `<br>`
   body += `<br>`
 

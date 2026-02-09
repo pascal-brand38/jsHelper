@@ -34,6 +34,14 @@ async function main() {
   body += `<br>`
 
   body += `En vous remerciant,`
+  body += `<br>`
+  body += `<br>`
+
+  body += `A très bientôt,`
+  body += `<br>`
+  body += `Virginie - ${argsComptaPdf.options.enterprise}`
+  body += `<br>`
+
 
   await helperJs.thunderbird.compose(email, subject, body)
 }

@@ -17,21 +17,21 @@ function getVotrePtitLoulou(gender) {
     case '1':
       switch (r) {
         case 0: return 'votre ptit bonhomme'
-        default: return 'votre ptit loulou'
+        default: return 'votre loulou'
       }
     case '2':
       switch (r) {
         case 0: return 'votre ptite miss'
-        default: return 'votre ptite louloutte'
+        default: return 'votre louloutte'
       }
     case '3':
       switch (r) {
-        default: return 'vos ptits loulous'
+        default: return 'vos loulous'
       }
     case '4':
       switch (r) {
         case 0: return 'vos ptites miss'
-        default: return 'vos ptites loulouttes'
+        default: return 'vos loulouttes'
       }
   }
 }
