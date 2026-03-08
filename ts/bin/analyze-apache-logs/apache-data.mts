@@ -5,7 +5,6 @@
 import Alpine from 'alpine'   // Apache Log Parser
 import * as fs from 'fs'
 import { OptionValues } from 'commander';
-import { log } from 'util';
 
 export type ApacheLineIndexTypes = 'originalLine' | 'remoteHost' | 'logname' | 'remoteUser' | 'time' | 'request' | 'status' | 'sizeCLF' | 'RequestHeader Referer' | 'RequestHeader User-Agent'
 

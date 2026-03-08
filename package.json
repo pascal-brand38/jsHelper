@@ -15,7 +15,7 @@
     "mv": "^2.1.1",
     "p-limit": "^7.3.0",
     "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "^5.4.624",
+    "pdfjs-dist": "^3.11.174",
     "shelljs": "^0.10.0",
     "xlsx": "^0.18.5",
     "xlsx-populate": "^1.21.0",
