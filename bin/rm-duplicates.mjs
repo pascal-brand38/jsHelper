@@ -24,6 +24,8 @@ import fileSyncCmp from 'file-sync-cmp'
 import _yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import helperJs from '../js/helpers/helperJs.mjs'
+import exifr from 'exifr';
+const {Exifr} = exifr;
 
 let statistics = {
   nTotal: 0,
@@ -68,6 +70,10 @@ async function getArgs(usage) {
       },
       "nameonly": {
         description: 'do not check content, but only the name',
+        type: 'boolean'
+      },
+      "sameexifdate": {
+        description: 'do not check content, but only the exif creation date',
         type: 'boolean'
       },
       "excludes": {
@@ -157,7 +163,7 @@ function action(options, dup, src) {
   }
 }
 
-function getHashes(dir, options) {
+async function getHashes(dir, options) {
   console.log(`--- getHashes of ${dir} ---`)
   console.log(`    --- Get files list of ${dir} ---`)
   let files = helperJs.utils.walkDir(dir, { stepVerbose: 1, excludes: options.excludes, antiSlashR: true })
@@ -165,23 +171,52 @@ function getHashes(dir, options) {
 
   console.log(`    --- Computes Hashes of ${dir} ---`)
   let hashes = helperJs.sha1.initSha1List()
-  files.forEach((file, index) => {
+  // files.forEach(async (file, index) => {
+  for (const file of files) {
     try {
+      const index = files.indexOf(file);
       print(`      ${index} / ${files.length}`, index)
       const fullname = path.join(dir, file);
-      const sha1sum = (options.nameonly) ? path.basename(file) : helperJs.sha1.getSha1(fullname)
-      helperJs.sha1.updateSha1List(hashes, sha1sum, fullname, false)
+      let sha1sum = undefined
+      if (options.sameexifdate) {
+        let exr = new Exifr()
+        try {
+          // const exif = await exifr.parse(fullname)
+          // if (exif && exif.DateTimeOriginal) {
+          //   sha1sum = exif.DateTimeOriginal
+          // }
+          // exif?.file?.close()
+          await exr.read(fullname)
+          const exif = await exr.parse()
+          if (exif && exif.DateTimeOriginal) {
+            sha1sum = exif.DateTimeOriginal
+          } else {
+            // no exif creation date, fallback to content hash
+          }
+        } catch (e) {
+          // ignore exif parsing error, and fallback to content hash
+          // no sha1sum will be added for this file, and it will be compared by content with the candidates with same name
+        }
+        await exr?.file?.close()
+      } else if (options.nameonly) {
+        sha1sum = path.basename(file)
+      } else {
+        sha1sum = helperJs.sha1.getSha1(fullname)
+      }
+      if (sha1sum) {
+        helperJs.sha1.updateSha1List(hashes, sha1sum, fullname, false)
+      }
     } catch (e) {
       console.log(e)
     }
-  })
+  }
   console.log()
 
   return hashes
 }
 
-function removeDup(srcHashes, options) {
-  let dupHashes = getHashes(options.dupDir, options)
+async function removeDup(srcHashes, options) {
+  let dupHashes = await getHashes(options.dupDir, options)
 
   console.log(`--- Move duplicates in ${path.join(os.tmpdir(), 'rm-duplicate')} ---`)
   Object.keys(dupHashes).forEach((key, index) => {
@@ -197,7 +232,7 @@ function removeDup(srcHashes, options) {
       if (mustRemove) {
         candidate = dup
       } else if (srcs) {
-        if (options.nameonly) {
+        if (options.nameonly || options.sameexifdate) {
           mustRemove = true
           candidate = srcs[0]
         } else {
@@ -261,11 +296,11 @@ async function removeSelf(srcHashes, options) {
 }
 
 async function main(options) {
-  let srcHashes = getHashes(options.srcDir, options)
+  let srcHashes = await getHashes(options.srcDir, options)
   if (options.self) {
     await removeSelf(srcHashes, options)
   } else {
-    removeDup(srcHashes, options)
+    await removeDup(srcHashes, options)
   }
 }
 
