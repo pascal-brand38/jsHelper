@@ -199,13 +199,13 @@ async function sendMail(argsComptaPdf) {
     body += `<br>`
   } else {
     // pas de demande d'acompte. solde en espèce?
-    let espece = await getYesNo(`Solde en espèce?`)
-    console.log()
-    if (espece == 'y') {
-      body += `Le solde de la garderie sera à régler en espèce à l'arrivée de ${catNames} pour le début de ses vacances.`
-      body += `<br>`
-      body += `<br>`
-    }
+    // let espece = await getYesNo(`Solde en espèce?`)
+    // console.log()
+    // if (espece == 'y') {
+    //   body += `Le solde de la garderie sera à régler en espèce à l'arrivée de ${catNames} pour le début de ses vacances.`
+    //   body += `<br>`
+    //   body += `<br>`
+    // }
   }
 
   body += `<div style="border: 2px solid red; padding: 10px;">`
